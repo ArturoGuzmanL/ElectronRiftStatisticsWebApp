@@ -1,0 +1,14 @@
+{
+  "name": "electron",
+  "version": "1.0.0",
+  "description": "RiftStatistics WebApp",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Arturo Guzmán Lucena",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^24.1.0"
+  }
+}
