@@ -10,5 +10,11 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^24.1.0"
+  },
+  "dependencies": {
+    "electron-reload": "^2.0.0-alpha.1",
+    "esm": "^3.2.25",
+    "javascript": "^1.0.0",
+    "mousetrap": "^1.6.5"
   }
 }

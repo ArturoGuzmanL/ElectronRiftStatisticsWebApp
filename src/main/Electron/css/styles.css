@@ -24,16 +24,16 @@ header{
 
 /* Scroll bar */
 
-::-webkit-scrollbar {
+.main-content::-webkit-scrollbar {
     width: 1.1rem;
 }
 
-::-webkit-scrollbar-thumb {;
+.main-content::-webkit-scrollbar-thumb {;
     background: rgba(136, 136, 136, 0.25);
     border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.main-content::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
@@ -343,9 +343,9 @@ header{
     padding: 0.4rem 0.8rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: absolute;
-    top: 63px;
+    top: 62px;
     left: 0;
-    height: 100%;
+    height: calc(100% - 63px);
     width: 80px;
     transition: all 0.5s ease;
 }
@@ -488,11 +488,11 @@ header{
     opacity: 1;
 }
 
-.sidebar ul li:hover .sidebar-tooltip {
-    transform: translate(-50%, -50%);
-    opacity: 1;
-    transition: opacity 0.1s ease 0s, transform 0.0s ease 0s;
-}
+    .sidebar ul li:hover .sidebar-tooltip {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+        transition: opacity 0.1s ease 0s, transform 0.0s ease 0s;
+    }
 
 .sidebar.active ul li:hover .sidebar-tooltip {
     opacity: 0;
@@ -507,10 +507,9 @@ header{
 /* main content */
 
 .main-content {
-    overflow: scroll;
     position: absolute;
     left: 80px;
-    height: 100%;
+    height: calc(100% - 63px);
     margin: auto;
     width: calc(100% - 80px);
     transition: all 0.5s ease;
@@ -519,7 +518,7 @@ header{
 }
 
 .main-browser {
-    height: 100%;
+    height: calc(100% - 63px);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
