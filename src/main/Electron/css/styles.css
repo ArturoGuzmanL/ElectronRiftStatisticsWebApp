@@ -1,0 +1,569 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+/* Estilos del header */
+
+header{
+    display: flex;
+    overflow: hidden;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 5%;
+}
+
+/* Scroll bar */
+
+::-webkit-scrollbar {
+    width: 1.1rem;
+}
+
+::-webkit-scrollbar-thumb {;
+    background: rgba(136, 136, 136, 0.25);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/** Estilos del header */
+
+.header_object{
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.3);
+    background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
+}
+
+
+.searchArea{
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.accountArea {
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo img,
+.logo{
+    cursor: pointer;
+    margin-right: auto;
+    transition: all 0.3s ease 0s;
+}
+
+.logo:hover{
+    transform: scale(1.025);
+    transition: all 0.3s ease 0s;
+}
+
+.nav_buttons{
+    list-style: none;
+}
+
+.nav_buttons li{
+    display: inline-block;
+    margin: 5px 5px 0 5px;
+}
+
+.nav_buttons li a{
+    transition: all 0.3s ease 0s;
+}
+
+.nav_buttons li a svg{
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    padding: 1px;
+    transition: all 0.3s ease 0s;
+    transform: scale(1);
+    fill: #FFFFFF;
+}
+
+.nav_buttons li a svg:hover,
+.nav_buttons li a:hover svg {
+    transition: all 0.3s ease 0s;
+    transform: scale(1.15);
+}
+
+.searchField{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 10px;
+    resize: none;
+    height: 40px;
+    width: 350px;
+    border-radius: 20px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 1);
+    background-color: rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+    overflow: hidden;
+    outline: none;
+    transition: all 0.3s ease 0s;
+}
+
+.searchField:focus,
+.searchField:hover{
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    transform: scale(1.01);
+    transition: all 0.3s ease 0s;
+}
+
+.accountButton {
+    transition: all 0.3s ease 0s;
+    color: rgba(255, 255, 255, 1);
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 1);
+    background-color: rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    padding: 10px;
+    margin: 0 10px;
+    overflow: hidden;
+    border-radius: 20px;
+    outline: none;
+}
+
+.accountButton:hover {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    transform: scale(1.05   );
+    transition: all 0.3s ease 0s;
+}
+
+/* Estilos de los popup */
+
+.popup {
+    z-index: 25;
+    position: absolute;
+    top: -150%;
+    left: 50%;
+    width: 380px;
+    padding: 20px 30px;
+    background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
+    box-shadow: 2px 5px rgba(0,0,0,0.15);
+    font-family: "Raleway", sans-serif;
+    border-radius: 10px;
+    transform: translate(-50%, -50%) scale(0.1);
+    transition: top 0ms ease-in-out 200ms,
+    transform 200ms ease-in-out 0ms;
+}
+
+.popup.active {
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    transition: top 0ms ease-in-out 0ms,
+    transform 200ms ease-in-out 0ms;
+}
+
+.popupSign {
+    z-index: 25;
+    outline: none;
+    position: absolute;
+    top: -150%;
+    left: 50%;
+    width: 380px;
+    padding: 30px 30px;
+    background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
+    font-family: "Raleway", sans-serif;
+    border-radius: 10px;
+    transform: translate(-50%, -50%) scale(0.1);
+    transition: top 0ms ease-in-out 200ms,
+    transform 200ms ease-in-out 0ms;
+}
+
+.popupSign.active {
+    outline: none;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    transition: top 0ms ease-in-out 0ms,
+    transform 200ms ease-in-out 0ms;
+}
+
+
+.popupSign .close-btn,
+.popup .close-btn {
+    outline: none;
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    color: #eee;
+    text-align: center;
+    text-decoration: none;
+    line-height: 20px;
+    font-size: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    transform: translate(0px, 0px);
+    transition: all 0.3s ease 0s;
+}
+
+.popupSign .close-btn:hover,
+.popup .close-btn:hover {
+    outline: none;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    background: rgba(0, 0, 0, 0.4);
+    transform: translate(0px, 0px);
+    transition: all 0.3s ease 0s;
+}
+
+.popupSign .form h2,
+.popup .form h2 {
+    outline: none;
+    text-align: center;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    margin: 10px 0 20px;
+    font-size: 25px;
+}
+
+.popupSign .form .form_element,
+.popup .form .form_element {
+    outline: none;
+    margin: 15px auto;
+}
+
+.popupSign .form .form_element label,
+.popup .form .form_element label {
+    text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    outline: none;
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+
+.popupSign .form .form_element input[type="text"],
+.popupSign .form .form_element input[type="password"],
+.popupSign .form .form_element input[type="email"],
+.popup .form .form_element input[type="text"],
+.popup .form .form_element input[type="password"] {
+    outline: none;
+    margin-top: 5px;
+    display:block;
+    width: 100%;
+    padding: 10px;
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.25);
+    color: #C0C2CB;
+    border: 3px solid #000000;
+    border-radius: 20px;
+    transition: all 0.3s ease 0s;
+}
+
+.popupSign .form .form_element input[type="text"]:hover,
+.popupSign .form .form_element input[type="password"]:hover,
+.popupSign .form .form_element input[type="email"]:hover,
+.popup .form .form_element input[type="text"]:hover,
+.popup .form .form_element input[type="password"]:hover,
+.popupSign .form .form_element input[type="text"]:focus,
+.popupSign .form .form_element input[type="password"]:focus,
+.popupSign .form .form_element input[type="email"]:focus,
+.popup .form .form_element input[type="text"]:focus,
+.popup .form .form_element input[type="password"]:focus {
+    outline: none;
+    border-color: black;
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    transition: all 0.3s ease 0s;
+}
+
+.popup .form .form_element input[type="checkbox"] {
+    outline: none;
+    margin-right: 5px;
+}
+
+.popupSign .form .form_element button,
+.popup .form .form_element button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease 0s;
+    margin: 25px auto 0 auto;
+    width: 70%;
+    height: 40px;
+    color: rgba(255, 255, 255, 1);
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 1);
+    background-color: rgba(0, 0, 0, 0.35);
+    padding: 10px;
+    outline: none;
+    font-size: 15px;
+    overflow: hidden;
+    color: #f5f5f5;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.popupSign .form .form_element button:hover,
+.popup .form .form_element button:hover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-radius: 10px;
+    transform: scale(1.1);
+    transition: all 0.3s ease 0s;
+}
+
+/* Estilos del sidebar */
+
+.user-img {
+    outline: none;
+    width: 50px;
+    border-radius: 100%;
+    border: 1px solid #eee;
+}
+
+.sidebar {
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.85);
+    background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
+    margin: 0;
+    padding: 0.4rem 0.8rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: absolute;
+    top: 63px;
+    left: 0;
+    height: 100%;
+    width: 80px;
+    transition: all 0.5s ease;
+}
+
+.sidebar.active ~ .main-content {
+    left: 250px;
+    width: calc(100% - 250px);
+    transition: all 0.5s ease;
+}
+
+.sidebar.active {
+    width: 260px;
+}
+
+.sidebar #sidebar-button {
+    position: absolute;
+    top: 0.4rem;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    transform: translate(-50%, 0);
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.sidebar.active #sidebar-button {
+    left: 90%;
+    transition: all 0.5s ease;
+}
+
+.sidebar .sidebar-top .sidebar-logo {
+    transform: translateX(-250px);
+    color: #FFFFFF;
+    display: flex;
+    height: 50px;
+    width: 100%;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0s ease 0.5s, transform 0.5s ease;
+}
+
+.sidebar.active .sidebar-top .sidebar-logo {
+    transform: translateX(0px);
+    opacity: 1;
+    transition: opacity 0s ease 0s, transform 0.5s ease;
+}
+
+.sidebar-top .sidebar-logo svg {
+    margin-right: 5px;
+    position: absolute;
+}
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.sidebar-user p {
+    color: #FFFFFF;
+    opacity: 1;
+    margin-left: 1rem;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.sidebar p {
+    transform: translateX(-250px);
+    opacity: 0;
+    transition: opacity 0.25s ease 0s, transform 0.5s ease;
+}
+
+.sidebar.active p {
+    transform: translateX(0px);
+    transition: opacity 0.75s ease 0s, transform 0.5s ease;
+    opacity: 1;
+}
+
+.sidebar ul li {
+    position: relative;
+    list-style: none;
+    height: 50px;
+    width: 90%;
+    margin: 0.9rem auto;
+    line-height: 50px;
+}
+
+.sidebar ul li a {
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 0.8rem;
+}
+
+.sidebar ul li a span{
+    margin-left: 1rem;
+}
+
+.sidebar ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.45);
+    color: #FFFFFF;
+}
+
+.sidebar ul li a svg {
+    text-align: center;
+    margin-left: 0.5rem;
+    min-width: 30px;
+    height: 50px;
+    border-radius: 12px;
+    line-height: 50px;
+}
+
+.sidebar .sidebar-nav-item {
+    opacity: 0;
+    transform: translateX(-250px);
+    transition: opacity 0.3s ease 0s, transform 5s ease 0s;
+}
+
+.sidebar.active .sidebar-nav-item {
+    opacity: 1;
+    transform: translateX(0px);
+    transition: opacity 0.3s ease 0s;
+}
+
+.sidebar ul li .sidebar-tooltip {
+    color: #000;
+    position: absolute;
+    left: 125px;
+    top: 50%;
+    transform: translate(-250%, -50%);
+    box-shadow: 0 0.5rem 0.8rem rgba(0, 0, 0, 0.2);
+    border-radius: 0.6rem;
+    padding: 0.4rem 1.2rem;
+    line-height: 1.8rem;
+    z-index: 20;
+    opacity: 1;
+}
+
+.sidebar ul li:hover .sidebar-tooltip {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    transition: opacity 0.1s ease 0s, transform 0.0s ease 0s;
+}
+
+.sidebar.active ul li:hover .sidebar-tooltip {
+    opacity: 0;
+    transform: translate(-250%, -50%);
+}
+
+.sidebar ul li .sidebar-tooltip:hover {
+    opacity: 0;
+    cursor: default;
+}
+
+/* main content */
+
+.main-content {
+    overflow: scroll;
+    position: absolute;
+    left: 80px;
+    height: 100%;
+    margin: auto;
+    width: calc(100% - 80px);
+    transition: all 0.5s ease;
+    padding: 1rem;
+    background: rgba(14, 16, 20, 0.95);
+}
+
+.main-browser {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 1rem;
+    position: absolute;
+    margin: auto;
+}
+
+.mainSearchField {
+    margin-top: 3rem;
+    font-size: 1.2rem;
+    padding: 20px 20px;
+    resize: none;
+    height: 60px;
+    width: 500px;
+    border-radius: 20px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 1);
+    background-color: rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+    overflow: hidden;
+    outline: none;
+    transition: all 0.3s ease 0s;
+}
+
+.mainSearchField:hover,
+.mainSearchField:focus {
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    transform: scale(1.01);
+    transition: all 0.3s ease 0s;
+}
+
+.main-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+}
+
+.main-logo img {
+    margin-top: 3rem;
+}
+
+.empty-col {
+    min-height: 1px;
+}
