@@ -182,12 +182,13 @@ body.fadeout{
 
 /* Estilos de los popup */
 
+.outPopup,
 .popup {
     z-index: 25;
     position: absolute;
     top: -150%;
     left: 50%;
-    width: 380px;
+    width: 420px;
     padding: 20px 30px;
     background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
     box-shadow: 2px 5px rgba(0,0,0,0.15);
@@ -198,6 +199,7 @@ body.fadeout{
     transform 200ms ease-in-out 0ms;
 }
 
+.outPopup.active,
 .popup.active {
     top: 50%;
     transform: translate(-50%, -50%) scale(1);
@@ -229,7 +231,7 @@ body.fadeout{
     transform 200ms ease-in-out 0ms;
 }
 
-
+.outPopup .close-btn,
 .popupSign .close-btn,
 .popup .close-btn {
     outline: none;
@@ -250,6 +252,7 @@ body.fadeout{
     transition: all 0.3s ease 0s;
 }
 
+.outPopup .close-btn:hover,
 .popupSign .close-btn:hover,
 .popup .close-btn:hover {
     outline: none;
@@ -261,6 +264,16 @@ body.fadeout{
     transition: all 0.3s ease 0s;
 }
 
+.outPopup .form h1 {
+    outline: none;
+    text-align: center;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    margin: 10px 0 20px;
+    font-size: 1rem;
+}
+
+.outPopup .form h2,
 .popupSign .form h2,
 .popup .form h2 {
     outline: none;
@@ -271,12 +284,14 @@ body.fadeout{
     font-size: 25px;
 }
 
+.outPopup .form .form_element,
 .popupSign .form .form_element,
 .popup .form .form_element {
     outline: none;
     margin: 15px auto;
 }
 
+.outPopup .form .form_element label,
 .popupSign .form .form_element label,
 .popup .form .form_element label {
     text-shadow: 0 0 5px rgba(0, 0, 0, 1);
@@ -284,7 +299,6 @@ body.fadeout{
     font-size: 14px;
     color: #FFFFFF;
 }
-
 
 .popupSign .form .form_element input[type="text"],
 .popupSign .form .form_element input[type="password"],
@@ -294,7 +308,7 @@ body.fadeout{
     outline: none;
     margin-top: 5px;
     display:block;
-    width: 100%;
+    width: calc(100% - 40px);
     padding: 10px;
     outline: none;
     background-color: rgba(0, 0, 0, 0.25);
@@ -326,6 +340,7 @@ body.fadeout{
     margin-right: 5px;
 }
 
+.outPopup .form .form_element button,
 .popupSign .form .form_element button,
 .popup .form .form_element button {
     display: flex;
@@ -348,6 +363,7 @@ body.fadeout{
     border-radius: 20px;
 }
 
+.outPopup .form .form_element button:hover,
 .popupSign .form .form_element button:hover,
 .popup .form .form_element button:hover {
     display: flex;
@@ -360,6 +376,7 @@ body.fadeout{
     transition: all 0.3s ease 0s;
 }
 
+.outPopup .form .form_element p,
 .popupSign .form .form_element p,
 .popup .form .form_element p {
     outline: none;
@@ -369,6 +386,14 @@ body.fadeout{
     margin: 10px 0 20px;
     font-size: 15px;
     visibility: hidden;
+}
+
+.form_password {
+    display: flex;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    margin: 10px 0 20px;
+    font-size: 15px;
 }
 
 /* Estilos del sidebar */

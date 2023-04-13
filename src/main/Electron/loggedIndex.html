@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>RiftStatistics</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../Electron/css/styles.css">
 </head>
 <body>
 
@@ -47,49 +47,17 @@
 
     <!-- Botones de cuenta y ventanas -->
     <div class="accountArea  noselection">
-        <button type="button" class="accountButton" id="show-login">LogIn</button>
-        <div class="popup">
+        <button type="button" class="accountButton" id="show-logout">Log out</button>
+        <div class="outPopup">
             <div class="close-btn">&times;</div>
             <div class="form">
-                <h2>LogIn</h2>
+                <h2>Log out</h2>
+                <h1>Are you sure you want to log out?</h1>
                 <div class="form_element">
-                    <label for="logUsername">Username</label>
-                    <input type="text" id="logUsername" placeholder="Username...">
+                    <button type="button" id="logout-accept">Accept</button>
                 </div>
                 <div class="form_element">
-                    <label for="logPassword">Password</label>
-                    <input type="password" id="logPassword" placeholder="password...">
-                </div>
-                <div class="form_element">
-                    <label for="remember">Remember me</label>
-                    <input type="checkbox" id="remember">
-                </div>
-                <div class="form_element">
-                    <button type="button" id="Login-button">Sign in</button>
-                </div>
-            </div>
-        </div>
-        <button type="button" class="accountButton" id="show-signup">SignUp</button>
-        <div class="popupSign">
-            <div>
-                <object class="close-btn">&times;</object>
-            </div>
-            <div class="form">
-                <h2>SignUp</h2>
-                <div class="form_element">
-                    <label for="sigUsername">Username</label>
-                    <input type="text" id="sigUsername" placeholder="Username...">
-                </div>
-                <div class="form_element">
-                    <label for="sigEmail">Email</label>
-                    <input type="password" id="sigEmail" placeholder="password...">
-                </div>
-                <div class="form_element">
-                    <label for="sigPassword">Password</label>
-                    <input type="password" id="sigPassword" placeholder="password...">
-                </div>
-                <div class="form_element">
-                    <button type="button" id="Signup-button">Sign up</button>
+                    <button type="button" id="logout-cancel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -167,32 +135,11 @@
         <div class="empty-col empty-row"></div>
         <div class="empty-col empty-row"></div>
         <textarea class="mainSearchField" placeholder="Search summoners, champions..."></textarea>
-
-        <div class="popup">
-            <div class="close-btn">&times;</div>
-            <div class="form">
-                <h2>LogIn</h2>
-                <div class="form_element">
-                    <label for="logUsername">Username</label>
-                    <input type="text" placeholder="Username...">
-                </div>
-                <div class="form_element">
-                    <label for="logPassword">Password</label>
-                    <input type="password" placeholder="password...">
-                </div>
-                <div class="form_element">
-                    <label for="remember">Remember me</label>
-                    <input type="checkbox">
-                </div>
-                <div class="form_element">
-                    <button type="button">Sign in</button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
-<script src="javascriptScripts/UtilitiesScripts.js"></script>
-<script src="javascriptScripts/ButtonActions.js"></script>
+<script src="../Electron/javascriptScripts/LoggedIndex-UtilitiesScripts.js"></script>
+<script src="../Electron/javascriptScripts/UtilitiesScripts.js"></script>
+<script src="../Electron/javascriptScripts/ButtonActions.js"></script>
 </body>
 </html>
