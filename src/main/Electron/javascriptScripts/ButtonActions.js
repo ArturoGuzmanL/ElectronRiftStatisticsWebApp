@@ -1,23 +1,30 @@
-var connection = new WebSocket('ws://127.0.0.1:4444');
+var login = document.querySelector('#Login-button');
+var logError = document.querySelector('#logError');
+var SHA256 = require("crypto-js/sha256");
 
-connection.onopen = function () {
-    console.log('Connected!');
-    connection.send('Ping'); // Send the message 'Ping' to the server
-};
+function getLoginPetition(username, password) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:8080/api/users/'+username+'-'+password, true);
+    xhr.send();
+    xhr.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+            console.log("login petition" + this.responseText);
+            document.body.classList.add("fadeout");
+            window.setTimeout(function(){
+                window.location.href = "loggedIndex.html";
+            },250)
 
-// Log errors
-connection.onerror = function (error) {
-    console.log('WebSocket Error ' + error);
-};
-
-// Log messages from the server
-connection.onmessage = function (e) {
-    console.log('Server: ' + e.data);
-};
-
-let login = document.querySelector('#Login-button');
-let signup = document.querySelector('#Signup-button');
+        }else if(this.readyState === 4 && this.status === 404){
+            console.log("Error");
+            logError.innerHTML = "ERROR: Nombre o contraseña incorrectos";
+            logError.style.visibility = "visible";
+        }
+    }
+}
 
 login.onclick = function() {
-    connection.send('Login correcto?');
+    var username = document.querySelector('#logUsername').value;
+    var password = document.querySelector('#logPassword').value;
+    var hashedPassword = SHA256(password).toString();
+    getLoginPetition(username, hashedPassword);
 }

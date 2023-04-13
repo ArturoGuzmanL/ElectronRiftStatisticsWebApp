@@ -22,6 +22,31 @@ header{
     padding: 10px 5%;
 }
 
+body{
+    background: #555555;
+    transition:opacity 350ms;
+    opacity:1;
+}
+body.fadeout{
+    opacity:0.95;
+}
+
+.noselection {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.defaultCursor {
+    cursor: default;
+}
+
+.pointerCursor {
+    cursor: pointer;
+}
+
 /* Scroll bar */
 
 .main-content::-webkit-scrollbar {
@@ -44,6 +69,14 @@ header{
     background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
 }
 
+
+.searchAreaNoBar{
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .searchArea{
     margin-right: auto;
@@ -327,6 +360,17 @@ header{
     transition: all 0.3s ease 0s;
 }
 
+.popupSign .form .form_element p,
+.popup .form .form_element p {
+    outline: none;
+    text-align: center;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    margin: 10px 0 20px;
+    font-size: 15px;
+    visibility: hidden;
+}
+
 /* Estilos del sidebar */
 
 .user-img {
@@ -345,7 +389,7 @@ header{
     position: absolute;
     top: 62px;
     left: 0;
-    height: calc(100% - 63px);
+    height: calc(100% - 62px);
     width: 80px;
     transition: all 0.5s ease;
 }
@@ -427,6 +471,7 @@ header{
     opacity: 1;
 }
 
+.unloggedPhoto,
 .sidebar ul li {
     position: relative;
     list-style: none;
@@ -444,13 +489,18 @@ header{
     border-radius: 0.8rem;
 }
 
-.sidebar ul li a span{
-    margin-left: 1rem;
-}
-
 .sidebar ul li a:hover {
     background-color: rgba(255, 255, 255, 0.45);
     color: #FFFFFF;
+}
+
+.unloggedPhoto svg {
+    text-align: center;
+    margin-left: 0.2rem;
+    min-width: 30px;
+    height: 50px;
+    border-radius: 12px;
+    line-height: 50px;
 }
 
 .sidebar ul li a svg {
@@ -462,9 +512,19 @@ header{
     line-height: 50px;
 }
 
+.sidebar ul li a span {
+    font-size: 1px;
+}
+
+.unloggedPhoto,
+.sidebar.active ul li a span {
+    font-size: 1rem;
+    margin-left: 0.5rem;
+}
+
 .sidebar .sidebar-nav-item {
     opacity: 0;
-    transform: translateX(-250px);
+    transform: translateX(-350px);
     transition: opacity 0.3s ease 0s, transform 5s ease 0s;
 }
 
@@ -472,36 +532,6 @@ header{
     opacity: 1;
     transform: translateX(0px);
     transition: opacity 0.3s ease 0s;
-}
-
-.sidebar ul li .sidebar-tooltip {
-    color: #000;
-    position: absolute;
-    left: 125px;
-    top: 50%;
-    transform: translate(-250%, -50%);
-    box-shadow: 0 0.5rem 0.8rem rgba(0, 0, 0, 0.2);
-    border-radius: 0.6rem;
-    padding: 0.4rem 1.2rem;
-    line-height: 1.8rem;
-    z-index: 20;
-    opacity: 1;
-}
-
-    .sidebar ul li:hover .sidebar-tooltip {
-        transform: translate(-50%, -50%);
-        opacity: 1;
-        transition: opacity 0.1s ease 0s, transform 0.0s ease 0s;
-    }
-
-.sidebar.active ul li:hover .sidebar-tooltip {
-    opacity: 0;
-    transform: translate(-250%, -50%);
-}
-
-.sidebar ul li .sidebar-tooltip:hover {
-    opacity: 0;
-    cursor: default;
 }
 
 /* main content */
@@ -518,7 +548,7 @@ header{
 }
 
 .main-browser {
-    height: calc(100% - 63px);
+    height: calc(100% - 62px);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
@@ -556,11 +586,10 @@ header{
     display: block;
     margin-left: auto;
     margin-right: auto;
-    cursor: pointer;
 }
 
 .main-logo img {
-    margin-top: 3rem;
+    margin-top: 5rem;
 }
 
 .empty-col {

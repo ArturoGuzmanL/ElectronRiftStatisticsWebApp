@@ -12,9 +12,13 @@
     "electron": "^24.1.0"
   },
   "dependencies": {
+    "crypto-js": "^4.1.1",
     "electron-reload": "^2.0.0-alpha.1",
     "esm": "^3.2.25",
     "javascript": "^1.0.0",
-    "mousetrap": "^1.6.5"
+    "mousetrap": "^1.6.5",
+    "next": "^13.3.0",
+    "next-auth": "^4.22.0",
+    "react-cookie": "^4.1.1"
   }
 }
