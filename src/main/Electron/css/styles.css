@@ -23,14 +23,8 @@ header{
 }
 
 body{
-    background: #555555;
-    transition:opacity 350ms;
-    opacity:1;
+    background: rgba(14, 16, 20, 1);
 }
-body.fadeout{
-    opacity:0.95;
-}
-
 .noselection {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -60,6 +54,14 @@ body.fadeout{
 
 .main-content::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+.blur-toggle {
+}
+
+.blur-toggle.active {
+    filter: blur(15px);
+    transition: filter 0.3s ease-in-out;
 }
 
 /** Estilos del header */
@@ -188,6 +190,7 @@ body.fadeout{
     position: absolute;
     top: -150%;
     left: 50%;
+    margin-right: -50%;
     width: 420px;
     padding: 20px 30px;
     background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
@@ -213,7 +216,8 @@ body.fadeout{
     position: absolute;
     top: -150%;
     left: 50%;
-    width: 380px;
+    margin-right: -50%;
+    width: 420px;
     padding: 30px 30px;
     background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
     font-family: "Raleway", sans-serif;
@@ -390,10 +394,32 @@ body.fadeout{
 
 .form_password {
     display: flex;
+    justify-content: space-between;
     color: #FFFFFF;
     text-shadow: 0 0 5px rgba(0, 0, 0, 1);
-    margin: 10px 0 20px;
     font-size: 15px;
+}
+
+#LogPassShow {
+    margin: 0.74rem 0 0 0;
+    font-size: 15px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.2rem;
+    border-radius: 15px;
+    transition: all 0.3s ease 0s;
+}
+
+#SignPassShow-activeShow,
+#LogPassShow-activeShow {
+    visibility: hidden;
+}
+
+#LogPassShow:hover {
+    background: rgba(0, 0, 0, 0.3);
+    fill: #C0C2CB;
+    transition: all 0.3s ease 0s;
+    transform: scale(1.15);
 }
 
 /* Estilos del sidebar */
@@ -412,11 +438,27 @@ body.fadeout{
     padding: 0.4rem 0.8rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: absolute;
-    top: 62px;
+    top: 63px;
     left: 0;
-    height: calc(100% - 62px);
+    height: calc(100% - 63px);
     width: 80px;
     transition: all 0.5s ease;
+    background: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
+}
+
+.absolute {
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.85);
+    background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
+    margin: 0;
+    padding: 0.4rem 0.8rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: absolute;
+    top: 63px;
+    left: 0;
+    height: calc(100% - 63px);
+    width: 80px;
+    transition: all 0.5s ease;
+    background: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
 }
 
 .sidebar.active ~ .main-content {
@@ -597,10 +639,10 @@ body.fadeout{
     overflow: hidden;
     outline: none;
     transition: all 0.3s ease 0s;
+    cursor: pointer;
 }
 
-.mainSearchField:hover,
-.mainSearchField:focus {
+.mainSearchField:hover {
     background-color: rgba(0, 0, 0, 0.35);
     border-radius: 10px;
     transform: scale(1.01);
@@ -620,3 +662,243 @@ body.fadeout{
 .empty-col {
     min-height: 1px;
 }
+
+.blur-toggle:before {
+    backdrop-filter: blur(15px) brightness(0.5);
+}
+
+.popupBrowserWindow {
+    position: absolute;
+    visibility: hidden;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -250%);
+    background: rgba(14, 16, 20, 1);
+    border-color: rgb(53, 53, 53);
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 1px;
+    width: 95%;
+    height: 80%;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s ease 0s;
+}
+
+.popupBrowserWindow.active {
+    visibility: visible;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease 0s;
+}
+
+.popupSearchLabel {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    padding: 20px 20px;
+    resize: none;
+    height: 15%;
+    width: 80%;
+    border-radius: 10px;
+    border-style: solid;
+    background-color: #22252b;
+    color: #FFFFFF;
+    overflow: hidden;
+    outline: none;
+    transition: all 0.3s ease 0s;
+}
+
+.popupBuscadorBrowser {
+    position: absolute;
+    top: 25%;
+    left: 45%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    height: 10%;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -5rem;
+}
+
+.popupSearchLabel input {
+    margin-left: -0.4rem;
+    width: 100%;
+}
+
+.popupSearchLabel:focus,
+.popupSearchLabel:hover {
+    background-color: rgba(28, 31, 35, 0.5);
+    transform: scale(1.01);
+    transition: all 0.3s ease 0s;
+}
+
+.popupSearchField {
+    font-size: 1.2rem;
+    padding: 20px 20px;
+    resize: none;
+    height: 60px;
+    width: 500px;
+    border: none;
+    background-color: transparent;
+    color: #FFFFFF;
+    overflow: hidden;
+    outline: none;
+}
+
+.popupSearchField:hover,
+.popupSearchField:focus {
+    background-color: transparent;
+}
+
+#clearSearch {
+    opacity: 0;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+}
+
+.popupSearchLabel:hover #clearSearch,
+.popupSearchLabel:focus #clearSearch{
+    opacity: 1;
+    transition: all 0.3s ease 0s;
+}
+
+.closeBrowserBtn {
+    position: absolute;
+    top: 5%;
+    right: 30%;
+    margin-right: -50%;;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+}
+
+.closeBrowserBtn:hover {
+    transform: scale(1.1);
+    transition: all 0.3s ease 0s;
+}
+
+.closeBrowserBtn:hover #rectangulo {
+    fill: #2c2f35;
+}
+
+.popupBrowserContent {
+    display: flex;
+    margin-top: 10%;
+    width: 80%;
+    height: 70%;
+    z-index: 60;
+    justify-content: space-evenly;
+    align-items: flex-start;
+}
+
+.browserList {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    gap: 2%;
+}
+
+.browserLink {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+}
+
+.browserItem {
+    width: 100%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+}
+
+.cardBackground {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    height: 60%;
+}
+
+.cardContainer {
+    width: 100%;
+    height: 85%;
+}
+
+.browserCard {
+    background-repeat: no-repeat;
+    filter: blur(2px) brightness(25%) saturate(160%);
+    image-rendering: smooth;
+    width: 100%;
+    height: 80%;
+    border-radius: 10px;
+    transition: all 0.3s ease 0s;
+}
+
+.browserLink:hover {
+    transform: scale(1.1);
+    transition: all 0.3s ease 0s;
+}
+
+.browserLink:hover .browserCard {
+    filter: blur(1px) brightness(45%) saturate(140%);
+    transition: all 0.3s ease 0s;
+}
+
+.cardBackground {
+    width: 100%;
+    height: 100%;
+}
+
+.cardPhoto {
+    position: relative;
+    top: -60%;
+    left: 30%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 40%;
+    height: 40%;
+    border-radius: 50%;
+}
+
+.cardPhoto img {
+    border-radius: 50px;
+}
+
+.browserName {
+    position: relative;
+    top: -16%;
+    left: 3%;
+    font-size: 1.2rem;
+    color: #FFFFFF;
+    text-align: center;
+    width: 100%;
+    height: 20%;
+}
+
+.browserSummRegion {
+    background: rgba(44, 47, 53, 0.85);
+    background-size: 100%;
+    padding: 2%;
+    border-radius: 5px;
+}
+
+
