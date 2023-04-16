@@ -17,11 +17,12 @@ document.querySelector("#logout-cancel")
 document.querySelector("#logout-accept")
     .addEventListener("click", function() {
         document.querySelector(".outPopup").classList.remove("active");
-        console.log("logout realized");
-        document.body.classList.add("fadeout");
-        window.setTimeout(function(){
-            window.location.href = "Index.html";
-        },250)
+        ipcRenderer.send("logout-from-account");
+        ipcRenderer.on("logout-from-account-reply", (event, arg) => {
+            if(arg === true) {
+                ipcRenderer.send('change-html', "index.html");
+            }
+        });
     });
 
 document.querySelector("#profileImage").addEventListener("click", function() {
@@ -49,7 +50,7 @@ function previewFile(){
             const xhr = new XMLHttpRequest();
             ipcRenderer.send("get-uid");
             ipcRenderer.on("get-uid-reply", (event, uid) => {
-                xhr.open("POST", `http://localhost:8080/api/users/profileimgupdt/${uid}`);
+                xhr.open("POST", `http://localhost:8080/api/users/actions/profileimgupdt/${uid}`);
                 xhr.send(imgNormal);
             });
         });

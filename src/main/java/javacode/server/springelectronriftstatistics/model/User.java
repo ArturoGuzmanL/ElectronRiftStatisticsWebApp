@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -31,6 +32,14 @@ public class User implements Serializable {
         this.accountimage = accountimage;
     }
 
+    public User (String username, String password, String email) {
+        this.id = DigestUtils.sha256Hex(username + email + password);
+        this.username = username;
+        this.password = DigestUtils.sha256Hex(password);
+        this.email = email;
+        this.create_Date = LocalDate.now();
+    }
+
     public User () {
     }
 
@@ -48,7 +57,7 @@ public class User implements Serializable {
     @Column(name = "vinculatedlol")
     private String vinculatedlol = null;
     @Lob
-    @Column(name = "accountimage", length = -1, nullable = false, columnDefinition = "mediumblob")
+    @Column(name = "accountimage", length = -1, nullable = true, columnDefinition = "mediumblob")
     private byte[] accountimage;
 
     // getters y setters

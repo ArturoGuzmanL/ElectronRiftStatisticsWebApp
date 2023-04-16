@@ -1,5 +1,7 @@
 const logError = document.querySelector('#logError');
+const sigError = document.querySelector('#sigError');
 const path = require("path");
+const repl = require("repl");
 
 
 
@@ -7,7 +9,7 @@ function getLoginPetition(username, password, remember) {
     const { ipcRenderer } = require('electron');
     const fs = require("fs");
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `http://localhost:8080/api/users/${username}-${password}`, false);
+    xhr.open('GET', `http://localhost:8080/api/users/actions/login/${username}=${password}`, false);
     xhr.send();
     let id = "";
     let logCorrect = false;
@@ -30,7 +32,7 @@ function getLoginPetition(username, password, remember) {
         });
     } else if (xhr.readyState === 4 && xhr.status === 404) {
         console.log("Error");
-        logError.innerHTML = "ERROR: Nombre o contraseña incorrectos";
+        logError.innerHTML = "ERROR: name or password incorrect";
         logError.style.visibility = "visible";
         return;
     }
@@ -53,7 +55,7 @@ function getLoginPetition(username, password, remember) {
                     ipcRenderer.send('change-html', filePath);
                 } else {
                     console.log("Error");
-                    logError.innerHTML = "ERROR: Nombre o contraseña incorrectos";
+                    logError.innerHTML = "ERROR: "+xhr2.status
                     logError.style.visibility = "visible";
                 }
             }
@@ -73,7 +75,48 @@ function loginActionPetition(){
     });
 }
 
-function SignInActionValidator(username, password, email) {
+function signupActionPetition() {
+    const username = document.querySelector('#sigUsername').value;
+    const password = document.querySelector('#sigPassword').value;
+    const email = document.querySelector('#sigEmail').value;
+    const { ipcRenderer } = require('electron');
+    let reply = SignUpActionValidator(username, password, email);
+    let xhr;
+    if (reply !== "") {
+        sigError.textContent = reply;
+        sigError.style.visibility = "visible";
+    } else {
+        xhr = new XMLHttpRequest();
+        let data = "";
+        if (password%2 === 0) {
+            let temppass1 = password.substring(0, password.length/2);
+            let temppass2 = password.substring(password.length/2, password.length);
+            data = temppass1 + "=" + username + "=" + email + "=" + temppass2;
+        } else {
+            let middleIndex = Math.floor(password.length / 2);
+            let temppass1 = password.substring(0, middleIndex);
+            let temppass2 = password.charAt(middleIndex);
+            let temppass3 = password.substring(middleIndex + 1, password.length);
+            data = temppass1 + "=" + username + "=" + temppass2 + email + "=" + temppass3;
+        }
+        xhr.open('POST', `http://localhost:8080/api/users/actions/signup/${data}`, false);
+        xhr.onload = function() {
+            if (xhr.readyState === 4 && xhr.status === 201) {
+                console.log("User created");
+                sigError.textContent = "User created";
+                sigError.style.visibility = "visible";
+                sigError.style.color = "white";
+            } else {
+                sigError.textContent = "ERROR: "+xhr.status
+                sigError.style.visibility = "visible";
+            }
+        }
+        xhr.send();
+    }
+}
+
+
+function SignUpActionValidator(username, password, email) {
     const emailValidator = require('email-validator');
 
     if (isWithinLengthLimits(username, 4, 20)) {
@@ -89,13 +132,7 @@ function SignInActionValidator(username, password, email) {
         return "Invalid email address";
     }
     if (containsInvalidCharacters(username)) {
-        return "Username cannot contain spaces, single quotes, or double quotes";
-    }
-    if (containsInvalidCharacters(password)) {
-        return "Password cannot contain spaces, single quotes, or double quotes";
-    }
-    if (containsInvalidCharacters(email)) {
-        return "Email cannot contain spaces, single quotes, or double quotes";
+        return "Username can oly contain letters and numbers";
     }
 
     return "";
@@ -106,5 +143,5 @@ function isWithinLengthLimits(string, minLength, maxLength) {
 }
 
 function containsInvalidCharacters(string) {
-    return string.match(/.*[\s'"`].*/);
+    return string.match(/[^a-zA-Z0-9]+/);
 }

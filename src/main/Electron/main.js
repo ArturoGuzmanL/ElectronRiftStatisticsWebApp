@@ -20,7 +20,7 @@ ipcMain.on("get-tempcache-path", (event) => {
 });
 
 ipcMain.on("logout-from-account", (event) => {
-    let reply = deleteAccountinfo();
+    let reply = forceDeleteAccountinfo();
     event.reply("logout-from-account-reply", reply);
 });
 
@@ -99,34 +99,77 @@ function deleteAccountinfo() {
     const userUserPath = path.join(userSessionPath, 'Session.txt');
     const tempFilesPath = path.join(tempCachePath, 'Files');
     let reply = false;
+    try {
+        if (fs.existsSync(tempFilesPath)) {
+            const files = fs.readdirSync(tempFilesPath);
+            for (const file of files) {
+                const filePath = `${tempFilesPath}\\${file}`;
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            }
+            fs.rm(tempFilesPath, { recursive: true }, (err) => {
+                if (err) {
+                    console.error('Error deleting tempFilesPath:', err);
+                }
+            });
+        }
 
-    if (fs.existsSync(tempFilesPath)) {
-        const files = fs.readdirSync(tempFilesPath);
-        for (const file of files) {
-            const filePath = `${tempFilesPath}\\${file}`;
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
+        let valueRemember = "False";
+        if (fs.existsSync(userSessionPath) && fs.existsSync(userUserPath)) {
+            const data = fs.readFileSync(userUserPath, 'utf8');
+            const [Remember] = (data.match(/Remember=(\w+)/));
+            let [keyR, valueR] = Remember.split('=');
+            valueRemember = valueR;
+
+            if (fs.existsSync(userUserPath) && valueRemember === "False") {
+                fs.rmSync(userUserPath, { recursive: true });
+                fs.rmSync(userSessionPath, { recursive: true });
+                fs.rmSync(tempCachePath, { recursive: true });
             }
         }
-        fs.rm(tempFilesPath, { recursive: true }, (err) => {
-            if (err) {
-                console.error('Error deleting tempFilesPath:', err);
-            }
-        });
+        reply = true;
+    }catch (e) {
+        console.error('Error deleting account info:', e);
+        reply = false;
     }
 
-    let valueRemember = "False";
-    if (fs.existsSync(userSessionPath) && fs.existsSync(userUserPath)) {
-        const data = fs.readFileSync(userUserPath, 'utf8');
-        const [Remember] = (data.match(/Remember=(\w+)/));
-        let [keyR, valueR] = Remember.split('=');
-        valueRemember = valueR;
+    return reply;
+}
 
-        if (fs.existsSync(userUserPath) && valueRemember === "False") {
+function forceDeleteAccountinfo() {
+    const tempCachePath = path.join(__dirname, '..', 'TempCache');
+    const userSessionPath = path.join(tempCachePath, 'Session');
+    const userUserPath = path.join(userSessionPath, 'Session.txt');
+    const tempFilesPath = path.join(tempCachePath, 'Files');
+    let reply = false;
+
+    try {
+        if (fs.existsSync(tempFilesPath)) {
+            const files = fs.readdirSync(tempFilesPath);
+            for (const file of files) {
+                const filePath = `${tempFilesPath}\\${file}`;
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            }
+            fs.rm(tempFilesPath, { recursive: true }, (err) => {
+                if (err) {
+                    console.error('Error deleting tempFilesPath:', err);
+                }
+            });
+        }
+
+        if (fs.existsSync(userSessionPath) && fs.existsSync(userUserPath)) {
             fs.rmSync(userUserPath, { recursive: true });
             fs.rmSync(userSessionPath, { recursive: true });
             fs.rmSync(tempCachePath, { recursive: true });
         }
+        reply = true;
+
+    }catch (e) {
+        console.error('Error deleting account info:', e);
+        reply = false;
     }
     return reply;
 }
