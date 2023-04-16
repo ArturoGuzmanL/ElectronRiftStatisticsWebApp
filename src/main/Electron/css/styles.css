@@ -67,20 +67,14 @@ body{
 /** Estilos del header */
 
 .header_object{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     box-shadow: inset 0 0 0 1000px rgba(0,0,0,.3);
     background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);
 }
 
 
 .searchAreaNoBar{
-    margin-right: auto;
-    margin-left: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.searchArea{
     margin-right: auto;
     margin-left: auto;
     display: flex;
@@ -98,7 +92,6 @@ body{
 .logo img,
 .logo{
     cursor: pointer;
-    margin-right: auto;
     transition: all 0.3s ease 0s;
 }
 

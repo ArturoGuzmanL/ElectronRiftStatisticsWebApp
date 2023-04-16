@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>javaCode.Server</groupId>
-	<artifactId>SpringElectronRiftStatistics</artifactId>
+	<artifactId>ElectronRiftStatisticsWebApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SpringElectronRiftStatistics</name>
+	<name>ElectronRiftStatisticsWebApp</name>
 	<description>SpringElectronRiftStatistics</description>
 	<properties>
 		<java.version>17</java.version>
@@ -20,6 +20,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.32</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -51,6 +56,10 @@
 			<groupId>com.merakianalytics.orianna</groupId>
 			<artifactId>orianna</artifactId>
 			<version>4.0.0-rc8</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
 		</dependency>
 	</dependencies>
 

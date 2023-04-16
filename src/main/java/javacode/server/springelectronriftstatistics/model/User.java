@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,12 +21,14 @@ import java.time.LocalDate;
 @EntityListeners(AuditingEntityListener.class)
 
 public class User implements Serializable {
-    public User (Long ID, String username, String email, String password, LocalDate create_Date) {
+    public User (String ID, String username, String email, String password, LocalDate create_Date, String vinculatedlol, byte[] accountimage) {
         this.id = ID;
         this.username = username;
         this.email = email;
         this.password = password;
         this.create_Date = create_Date;
+        this.vinculatedlol = vinculatedlol;
+        this.accountimage = accountimage;
     }
 
     public User () {
@@ -33,23 +36,28 @@ public class User implements Serializable {
 
     @Id
     @Column(name = "ID")
-    private Long id = null;
-    @Column(name = "username")
+    private String id = null;
+    @Column(name = "Username")
     private String username = null;
-    @Column(name = "email")
+    @Column(name = "Email")
     private String email = null;
     @Column(name = "password")
     private String password = null;
-    @Column(name = "create_Date")
+    @Column(name = "Creationdate")
     private LocalDate create_Date = null;
+    @Column(name = "vinculatedlol")
+    private String vinculatedlol = null;
+    @Lob
+    @Column(name = "accountimage", length = -1, nullable = false, columnDefinition = "mediumblob")
+    private byte[] accountimage;
 
     // getters y setters
 
-    public Long getId () {
+    public String getId () {
         return id;
     }
 
-    public void setId (Long id) {
+    public void setId (String id) {
         this.id = id;
     }
 
@@ -85,8 +93,24 @@ public class User implements Serializable {
         this.create_Date = create_Date;
     }
 
+    public String getVinculatedlol () {
+        return vinculatedlol;
+    }
+
+    public void setVinculatedlol (String vinculatedlol) {
+        this.vinculatedlol = vinculatedlol;
+    }
+
+    public byte[] getAccountimage () {
+        return accountimage;
+    }
+
+    public void setAccountimage (byte[] accountimage) {
+        this.accountimage = accountimage;
+    }
+
     public boolean noneNull() {
-        return id != null && username != null && password != null && email != null && create_Date != null;
+        return id != null && username != null && password != null && email != null && create_Date != null && vinculatedlol != null && accountimage != null;
     }
 
     @Override
@@ -95,6 +119,8 @@ public class User implements Serializable {
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", create_Date='" + create_Date + '\'' +
+                ", vinculatedLoL='" + vinculatedlol + '\'' +
+                ", AccountImage='" + accountimage + '\'' +
                 '}';
     }
 }
