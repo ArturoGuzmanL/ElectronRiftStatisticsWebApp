@@ -1,4 +1,5 @@
 const fs = require("fs");
+window.$ = window.jQuery = require('jquery');
 
 let btn = document.querySelector('#sidebar-button');
 let sidebarId = document.querySelector('#interactiveSidebar');
@@ -162,6 +163,7 @@ function signShowPass() {
 function clearSearch() {
     let BrowserInput = document.querySelector('#BrowserInput');
     BrowserInput.value = "";
+    $('#browserListContainer').html("<div class=\"loader disabled\" id=\"loader\"></div>");
 }
 
 searchBarMain.addEventListener("click", function() {
@@ -171,6 +173,10 @@ searchBarMain.addEventListener("click", function() {
     blurtoggle.classList.toggle("active");
     let sidebar = document.querySelector("#sidebar");
     sidebar.classList.toggle("blurred");
+    $(".header_object").addClass("disabled");
+    $(".sidebar").addClass("disabled");
+    $('#loader').addClass("disabled");
+    $('#browserListContainer').removeClass("loader");
 });
 
 closeBrowser.addEventListener("click", function() {
@@ -179,8 +185,10 @@ closeBrowser.addEventListener("click", function() {
     let blurtoggle = document.querySelector(".blur-toggle");
     blurtoggle.classList.toggle("active");
     sidebar.classList.toggle("blurred");
+    $("#BrowserInput").val("");
+    $('#browserListContainer').html("");
+    $(".header_object").removeClass("disabled");
+    $(".sidebar").removeClass("disabled");
+    $('#loader').addClass("disabled");
+    $('#browserListContainer').removeClass("loader");
 });
-
-function searchUpdate() {
-    document.querySelector("#searchButton").click();
-}

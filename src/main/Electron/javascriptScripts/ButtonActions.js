@@ -1,6 +1,7 @@
 const logError = document.querySelector('#logError');
 const sigError = document.querySelector('#sigError');
 const path = require("path");
+window.$ = window.jQuery = require('jquery');
 const repl = require("repl");
 
 
@@ -145,3 +146,67 @@ function isWithinLengthLimits(string, minLength, maxLength) {
 function containsInvalidCharacters(string) {
     return string.match(/[^a-zA-Z0-9]+/);
 }
+
+function searchUpdate() {
+    let xhr;
+    let timeoutId;
+    let loading;
+
+    let username = $('#BrowserInput').val();
+
+    if (username !== "") {
+
+        if (xhr) {
+            xhr.abort();
+        }
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
+        $('#loader').removeClass("disabled");
+        $('#browserListContainer').addClass("loader");
+
+        timeoutId = setTimeout(function () {
+            if (username === $('#BrowserInput').val()) {
+                xhr = new XMLHttpRequest();
+                xhr.open('GET', `http://localhost:8080/api/browse/${username}/${uid}`, true);
+                xhr.onload = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        if (username === $('#BrowserInput').val()) {
+                            $('#loader').addClass("disabled");
+                            $('#browserListContainer').removeClass("loader");
+                            $('#browserListContainer').append(xhr.responseText);
+                            loading = false;
+                        } else {
+                            console.log("Error");
+                            $('#loader').addClass("disabled");
+                            $('#browserListContainer').removeClass("loader");
+                            $('#browserListContainer').html("<div class=\"loader disabled\" id=\"loader\"></div>");
+                            loading = false;
+                        }
+                    }
+                };
+                xhr.send();
+            }
+        }, 1000);
+    }else {
+        $('#browserListContainer').html("");
+    }
+}
+
+$('#BrowserInput').on('keydown', function(event) {
+    let browserListContainer = $('#browserListContainer');
+
+    if (event.which === 8) { // El usuario ha pulsado la tecla borrar
+        browserListContainer.html(""); // Borramos el contenido
+
+        if ($('#BrowserInput').val() !== "") {
+            $('#browserListContainer').addClass("loader");
+            $('#browserListContainer').html("<div class=\"loader disabled\" id=\"loader\"></div>");
+            $('#loader').removeClass("disabled");
+        }else {
+            $('#browserListContainer').html("");
+        }
+    }
+});
+

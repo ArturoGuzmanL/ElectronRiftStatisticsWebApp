@@ -8,6 +8,7 @@
         <version>3.0.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>javacode.server</groupId>
     <artifactId>SpringElectronRiftStatisticsWebApp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -16,7 +17,18 @@
     <properties>
         <java.version>17</java.version>
     </properties>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
     <dependencies>
+        <dependency>
+            <groupId>com.github.stelar7</groupId>
+            <artifactId>R4J</artifactId>
+            <version>2.2.9</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -58,9 +70,9 @@
             <version>1.15</version>
         </dependency>
         <dependency>
-            <groupId>com.merakianalytics.orianna</groupId>
-            <artifactId>orianna</artifactId>
-            <version>4.0.0-rc8</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.10.0</version>
         </dependency>
     </dependencies>
 

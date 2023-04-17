@@ -1,12 +1,12 @@
 package javacode.server.springelectronriftstatisticswebapp.controller;
 
-import com.merakianalytics.orianna.Orianna;
-import com.merakianalytics.orianna.types.common.Region;
-import com.merakianalytics.orianna.types.core.summoner.Summoner;
+
 import javacode.server.springelectronriftstatisticswebapp.model.User;
 import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
 import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
-import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
+import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
+import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
+import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,25 +17,37 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/api/")
 public class UserController {
-    ArrayList<Region> regions = new ArrayList<>();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private final Map<String, Future<?>> userFutures = new ConcurrentHashMap<>();
+    ArrayList<LeagueShard> regions = new ArrayList<>();
     {
-        regions.add(Region.NORTH_AMERICA);
-        regions.add(Region.EUROPE_NORTH_EAST);
-        regions.add(Region.EUROPE_WEST);
-        regions.add(Region.KOREA);
-        regions.add(Region.JAPAN);
-        regions.add(Region.BRAZIL);
-        regions.add(Region.LATIN_AMERICA_NORTH);
-        regions.add(Region.LATIN_AMERICA_SOUTH);
-        regions.add(Region.OCEANIA);
-        regions.add(Region.RUSSIA);
-        regions.add(Region.TURKEY);
+        regions.add(LeagueShard.NA1);
+        regions.add(LeagueShard.EUN1);
+        regions.add(LeagueShard.EUW1);
+        regions.add(LeagueShard.KR);
+        regions.add(LeagueShard.JP1);
+        regions.add(LeagueShard.BR1);
+        regions.add(LeagueShard.LA1);
+        regions.add(LeagueShard.LA2);
+        regions.add(LeagueShard.OC1);
+        regions.add(LeagueShard.RU);
+        regions.add(LeagueShard.TR1);
     }
 
 
@@ -116,34 +128,67 @@ public class UserController {
 
     // ------------- General actions  ------------- //
 
-    @GetMapping("/browse/{username}")
-    public String browse(@PathVariable("username") String username) {
-        ArrayList<Summoner> summoners = new ArrayList<>();
-        for (Region region : regions) {
-            summoners.add( Orianna.summonerNamed(username).withRegion(region).get());
+    @GetMapping("/browse/{username}/{uid}")
+    public String browse(@PathVariable("username") String username, @PathVariable("uid") String uid) {
+        Future<?> future = userFutures.get(uid);
+        if (future != null) {
+            future.cancel(true);
         }
 
-        for (Summoner summoner: summoners) {
+        future = executorService.submit(() -> {
+            StringBuilder formattedHtmlComplete = new StringBuilder();
+            ArrayList<Summoner> summoners = new ArrayList<>();
+            for (LeagueShard region : regions) {
+                Summoner sum = Summoner.byName(region, username);
+                if (sum != null) {
+                    summoners.add(sum);
+                }
+            }
 
-            String htmlFragment = "<li class=\"browserItem\">" +
-                    "<a href=\"\" class=\"browserLink\">" +
-                    "<div class=\"cardContainer\">" +
-                    "<div class=\"browserCard\">" +
-                    "<img src=\"data:image/jpeg;base64,{0}\" class=\"cardBackground\" alt=\"{1}\">" +
-                    "</div>" +
-                    "<div class=\"cardPhoto\">" +
-                    "<img src=\"data:image/jpeg;base64,{0}\" class=\"cardBackground\" alt=\"{1}\">" +
-                    "</div>" +
-                    "</div>" +
-                    "<span class=\"browserName\">" +
-                    "<span class=\"browserSummName\">{2}</span>" +
-                    "<span class=\"browserSummRegion\">{3}</span>" +
-                    "</span>" +
-                    "</a>" +
-                    "</li>";
+            for (Summoner summoner: summoners) {
+                String summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/" + summoner.getProfileIconId() + ".jpg";
+                String summonerName = summoner.getName();
+                String summonerRegion = summoner.getPlatform().getRealmValue().toUpperCase();
 
+                Map<String, String> values = new HashMap<>();
+                values.put("Img", summonerImg);
+                values.put("SummName", summonerName);
+                values.put("SummReg", summonerRegion);
+                StringSubstitutor sub = new StringSubstitutor(values);
 
+                String htmlFragment = "<li class=\"browserItem\">" +
+                        "<a href=\"\" class=\"browserLink\">" +
+                        "<div class=\"cardContainer\">" +
+                        "<div class=\"browserCard\">" +
+                        "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
+                        "</div>" +
+                        "<div class=\"cardPhoto\">" +
+                        "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
+                        "</div>" +
+                        "</div>" +
+                        "<span class=\"browserName\">" +
+                        "<span class=\"browserSummName\">${SummName}</span>" +
+                        "<span class=\"browserSummRegion\">${SummReg}</span>" +
+                        "</span>" +
+                        "</a>" +
+                        "</li>";
+
+                String formattedHtml = sub.replace(htmlFragment);
+                formattedHtmlComplete.append(formattedHtml);
+            }
+
+            String formattedHtml = formattedHtmlComplete.toString();
+            userFutures.remove(username);
+            return formattedHtml;
+        });
+
+        userFutures.put(username, future);
+
+        try {
+            return (String) future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            userFutures.remove(username);
+            return null;
         }
-        return "";
     }
 }

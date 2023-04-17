@@ -58,3 +58,38 @@ function previewFile(){
         reader2.readAsBinaryString(file)
     }
 }
+
+function searchUpdate() {
+    let xhr;
+    let timeoutId;
+
+    let username = $('#BrowserInput').val();
+
+    if (username !== "") {
+
+        if (xhr) {
+            xhr.abort();
+        }
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
+        timeoutId = setTimeout(function () {
+            if (username === $('#BrowserInput').val()) {
+                xhr = new XMLHttpRequest();
+                xhr.open('GET', `http://localhost:8080/api/browse/${username}`, true);
+                xhr.onload = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        if (username === $('#BrowserInput').val()) {
+                            $('#browserListContainer').html(xhr.responseText);
+                        } else {
+                            console.log("Error");
+                        }
+                    }
+                };
+                xhr.send();
+            }
+        }, 1000);
+    }
+}
+
