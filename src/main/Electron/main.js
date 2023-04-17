@@ -66,7 +66,8 @@ async function createWindow() {
     })
 
     mainWindow.removeMenu()
-    mainWindow.openDevTools();
+    mainWindow.openDevTools()
+    AppIdCheck();
     if (AccountinfoExists()) {
         requestLoggedPage();
     } else {
@@ -241,5 +242,59 @@ function requestLoggedPage() {
         });
     }
 }
+
+function AppIdCheck() {
+    let resourcesPath = path.join(__dirname, '..', 'resources');
+    let appIdPath = path.join(resourcesPath, 'static');
+    if (!fs.existsSync(appIdPath)) {
+        fs.mkdirSync(appIdPath);
+    }
+    let appIdFile = path.join(appIdPath, 'appId.txt');
+
+    if (!fs.existsSync(appIdFile)) {
+        const crypto = require('crypto');
+        const query = "SELECT MIN(ID + 1) AS next_id FROM app_ids t1 WHERE NOT EXISTS (SELECT * FROM app_ids t2 WHERE t2.ID = t1.ID + 1);"
+        const mysql = require('mysql');
+
+        const connection = mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: 'riftstatistics'
+        });
+
+        connection.connect((err) => {
+            if (err) throw err;
+            console.log('Conexión a la base de datos exitosa!');
+
+            connection.query(query, (error, results) => {
+                if (error) {
+                    console.error(error);
+                } else {
+                    let next_id = results[0].next_id;
+                    console.log(next_id)
+                    const SHA256 = require("crypto-js/sha256");
+                    let epoch= new Date().getTime();
+                    let uncodifiedID = "RIFTSTATISTICS_VERSION_" + next_id + "_" + epoch
+                    let appID = SHA256(uncodifiedID).toString()
+
+                    const sql = 'INSERT INTO app_ids (ID, AppID) VALUES (?, ?)';
+                    const values = [next_id, appID];
+                    connection.query(sql, values, (error, results) => {
+                        if (error) {
+                            console.error(error);
+                        } else {
+                            console.log('Fila insertada correctamente');
+                        }
+                    });
+
+                    fs.writeFileSync(appIdFile, appID, { encoding: 'utf8' });
+                }
+                connection.end();
+            });
+        });
+    }
+}
+
 
 
