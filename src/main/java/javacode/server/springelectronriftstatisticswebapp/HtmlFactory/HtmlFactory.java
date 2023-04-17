@@ -1,9 +1,9 @@
-package javacode.server.springelectronriftstatistics.HtmlFactory;
+package javacode.server.springelectronriftstatisticswebapp.HtmlFactory;
 
 import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import javacode.server.springelectronriftstatistics.model.User;
+import javacode.server.springelectronriftstatisticswebapp.model.User;
 
 import java.io.File;
 import java.io.FileWriter;

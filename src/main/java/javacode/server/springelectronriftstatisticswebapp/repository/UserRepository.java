@@ -1,11 +1,9 @@
-package javacode.server.springelectronriftstatistics.repository;
+package javacode.server.springelectronriftstatisticswebapp.repository;
 
-import javacode.server.springelectronriftstatistics.model.User;
+import javacode.server.springelectronriftstatisticswebapp.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
-import javax.swing.text.html.Option;
-import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {

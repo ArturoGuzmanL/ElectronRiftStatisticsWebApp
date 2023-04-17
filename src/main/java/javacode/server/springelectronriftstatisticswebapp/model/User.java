@@ -1,4 +1,4 @@
-package javacode.server.springelectronriftstatistics.model;
+package javacode.server.springelectronriftstatisticswebapp.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,8 +9,8 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.LocalDate;

@@ -1,6 +1,7 @@
-package javacode.server.springelectronriftstatistics.config;
+package javacode.server.springelectronriftstatisticswebapp.config;
 
-import javacode.server.springelectronriftstatistics.HtmlFactory.HtmlFactory;
+import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
+import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

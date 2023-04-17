@@ -1,26 +1,25 @@
-package javacode.server.springelectronriftstatistics.controller;
+package javacode.server.springelectronriftstatisticswebapp.controller;
 
+import com.merakianalytics.orianna.Orianna;
 import com.merakianalytics.orianna.types.common.Region;
 import com.merakianalytics.orianna.types.core.summoner.Summoner;
-import javacode.server.springelectronriftstatistics.model.User;
-import javacode.server.springelectronriftstatistics.HtmlFactory.HtmlFactory;
-import javacode.server.springelectronriftstatistics.repository.UserRepository;
+import javacode.server.springelectronriftstatisticswebapp.model.User;
+import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
+import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
+import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import com.merakianalytics.orianna.Orianna;
 @RestController
 @RequestMapping("/api/")
 public class UserController {
