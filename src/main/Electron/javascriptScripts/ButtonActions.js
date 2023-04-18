@@ -1,10 +1,21 @@
-const logError = document.querySelector('#logError');
-const sigError = document.querySelector('#sigError');
 const path = require("path");
-window.$ = window.jQuery = require('jquery');
-const repl = require("repl");
+require("repl");
+const $ = require( "jquery" );
+const {ipcRenderer} = require("electron");
+const Swal = require('sweetalert2');
+const fs = require("fs");
 
 
+$('#Login-button').on('click', function(event) {
+    const username = document.querySelector('#logUsername').value;
+    const password = document.querySelector('#logPassword').value;
+    const remember = document.querySelector('#remember').checked;
+    const { ipcRenderer } = require('electron');
+    ipcRenderer.send("encrypt-text", password);
+    ipcRenderer.on("encrypt-text-reply", (event, hashedPassword) => {
+        getLoginPetition(username, hashedPassword, remember);
+    });
+});
 
 function getLoginPetition(username, password, remember) {
     const { ipcRenderer } = require('electron');
@@ -15,8 +26,8 @@ function getLoginPetition(username, password, remember) {
     let id = "";
     let logCorrect = false;
     if (xhr.readyState === 4 && xhr.status === 200) {
-        id = xhr.responseText;
         logCorrect = true;
+        id = xhr.responseText;
         const rememberValue = remember ? "True" : "False";
         const data = `ID=${id};Remember=${rememberValue}`;
         ipcRenderer.send("get-tempcache-path");
@@ -33,14 +44,28 @@ function getLoginPetition(username, password, remember) {
         });
     } else if (xhr.readyState === 4 && xhr.status === 404) {
         console.log("Error");
-        logError.innerHTML = "ERROR: name or password incorrect";
-        logError.style.visibility = "visible";
+        Swal.default.fire({
+            title: "ERROR: name or password incorrect",
+            color: '#FFFFFF',
+            showDenyButton: false,
+            showCancelButton: false,
+            confirmButtonText: `Ok`,
+            background: 'rgba(11, 11, 35, 1)',
+            border: 'border: 2px solid rgba(105, 105, 149, 1)'
+        })
         return;
     }
-    if (logCorrect) {
-        ipcRenderer.send("get-tempcache-path");
-        ipcRenderer.on("get-tempcache-path-reply", (event, path) => {
-            const tempFilsPath = path + "\\Files";
+    Swal.default.fire({
+        title: "Login Successful",
+        color: '#FFFFFF',
+        showDenyButton: false,
+        showCancelButton: false,
+        confirmButtonText: `Ok`,
+        background: 'rgba(11, 11, 35, 1)',
+        border: 'border: 2px solid rgba(105, 105, 149, 1)'
+    }).then((result) => {
+        if (logCorrect) {
+            const tempFilsPath = __dirname + "\\TempHtmlFiles\\";
             if (!fs.existsSync(tempFilsPath)) {
                 fs.mkdirSync(tempFilsPath);
             }
@@ -56,36 +81,24 @@ function getLoginPetition(username, password, remember) {
                     ipcRenderer.send('change-html', filePath);
                 } else {
                     console.log("Error");
-                    logError.innerHTML = "ERROR: "+xhr2.status
-                    logError.style.visibility = "visible";
+                    $('#logError').css('visibility', 'visible').html("ERROR: "+xhr2.status);
                 }
             }
             xhr2.send();
-        });
-    }
-}
-
-function loginActionPetition(){
-    const username = document.querySelector('#logUsername').value;
-    const password = document.querySelector('#logPassword').value;
-    const remember = document.querySelector('#remember').checked;
-    const { ipcRenderer } = require('electron');
-    ipcRenderer.send("encrypt-text", password);
-    ipcRenderer.on("encrypt-text-reply", (event, hashedPassword) => {
-        getLoginPetition(username, hashedPassword, remember);
+        }
     });
 }
 
-function signupActionPetition() {
-    const username = document.querySelector('#sigUsername').value;
-    const password = document.querySelector('#sigPassword').value;
-    const email = document.querySelector('#sigEmail').value;
-    const { ipcRenderer } = require('electron');
+$('#Signup-button').on('click', function(event) {
+    const sigError = $('#sigError');
+    const username = $('#sigUsername').val();
+    const password = $('#sigPassword').val();
+    const email = $('#sigEmail').val();
     let reply = SignUpActionValidator(username, password, email);
     let xhr;
     if (reply !== "") {
-        sigError.textContent = reply;
-        sigError.style.visibility = "visible";
+        sigError.text(reply);
+        sigError.css('visibility', 'visible');
     } else {
         xhr = new XMLHttpRequest();
         let data = "";
@@ -104,17 +117,30 @@ function signupActionPetition() {
         xhr.onload = function() {
             if (xhr.readyState === 4 && xhr.status === 201) {
                 console.log("User created");
-                sigError.textContent = "User created";
-                sigError.style.visibility = "visible";
-                sigError.style.color = "white";
+                Swal.default.fire({
+                    title: "User created",
+                    color: '#FFFFFF',
+                    showDenyButton: false,
+                    showCancelButton: false,
+                    confirmButtonText: `Ok`,
+                    background: 'rgba(11, 11, 35, 1)',
+                    border: 'border: 2px solid rgba(105, 105, 149, 1)'
+                })
             } else {
-                sigError.textContent = "ERROR: "+xhr.status
-                sigError.style.visibility = "visible";
+                Swal.default.fire({
+                    title: "ERROR: " + xhr.status,
+                    color: '#FFFFFF',
+                    showDenyButton: false,
+                    showCancelButton: false,
+                    confirmButtonText: `Ok`,
+                    background: 'rgba(11, 11, 35, 1)',
+                    border: 'border: 2px solid rgba(105, 105, 149, 1)'
+                })
             }
         }
         xhr.send();
     }
-}
+});
 
 
 function SignUpActionValidator(username, password, email) {
@@ -147,7 +173,7 @@ function containsInvalidCharacters(string) {
     return string.match(/[^a-zA-Z0-9]+/);
 }
 
-function searchUpdate() {
+$('#BrowserInput').on('input', function(event) {
     let xhr;
     let timeoutId;
     let loading;
@@ -166,43 +192,44 @@ function searchUpdate() {
         $('#loader').removeClass("disabled");
         $('#browserListContainer').addClass("loader");
 
-        timeoutId = setTimeout(function () {
-            if (username === $('#BrowserInput').val()) {
-                xhr = new XMLHttpRequest();
-                xhr.open('GET', `http://localhost:8080/api/browse/${username}/${uid}`, true);
-                xhr.onload = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        if (username === $('#BrowserInput').val()) {
-                            $('#loader').addClass("disabled");
-                            $('#browserListContainer').removeClass("loader");
-                            $('#browserListContainer').append(xhr.responseText);
-                            loading = false;
-                        } else {
-                            console.log("Error");
-                            $('#loader').addClass("disabled");
-                            $('#browserListContainer').removeClass("loader");
-                            $('#browserListContainer').html("<div class=\"loader disabled\" id=\"loader\"></div>");
-                            loading = false;
+        ipcRenderer.send("get-appid");
+        ipcRenderer.on("get-appid-reply", (event, appid) => {
+            timeoutId = setTimeout(function () {
+                if (username === $('#BrowserInput').val()) {
+                    xhr = new XMLHttpRequest();
+                    xhr.open('GET', `http://localhost:8080/api/browse/${username}/${appid}`, true);
+                    xhr.onload = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            if (username === $('#BrowserInput').val()) {
+                                $('#loader').addClass("disabled");
+                                $('#browserListContainer').removeClass("loader").html(xhr.responseText);
+                                loading = false;
+                            } else {
+                                console.log("Error");
+                                $('#loader').addClass("disabled");
+                                $('#browserListContainer').removeClass("loader").html("<div class=\"loader disabled\" id=\"loader\"></div>");
+                                loading = false;
+                            }
                         }
-                    }
-                };
-                xhr.send();
-            }
-        }, 1000);
+                    };
+                    xhr.send();
+                }
+            }, 1000);
+        });
     }else {
         $('#browserListContainer').html("");
     }
-}
+});
 
 $('#BrowserInput').on('keydown', function(event) {
     let browserListContainer = $('#browserListContainer');
+    let browserInput = $('#BrowserInput').val();
 
     if (event.which === 8) { // El usuario ha pulsado la tecla borrar
         browserListContainer.html(""); // Borramos el contenido
 
-        if ($('#BrowserInput').val() !== "") {
-            $('#browserListContainer').addClass("loader");
-            $('#browserListContainer').html("<div class=\"loader disabled\" id=\"loader\"></div>");
+        if (browserInput !== "") {
+            browserListContainer.addClass("loader").html("<div class=\"loader disabled\" id=\"loader\"></div>");
             $('#loader').removeClass("disabled");
         }else {
             $('#browserListContainer').html("");

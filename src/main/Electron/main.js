@@ -46,6 +46,21 @@ ipcMain.on('get-uid', (event, text) => {
     }
 });
 
+ipcMain.on('get-appid', (event, text) => {
+    let resourcesPath = path.join(__dirname, '..', 'resources');
+    let appIdPath = path.join(resourcesPath, 'static');
+    let appIdFile = path.join(appIdPath, 'appId.txt');
+
+    fs.readFile(appIdFile, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err)
+            return
+        }
+        let [keyR, valueR] = data.split('-');
+        event.reply("get-appid-reply", valueR)
+    });
+});
+
 
 
 
@@ -71,7 +86,7 @@ async function createWindow() {
     if (AccountinfoExists()) {
         requestLoggedPage();
     } else {
-        mainWindow.loadFile('index.html');
+        mainWindow.loadFile('ChampionsPage.html');
     }
 }
 
@@ -98,7 +113,7 @@ function deleteAccountinfo() {
     const tempCachePath = path.join(__dirname, '..', 'TempCache');
     const userSessionPath = path.join(tempCachePath, 'Session');
     const userUserPath = path.join(userSessionPath, 'Session.txt');
-    const tempFilesPath = path.join(tempCachePath, 'Files');
+    const tempFilesPath = path.join(__dirname, 'TempHtmlFiles');
     let reply = false;
     try {
         if (fs.existsSync(tempFilesPath)) {
@@ -192,7 +207,7 @@ function requestLoggedPage() {
     }
     userFilePath = path.join(userFilePath, 'session.txt');
 
-    const tempFilsPath = path.join(tempCachePath, 'Files');
+    const tempFilsPath = path.join(__dirname, 'TempHtmlFiles');
     if (!fs.existsSync(tempFilsPath)) {
         fs.mkdirSync(tempFilsPath);
     }
@@ -204,40 +219,31 @@ function requestLoggedPage() {
                 return;
             }
 
-            if (fs.existsSync(userFilePath)) {
-                fs.readFile(userFilePath, 'utf8', (err, data) => {
-                    if (err) {
-                        console.error('Error reading user file', err);
-                        return;
-                    }
+            const [Remember] = (data.match(/Remember=(\w+)/));
+            let [keyR, valueR] = Remember.split('=');
 
-                    const [Remember] = (data.match(/Remember=(\w+)/));
-                    let [keyR, valueR] = Remember.split('=');
+            const [accountId] = (data.match(/ID=(\w+)/));
+            let [keyA, uidA] = accountId.split('=');
 
-                    const [accountId] = (data.match(/ID=(\w+)/));
-                    let [keyA, uidA] = accountId.split('=');
+            if (valueR === 'True') {
+                const request = net.request(`http://localhost:8080/api/htmlRequests/login/${uidA}`);
+                request.on('response', (response) => {
+                    if (response.statusCode === 200) {
+                        const filename = "loggedPage.html";
+                        const filePath = path.join(tempFilsPath, filename);
 
-                    if (valueR === 'True') {
-                        const request = net.request(`http://localhost:8080/api/htmlRequests/login/${uidA}`);
-                        request.on('response', (response) => {
-                            if (response.statusCode === 200) {
-                                const filename = "loggedPage.html";
-                                const filePath = path.join(tempFilsPath, filename);
+                        const fileStream = fs.createWriteStream(filePath);
+                        response.pipe(fileStream);
 
-                                const fileStream = fs.createWriteStream(filePath);
-                                response.pipe(fileStream);
-
-                                fileStream.on('finish', () => {
-                                    mainWindow.loadFile(filePath);
-                                });
-                            } else {
-                                console.error('Request failed:', response.statusMessage);
-                            }
+                        fileStream.on('finish', () => {
+                            mainWindow.loadFile(filePath);
                         });
-
-                        request.end();
+                    } else {
+                        console.error('Request failed:', response.statusMessage);
                     }
                 });
+
+                request.end();
             }
         });
     }
@@ -245,6 +251,9 @@ function requestLoggedPage() {
 
 function AppIdCheck() {
     let resourcesPath = path.join(__dirname, '..', 'resources');
+    if (!fs.existsSync(resourcesPath)) {
+        fs.mkdirSync(resourcesPath);
+    }
     let appIdPath = path.join(resourcesPath, 'static');
     if (!fs.existsSync(appIdPath)) {
         fs.mkdirSync(appIdPath);
@@ -265,7 +274,7 @@ function AppIdCheck() {
 
         connection.connect((err) => {
             if (err) throw err;
-            console.log('Conexión a la base de datos exitosa!');
+            console.log('Error connecting to database for AppID!');
 
             connection.query(query, (error, results) => {
                 if (error) {
@@ -284,13 +293,63 @@ function AppIdCheck() {
                         if (error) {
                             console.error(error);
                         } else {
-                            console.log('Fila insertada correctamente');
+                            console.log('AppID inserted');
                         }
                     });
+
+                    appID = next_id + "-" + appID
 
                     fs.writeFileSync(appIdFile, appID, { encoding: 'utf8' });
                 }
                 connection.end();
+            });
+        });
+    }else {
+        fs.readFile(appIdFile, 'utf8', (err, data) => {
+            if (err) {
+                console.error('Error reading appID file', err);
+                return;
+            }
+
+            let dataSplit = data.split('-');
+            let ID = dataSplit[0];
+            let appID = dataSplit[1];
+
+            const query = "SELECT AppID FROM app_ids WHERE ID = ?;"
+            const mysql = require('mysql');
+
+            const connection = mysql.createConnection({
+                host: 'localhost',
+                user: 'root',
+                password: '',
+                database: 'riftstatistics'
+            });
+
+            connection.connect((err) => {
+                if (err) throw err;
+                console.log('Error connecting to database for AppID!');
+
+                connection.query(query, ID, (error, results) => {
+                    if (error) {
+                        console.error(error);
+                    } else {
+                        let appIDDB = results[0].AppID;
+                        if (appID !== appIDDB) {
+                            const sql = 'UPDATE app_ids SET AppID = ? WHERE ID = ?';
+                            const values = [appID, ID];
+                            connection.query(sql, values, (error, results) => {
+                                if (error) {
+                                    console.error(error);
+                                } else {
+                                    console.log('AppID updated');
+                                }
+                            });
+                        }else {
+                            console.log('AppID OK');
+                        }
+                    }
+                    connection.end();
+                });
             });
         });
     }

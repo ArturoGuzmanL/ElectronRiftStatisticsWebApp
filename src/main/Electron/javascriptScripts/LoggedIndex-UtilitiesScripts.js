@@ -1,37 +1,35 @@
 const {ipcRenderer} = require("electron");
+const $ = require( "jquery" );
 
-document.querySelector("#show-logout").addEventListener("click", function() {
-    document.querySelector(".outPopup").classList.toggle("active");
+$('#show-logout').on('click', function(event) {
+    $("#outPopup").toggleClass("active");
 });
 
-document.querySelector(".outPopup .close-btn")
-    .addEventListener("click", function() {
-        document.querySelector(".outPopup").classList.remove("active");
-    });
+$('#close-btn').on('click', function(event) {
+    $("#outPopup").removeClass("active");
+});
 
-document.querySelector("#logout-cancel")
-    .addEventListener("click", function() {
-        document.querySelector(".outPopup").classList.remove("active");
-    });
+$('#logout-cancel').on('click', function(event) {
+    $("#outPopup").removeClass("active");
+});
 
-document.querySelector("#logout-accept")
-    .addEventListener("click", function() {
-        document.querySelector(".outPopup").classList.remove("active");
-        ipcRenderer.send("logout-from-account");
-        ipcRenderer.on("logout-from-account-reply", (event, arg) => {
-            if(arg === true) {
-                ipcRenderer.send('change-html', "index.html");
-            }
-        });
+$('#logout-accept').on('click', function(event) {
+    $("#outPopup").removeClass("active");
+    ipcRenderer.send("logout-from-account");
+    ipcRenderer.on("logout-from-account-reply", (event, arg) => {
+        if(arg === true) {
+            ipcRenderer.send('change-html', "index.html");
+        }
     });
+});
 
-document.querySelector("#profileImage").addEventListener("click", function() {
-    document.querySelector("#file-input").click();
+$('#show-login').on('click', function(event) {
+   $("#file-input").click();
 });
 
 function previewFile(){
-    var file = document.querySelector("#file-input").files[0];
-    var img = document.querySelector("#profileImage");
+    var file = $('#file-input').prop('files')[0];
+    var img = $('#profileImage').get(0);
 
     if(file){
         var reader = new FileReader();
@@ -59,9 +57,10 @@ function previewFile(){
     }
 }
 
-function searchUpdate() {
+$('#BrowserInput').on('input', function(event) {
     let xhr;
     let timeoutId;
+    let loading;
 
     let username = $('#BrowserInput').val();
 
@@ -74,22 +73,51 @@ function searchUpdate() {
             clearTimeout(timeoutId);
         }
 
-        timeoutId = setTimeout(function () {
-            if (username === $('#BrowserInput').val()) {
-                xhr = new XMLHttpRequest();
-                xhr.open('GET', `http://localhost:8080/api/browse/${username}`, true);
-                xhr.onload = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        if (username === $('#BrowserInput').val()) {
-                            $('#browserListContainer').html(xhr.responseText);
-                        } else {
-                            console.log("Error");
+        $('#loader').removeClass("disabled");
+        $('#browserListContainer').addClass("loader");
+
+        ipcRenderer.send("get-appid");
+        ipcRenderer.on("get-appid-reply", (event, appid) => {
+            timeoutId = setTimeout(function () {
+                if (username === $('#BrowserInput').val()) {
+                    xhr = new XMLHttpRequest();
+                    xhr.open('GET', `http://localhost:8080/api/browse/${username}/${appid}`, true);
+                    xhr.onload = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            if (username === $('#BrowserInput').val()) {
+                                $('#loader').addClass("disabled");
+                                $('#browserListContainer').removeClass("loader").html(xhr.responseText);
+                                loading = false;
+                            } else {
+                                console.log("Error");
+                                $('#loader').addClass("disabled");
+                                $('#browserListContainer').removeClass("loader").html("<div class=\"loader disabled\" id=\"loader\"></div>");
+                                loading = false;
+                            }
                         }
-                    }
-                };
-                xhr.send();
-            }
-        }, 1000);
+                    };
+                    xhr.send();
+                }
+            }, 1000);
+        });
+    }else {
+        $('#browserListContainer').html("");
     }
-}
+});
+
+$('#BrowserInput').on('keydown', function(event) {
+    let browserListContainer = $('#browserListContainer');
+    let browserInput = $('#BrowserInput').val();
+
+    if (event.which === 8) { // El usuario ha pulsado la tecla borrar
+        browserListContainer.html(""); // Borramos el contenido
+
+        if (browserInput !== "") {
+            browserListContainer.addClass("loader").html("<div class=\"loader disabled\" id=\"loader\"></div>");
+            $('#loader').removeClass("disabled");
+        }else {
+            $('#browserListContainer').html("");
+        }
+    }
+});
 

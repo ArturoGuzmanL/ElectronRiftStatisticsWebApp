@@ -1,9 +1,9 @@
 package javacode.server.springelectronriftstatisticswebapp.controller;
 
 
+import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
 import javacode.server.springelectronriftstatisticswebapp.model.User;
 import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
-import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
 import org.apache.commons.text.StringSubstitutor;
@@ -17,24 +17,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-
-
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/api/")
 public class UserController {
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
-    private final Map<String, Future<?>> userFutures = new ConcurrentHashMap<>();
     ArrayList<LeagueShard> regions = new ArrayList<>();
     {
         regions.add(LeagueShard.NA1);
@@ -128,25 +122,29 @@ public class UserController {
 
     // ------------- General actions  ------------- //
 
-    @GetMapping("/browse/{username}/{uid}")
-    public String browse(@PathVariable("username") String username, @PathVariable("uid") String uid) {
-        Future<?> future = userFutures.get(uid);
-        if (future != null) {
-            future.cancel(true);
+    @GetMapping("/browse/{username}/{appid}")
+    public String browse(@PathVariable("username") String username, @PathVariable("appid") String appid) {
+        StringBuilder formattedHtmlComplete = new StringBuilder();
+        ArrayList<Summoner> summoners = new ArrayList<>();
+        for (LeagueShard region : regions) {
+            Summoner sum = Summoner.byName(region, username);
+            if (sum != null) {
+                summoners.add(sum);
+            }
         }
 
-        future = executorService.submit(() -> {
-            StringBuilder formattedHtmlComplete = new StringBuilder();
-            ArrayList<Summoner> summoners = new ArrayList<>();
-            for (LeagueShard region : regions) {
-                Summoner sum = Summoner.byName(region, username);
-                if (sum != null) {
-                    summoners.add(sum);
-                }
-            }
-
-            for (Summoner summoner: summoners) {
+        for (Summoner summoner: summoners) {
                 String summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/" + summoner.getProfileIconId() + ".jpg";
+                Image image = null;
+                try {
+                    image = ImageIO.read(new URL(summonerImg));
+                } catch (IOException e) {
+                    System.out.println("Error when loading summoner " + summoner.getName() + " with region " + summoner.getPlatform().getRealmValue().toUpperCase());
+                }
+                if (image == null) {
+                    summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/29.jpg";
+                }
+
                 String summonerName = summoner.getName();
                 String summonerRegion = summoner.getPlatform().getRealmValue().toUpperCase();
 
@@ -176,19 +174,6 @@ public class UserController {
                 String formattedHtml = sub.replace(htmlFragment);
                 formattedHtmlComplete.append(formattedHtml);
             }
-
-            String formattedHtml = formattedHtmlComplete.toString();
-            userFutures.remove(username);
-            return formattedHtml;
-        });
-
-        userFutures.put(username, future);
-
-        try {
-            return (String) future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            userFutures.remove(username);
-            return null;
-        }
+        return formattedHtmlComplete.toString();
     }
 }

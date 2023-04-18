@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>RiftStatistics</title>
-    <link rel="stylesheet" href="../../Electron/css/styles.css">
-    <script src=”https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js”></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../javascriptScripts/jquery-3.6.4.min.js"></script>
 </head>
 <body>
 
@@ -18,7 +18,7 @@
                 <ul class="nav_buttons">
                     <li>
                         <a href="#" class="header_object_nav logo noselection">
-                            <img src="../../Electron/media/logo/RiftStatisticsOnlyTitle.png" width="200" height="24.5" alt="RiftStatistics" class="header_object">
+                            <img src="../media/logo/RiftStatisticsOnlyTitle.png" width="200" height="24.5" alt="RiftStatistics" class="header_object">
                         </a>
                     </li>
                     <li>
@@ -50,8 +50,8 @@
         <!-- Botones de cuenta y ventanas -->
         <div class="accountArea  noselection">
             <button type="button" class="accountButton" id="show-logout">Log out</button>
-            <div class="outPopup">
-                <div class="close-btn">&times;</div>
+            <div class="outPopup" id="outPopup">
+                <div class="close-btn" id="close-btn">&times;</div>
                 <div class="form">
                     <h2>Log out</h2>
                     <h1>Are you sure you want to log out?</h1>
@@ -71,7 +71,7 @@
     <div class="sidebar noselection" id="sidebar">
         <div class="sidebar-top">
             <div class="sidebar-logo">
-                <img src="../../Electron/media/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
+                <img src="../media/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
             </div>
             <svg id="sidebar-button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
@@ -131,7 +131,7 @@
             <div class="empty-col empty-row"></div>
             <div class="empty-col empty-row"></div>
             <div class="main-logo">
-                <img src="../../Electron/media/logo/RiftStatisticsVertical.png" width="275" height="248.31" alt="RiftStatistics" >
+                <img src="../media/logo/RiftStatisticsVertical.png" width="275" height="248.31" alt="RiftStatistics" >
             </div>
             <div class="empty-col empty-row"></div>
             <div class="empty-col empty-row"></div>
@@ -150,12 +150,12 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-search" viewBox="0 0 16 16">
                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
             </svg>
-            <textarea id="BrowserInput" class="popupSearchField" oninput="searchUpdate()" placeholder="Search summoners, champions..."></textarea>
-            <svg id="clearSearch" onclick="clearSearch()" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#C0C2CB" class="bi bi-x" viewBox="0 0 16 16">
+            <textarea id="BrowserInput" class="popupSearchField" placeholder="Search summoners, champions..."></textarea>
+            <svg id="clearSearch" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#C0C2CB" class="bi bi-x" viewBox="0 0 16 16">
                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
             </svg>
         </label>
-        <div class="closeBrowserBtn">
+        <div class="closeBrowserBtn" id="closeBrowserBtn">
             <svg width="70" height="70" viewBox="-2.4 -2.4 28.80 28.80" fill="white" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="0.00024000000000000003" transform="rotate(0)">
                 <g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(0,0), scale(1)"></g>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="white" stroke-width="1.104"></g>
@@ -166,13 +166,14 @@
             </svg>
         </div>
     </div>
-    <div class="popupBrowserContent">
+    <div class="popupBrowserContent" id="popupBrowserContent">
         <ul class="browserList" id="browserListContainer">
+            <div class="loader disabled" id="loader"></div>
         </ul>
     </div>
 </div>
 
-<script src="../../Electron/javascriptScripts/LoggedIndex-UtilitiesScripts.js"></script>
-<script src="../../Electron/javascriptScripts/UtilitiesScripts.js"></script>
+<script type="module" src="../javascriptScripts/LoggedIndex-UtilitiesScripts.js"></script>
+<script type="module" src="../javascriptScripts/UtilitiesScripts.js"></script>
 </body>
 </html>

@@ -3,27 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>RiftStatistics</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="../Electron/css/styles.css">
+  <script src="../Electron/javascriptScripts/jquery-3.6.4.min.js"></script>
 </head>
 <body>
 
 <!-- Comienzo del header -->
-<div class="blur-toggle">
-  <header class="header_object">
-
-    <!-- Logo -->
-
+<div class="blur-toggle" id="blurrDiv">
+  <header class="header">
 
     <!-- Buscador y botones -->
     <div class="noselection">
       <nav class="nav_nav">
         <ul class="nav_buttons">
-          <li>
-            <a href="#" class="header_object_nav logo noselection">
-              <img src="media/logo/RiftStatisticsOnlyTitle.png" width="200" height="24.5" alt="RiftStatistics" class="header_object">
-            </a>
-          </li>
           <li>
             <a id="back-button" href="#" class="nav_button first_nav" >
               <svg  xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#302f2f" class="bi bi-caret-left header_object" viewBox="0 0 16 16">
@@ -52,9 +44,9 @@
 
     <!-- Botones de cuenta y ventanas -->
     <div class="accountArea  noselection">
-      <button type="button" class="accountButton" id="show-login" onclick="openPopUpLog()">LogIn</button>
+      <button type="button" class="accountButton" id="show-login">LogIn</button>
       <div class="popup">
-        <div class="close-btn" onclick="closeLogIn()">&times;</div>
+        <div class="close-btn" id="close-btn-log">&times;</div>
         <div class="form">
           <h2>LogIn</h2>
           <div class="form_element">
@@ -65,7 +57,7 @@
             <label for="logPassword">Password</label>
             <div class="form_password">
               <input type="password" id="logPassword" placeholder="password...">
-              <div id="logPassShow" onclick="logShowPass()">
+              <div id="logPassShow">
                 <svg id="LogPassShow" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                   <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
                   <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
@@ -82,14 +74,14 @@
             <p id="logError">...</p>
           </div>
           <div class="form_element">
-            <button type="button" id="Login-button" onclick="loginActionPetition()">Sign in</button>
+            <button type="button" id="Login-button">Sign in</button>
           </div>
         </div>
       </div>
-      <button type="button" class="accountButton" id="show-signup" onclick="openPopUpSign()">SignUp</button>
+      <button type="button" class="accountButton" id="show-signup" >SignUp</button>
       <div class="popupSign">
         <div>
-          <object class="close-btn" onclick="closeSignUp()">&times;</object>
+          <object class="close-btn" id="close-btn-sign">&times;</object>
         </div>
         <div class="form">
           <h2>SignUp</h2>
@@ -105,7 +97,7 @@
             <label for="sigPassword">Password</label>
             <div class="form_password">
               <input type="password" id="sigPassword" placeholder="password...">
-              <div id="signPassShow" onclick="signShowPass()">
+              <div id="signPassShow">
                 <svg id="LogPassShow" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                   <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
                   <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
@@ -118,19 +110,20 @@
             <p id="sigError">...</p>
           </div>
           <div class="form_element">
-            <button type="button" id="Signup-button" onclick="signupActionPetition()">Sign up</button>
+            <button type="button" id="Signup-button">Sign up</button>
           </div>
         </div>
       </div>
     </div>
   </header>
   <!-- Fin del header-->
+</div>
 
   <!-- Comienzo del sidebar -->
   <div class="sidebar noselection" id="sidebar">
     <div class="sidebar-top">
       <div class="sidebar-logo">
-        <img src="media/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
+        <img src="../Electron/media/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
       </div>
       <svg id="sidebar-button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
@@ -187,13 +180,13 @@
   </div>
 
   <!-- Fin del sidebar -->
-
+<div class="blur-toggle" id="blurrDiv2">
   <div class="main-content">
     <div class="main-browser noselection">
       <div class="empty-col empty-row"></div>
       <div class="empty-col empty-row"></div>
       <div class="main-logo">
-        <img src="media/logo/RiftStatisticsVertical.png" width="275" height="248.31" alt="RiftStatistics" >
+        <img src="../Electron/media/logo/RiftStatisticsVertical.png" width="275" height="248.31" alt="RiftStatistics" >
       </div>
       <div class="empty-col empty-row"></div>
       <div class="empty-col empty-row"></div>
@@ -205,18 +198,19 @@
     </div>
   </div>
 </div>
+
 <div class="popupBrowserWindow" id="popupBrowserWindow">
   <div class="popupBrowserInnerBrow">
     <label class="popupSearchLabel">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-search" viewBox="0 0 16 16">
         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
       </svg>
-      <textarea id="BrowserInput" class="popupSearchField" oninput="searchUpdate()" placeholder="Search summoners, champions..."></textarea>
-      <svg id="clearSearch" onclick="clearSearch()" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#C0C2CB" class="bi bi-x" viewBox="0 0 16 16">
+      <textarea id="BrowserInput" class="popupSearchField" placeholder="Search summoners, champions..."></textarea>
+      <svg id="clearSearch" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#C0C2CB" class="bi bi-x" viewBox="0 0 16 16">
         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
       </svg>
     </label>
-    <div class="closeBrowserBtn">
+    <div class="closeBrowserBtn" id="closeBrowserBtn">
       <svg width="70" height="70" viewBox="-2.4 -2.4 28.80 28.80" fill="white" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="0.00024000000000000003" transform="rotate(0)">
         <g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(0,0), scale(1)"></g>
         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="white" stroke-width="1.104"></g>
@@ -234,7 +228,8 @@
   </div>
 </div>
 
-<script src="../Electron/javascriptScripts/UtilitiesScripts.js"></script>
-<script src="../Electron/javascriptScripts/ButtonActions.js"></script>
+<script src="../Electron/node_modules/sweetalert2/src/SweetAlert.js"></script>
+<script type="module" src="../Electron/javascriptScripts/UtilitiesScripts.js"></script>
+<script type="module" src="../Electron/javascriptScripts/ButtonActions.js"></script>
 </body>
 </html>
