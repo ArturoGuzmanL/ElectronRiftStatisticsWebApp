@@ -1,5 +1,9 @@
 package javacode.server.springelectronriftstatisticswebapp;
 
+import freemarker.cache.FileTemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
 import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
@@ -9,55 +13,124 @@ import no.stelar7.api.r4j.impl.R4J;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.MatchBuilder;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.MatchListBuilder;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.TimelineBuilder;
+import no.stelar7.api.r4j.impl.lol.raw.DDragonAPI;
 import no.stelar7.api.r4j.pojo.lol.match.v5.LOLMatch;
+import no.stelar7.api.r4j.pojo.lol.staticdata.champion.StaticChampion;
+import no.stelar7.api.r4j.pojo.lol.staticdata.profileicon.ProfileIconDetails;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
 import org.apache.commons.text.StringSubstitutor;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HashExample {
     private static final String INSERT_IMAGE = "UPDATE users SET accountimage = ? WHERE ID = ?";
     private static final String SELECT_IMAGE_BY_NAME = "SELECT AccountImage FROM users WHERE ID = ?";
 
-    public static void main (String[] args) throws SQLException, IOException {
+    public static void main (String[] args) throws SQLException, IOException, TemplateException {
         final R4J r4J = new R4J(SecretFile.CREDS);
+        DDragonAPI api = r4J.getDDragonAPI();
         DataCall.setCacheProvider(new FileSystemCacheProvider());
+        Configuration cfg;
 
-        MatchListBuilder builder = new MatchListBuilder();
-        Summoner sum = Summoner.byName(LeagueShard.EUW1, "YoSoyMiguel13");
+        cfg = new Configuration(Configuration.VERSION_2_3_31);
 
-        String summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/" + sum.getProfileIconId() + ".jpg";
-        String summonerName = sum.getName();
-        String summonerRegion = sum.getPlatform().getRealmValue().toUpperCase();
+        FileTemplateLoader fileTemplateLoader = new FileTemplateLoader(new File("C:\\Users\\User1\\Documents\\GitHub\\SpringElectronRiftStatisticsWebApp\\src\\main\\resources\\templates"));
+        cfg.setTemplateLoader(fileTemplateLoader);
 
+        String html;
+        Template template;
+        template = cfg.getTemplate("unloggedChampList.ftl");
+
+
+        Map<Integer, StaticChampion> list = api.getChampions();
+        Integer championNumber = list.size();
+        List<StaticChampion> champions = new ArrayList<>(list.values());
+        Map<String, Object> data = new HashMap<>();
         Map<String, String> values = new HashMap<>();
-        values.put("Img", summonerImg);
-        values.put("SummName", summonerName);
-        values.put("SummReg", summonerRegion);
-        StringSubstitutor sub = new StringSubstitutor(values);
 
-        String htmlFragment = "<li class=\"browserItem\">" +
-                "<a href=\"\" class=\"browserLink\">" +
-                "<div class=\"cardContainer\">" +
-                "<div class=\"browserCard\">" +
-                "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
-                "</div>" +
-                "<div class=\"cardPhoto\">" +
-                "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
-                "</div>" +
-                "</div>" +
-                "<span class=\"browserName\">" +
-                "<span class=\"browserSummName\">${SummName}</span>" +
-                "<span class=\"browserSummRegion\">${SummReg}</span>" +
-                "</span>" +
-                "</a>" +
-                "</li>";
+        for (int i = 0; i < championNumber; i++) {
+            StaticChampion champion = champions.get(i % championNumber);
+            values.put(champion.getName(), String.valueOf(champion.getId()));
+        }
 
-        String formattedHtml = sub.replace(htmlFragment);
-        System.out.println(formattedHtml);
+        List<Map.Entry<String, String>> listSorted = new ArrayList<>(values.entrySet());
+
+        listSorted.sort(new Comparator<Map.Entry<String, String>>() {
+            public int compare (Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+
+        Map<String, String> sortedMap = new LinkedHashMap<>();
+
+        for (Map.Entry<String, String> entry : listSorted) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        data.put("championIndex", sortedMap);
+
+        StringWriter out = new StringWriter();
+        template.process(data, out);
+        html = out.toString();
+
+        FileWriter writer = new FileWriter("championList.html");
+        writer.write(html);
+        writer.close();
+
+
+
+
+
+
+
+
+
+
+
+
+//        MatchListBuilder builder = new MatchListBuilder();
+//        Summoner sum = Summoner.byName(LeagueShard.EUW1, "YoSoyMiguel13");
+//
+//        String summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/" + sum.getProfileIconId() + ".jpg";
+//        String summonerName = sum.getName();
+//        String summonerRegion = sum.getPlatform().getRealmValue().toUpperCase();
+//
+//        Map<String, String> values = new HashMap<>();
+//        values.put("Img", summonerImg);
+//        values.put("SummName", summonerName);
+//        values.put("SummReg", summonerRegion);
+//        StringSubstitutor sub = new StringSubstitutor(values);
+//
+//        String htmlFragment = "<li class=\"browserItem\">" +
+//                "<a href=\"\" class=\"browserLink\">" +
+//                "<div class=\"cardContainer\">" +
+//                "<div class=\"browserCard\">" +
+//                "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
+//                "</div>" +
+//                "<div class=\"cardPhoto\">" +
+//                "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
+//                "</div>" +
+//                "</div>" +
+//                "<span class=\"browserName\">" +
+//                "<span class=\"browserSummName\">${SummName}</span>" +
+//                "<span class=\"browserSummRegion\">${SummReg}</span>" +
+//                "</span>" +
+//                "</a>" +
+//                "</li>";
+//
+//        String formattedHtml = sub.replace(htmlFragment);
+//        System.out.println(formattedHtml);
 
 
 

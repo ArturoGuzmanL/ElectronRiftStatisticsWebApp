@@ -1,5 +1,6 @@
 const {ipcRenderer} = require("electron");
 const $ = require( "jquery" );
+const fs = require("fs");
 
 $('#show-logout').on('click', function(event) {
     $("#outPopup").toggleClass("active");
@@ -18,13 +19,33 @@ $('#logout-accept').on('click', function(event) {
     ipcRenderer.send("logout-from-account");
     ipcRenderer.on("logout-from-account-reply", (event, arg) => {
         if(arg === true) {
-            ipcRenderer.send('change-html', "index.html");
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://localhost:8080/api/htmlRequests/home/false/null", true);
+            xhr.onload = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    ipcRenderer.send("get-tempfiles-folder");
+                    ipcRenderer.on("get-tempfiles-folder-reply", (event, tempFilesFolder) => {
+                        const filename = "\\unloggedIndex.html";
+                        const filePath = tempFilesFolder + filename;
+                        if (!fs.existsSync(tempFilesFolder)) {
+                            fs.mkdirSync(tempFilesFolder);
+                        }
+                        fs.writeFileSync(filePath, xhr.responseText, { encoding: 'utf8' });
+                        console.log(filePath);
+                        ipcRenderer.send('change-html', filePath);
+                    });
+                } else {
+                    console.log("Error");
+                    $('#logError').css('visibility', 'visible').html("ERROR: "+xhr.status);
+                }
+            }
+            xhr.send();
         }
     });
 });
 
-$('#show-login').on('click', function(event) {
-   $("#file-input").click();
+$('#profileImage').on('click', function(event) {
+    $("#file-input").click();
 });
 
 function previewFile(){

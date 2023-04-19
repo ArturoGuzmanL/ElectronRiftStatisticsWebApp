@@ -1,4 +1,4 @@
-const {app, BrowserWindow, session,ipcMain} = require("electron");
+const {app, BrowserWindow, session,ipcMain, net} = require("electron");
 const { protocol } = require('electron');
 const fs = require("fs");
 const path = require('path');
@@ -6,6 +6,7 @@ const {format} = require("util");
 const {existsSync} = require("next/dist/lib/find-pages-dir");
 const SHA256 = require("crypto-js/sha256");
 const {request} = require("net");
+const {wait} = require("next/dist/build/output/log");
 global.remote = require('electron').remote;
 
 // Configurar electron-reload para observar cambios en la carpeta.
@@ -19,18 +20,32 @@ ipcMain.on("get-tempcache-path", (event) => {
     event.reply("get-tempcache-path-reply", path.join(__dirname, '..', 'TempCache'));
 });
 
+ipcMain.on("get-tempfiles-folder", (event) => {
+    event.reply("get-tempfiles-folder-reply", path.join(__dirname, 'TempHtmlFiles'));
+});
+
 ipcMain.on("logout-from-account", (event) => {
     let reply = forceDeleteAccountinfo();
     event.reply("logout-from-account-reply", reply);
 });
 
 ipcMain.on('change-html', (event, newHtml) => {
-    mainWindow.loadFile(newHtml);
+    console.log("url before " + mainWindow.webContents.getURL());
+    console.log("new html " + newHtml)
+    const parts = newHtml.split("/");
+    const fileName = parts[parts.length - 1];
+    console.log("file name " + fileName);
+    mainWindow.loadURL('file:///C:/Users/User1/Documents/GitHub/SpringElectronRiftStatisticsWebApp/src/main/Electron/TempHtmlFiles/' + fileName + '#');
+    console.log("url after " + mainWindow.webContents.getURL());
 });
 
 ipcMain.on('encrypt-text', (event, text) => {
     const SHA256 = require("crypto-js/sha256");
     event.reply("encrypt-text-reply", SHA256(text).toString())
+});
+
+ipcMain.on('is-logged', (event, text) => {
+    event.reply("is-logged-reply", AccountinfoExists())
 });
 
 ipcMain.on('get-uid', (event, text) => {
@@ -86,7 +101,7 @@ async function createWindow() {
     if (AccountinfoExists()) {
         requestLoggedPage();
     } else {
-        mainWindow.loadFile('ChampionsPage.html');
+        requestUnloggedPage();
     }
 }
 
@@ -226,7 +241,7 @@ function requestLoggedPage() {
             let [keyA, uidA] = accountId.split('=');
 
             if (valueR === 'True') {
-                const request = net.request(`http://localhost:8080/api/htmlRequests/login/${uidA}`);
+                const request = net.request(`http://localhost:8080/api/htmlRequests/home/true/${uidA}`);
                 request.on('response', (response) => {
                     if (response.statusCode === 200) {
                         const filename = "loggedPage.html";
@@ -247,6 +262,30 @@ function requestLoggedPage() {
             }
         });
     }
+}
+
+function requestUnloggedPage() {
+    const tempFilsFolder = path.join(__dirname, 'TempHtmlFiles');
+    if (!fs.existsSync(tempFilsFolder)) {
+        fs.mkdirSync(tempFilsFolder);
+    }
+
+    const request = net.request(`http://localhost:8080/api/htmlRequests/home/false/null`);
+    request.on('response', (response) => {
+        if (response.statusCode === 200) {
+            const filename = "\\unloggedIndex.html";
+            const filePath = tempFilsFolder + filename;
+            const fileStream = fs.createWriteStream(filePath);
+            response.pipe(fileStream);
+
+            fileStream.on('finish', () => {
+                mainWindow.loadFile(filePath);
+            });
+        } else {
+            console.error('Request failed:', response.statusMessage);
+        }
+    });
+    request.end();
 }
 
 function AppIdCheck() {
@@ -273,8 +312,10 @@ function AppIdCheck() {
         });
 
         connection.connect((err) => {
-            if (err) throw err;
-            console.log('Error connecting to database for AppID!');
+            if (err) {
+                console.log('Error connecting to database for AppID!');
+                throw err;
+            }
 
             connection.query(query, (error, results) => {
                 if (error) {

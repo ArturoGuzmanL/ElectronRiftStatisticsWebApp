@@ -19,7 +19,7 @@ header{
 }
 
 body{
-    background: rgba(11, 11, 35, 0.85);
+    background-color: #17172e;
 }
 .noselection {
     -webkit-touch-callout: none;
@@ -862,18 +862,20 @@ body{
     height: 600px;
 }
 
-.browserList::-webkit-scrollbar {
+
+::-webkit-scrollbar {
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.3);
     background-color: transparent; /* Fondo transparente */
     margin: 10px; /* Margen externo */
 }
 
-.browserList::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background-color: #444; /* Thumb gris oscuro */
     margin: 5px; /* Margen interno */
     border-radius: 10px; /* Borde redondeado */
 }
 
-.browserList::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     display: none; /* Oculta el resto de la barra */
 }
 
@@ -1048,7 +1050,7 @@ body{
     top: 20rem;
     box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
     border: 2px solid rgba(105, 105, 149, 1);
-    background-color: #17172e;
+    background: rgba(11, 11, 35, 0.85);
     left: calc(50% + 40px);
     transform: translateX(-50%);
 }
@@ -1113,6 +1115,11 @@ body{
 
 .ChampionsTitle h1 {
     font-size: 4rem;
+    font-family: "Montserrat", sans-serif;
+}
+
+.ChampionsTitle p {
+    font-size: 1.5rem;
     font-family: "Montserrat", sans-serif;
 }
 

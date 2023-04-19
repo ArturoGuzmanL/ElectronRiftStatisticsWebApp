@@ -99,24 +99,19 @@ $('#back-button').on('click', function(event) {
 $('#reload-button').on('click', function(event) {
     const { ipcRenderer } = require('electron');
     const html = window.location.pathname.split('/').pop();
-    ipcRenderer.send("get-tempcache-path");
-    ipcRenderer.on("get-tempcache-path-reply", (event, path) => {
-        if (fs.existsSync(path)) {
-            const tempFilsPath = __dirname + "\\TempHtmlFiles\\";
-            if (!fs.existsSync(tempFilsPath)) {
-                fs.mkdirSync(tempFilsPath);
-            }
-
+    ipcRenderer.send("get-tempfiles-folder");
+    ipcRenderer.on("get-tempfiles-folder-reply", (event, tempFilesFolder) => {
+        if (fs.existsSync(tempFilesFolder)) {
             const xhr = new XMLHttpRequest();
             let filename;
             if (html==="loggedPage.html") {
                 ipcRenderer.send("get-uid");
                 ipcRenderer.on("get-uid-reply", (event, uid) => {
-                    xhr.open('GET', `http://localhost:8080/api/htmlRequests/login/${uid}`, true);
+                    xhr.open('GET', `http://localhost:8080/api/htmlRequests/home/true/${uid}`, true);
                     filename = "loggedPage.html";
                     xhr.onload = function() {
                         if (xhr.readyState === 4 && xhr.status === 200) {
-                            const filePath = tempFilsPath + filename;
+                            const filePath = tempFilesFolder + filename;
                             if (fs.existsSync(filePath)) {
                                 fs.unlinkSync(filePath);
                             }
@@ -191,3 +186,59 @@ $('#closeBrowserBtn').on('click', function(event) {
     $(".sidebar").removeClass("disabled");
     $('#loader').addClass("disabled");
 });
+
+$('#homePageButton').on('click', function(event) {
+    console.log("Se ha ejecutado homePage");
+    ipcRenderer.send("is-logged");
+    ipcRenderer.on("is-logged-reply", (event, reply) => {
+        if (reply) {
+            ipcRenderer.send("get-uid");
+            ipcRenderer.on("get-uid-reply", (event, uid) => {
+                htmlPagesRequests("http://localhost:8080/api/htmlRequests/home/" + reply + "/" + uid, "loggedIndex.html")
+            });
+        }else {
+            htmlPagesRequests("http://localhost:8080/api/htmlRequests/home/" + reply + "/null", "unloggedIndex.html")
+        }
+    });
+});
+
+$('#championsPageButton').on('click', function(event) {
+    console.log("Se ha ejecutado championsPage");
+    ipcRenderer.send("is-logged");
+    ipcRenderer.on("is-logged-reply", (event, reply) => {
+        if (reply) {
+            ipcRenderer.send("get-uid");
+            ipcRenderer.on("get-uid-reply", (event, uid) => {
+                htmlPagesRequests("http://localhost:8080/api/htmlRequests/championlist/"+reply+"/"+uid, "loggedChampList.html")
+            });
+        }else {
+            htmlPagesRequests("http://localhost:8080/api/htmlRequests/championlist/"+reply+"/null", "unloggedChampList.html")
+        }
+    });
+});
+
+function htmlPagesRequests(url, fileName) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', `${url}`, false);
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            ipcRenderer.send("get-tempfiles-folder");
+            ipcRenderer.on("get-tempfiles-folder-reply", (event, tempfilesFolder) => {
+                if (!fs.existsSync(tempfilesFolder)) {
+                    fs.mkdirSync(tempfilesFolder, { recursive: true })
+                }
+                console.log(`${tempfilesFolder}/${fileName}`)
+                fs.writeFile(`${tempfilesFolder}/${fileName}`, xhr.responseText, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+                console.log(`${tempfilesFolder}/${fileName}`)
+                ipcRenderer.send("change-html", `${tempfilesFolder}/${fileName}`);
+            });
+        }else {
+            console.log("Error page");
+        }
+    }
+    xhr.send();
+}

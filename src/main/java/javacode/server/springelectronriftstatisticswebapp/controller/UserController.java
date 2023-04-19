@@ -109,14 +109,35 @@ public class UserController {
 
     // ------------- Html petitions  ------------- //
 
-    @GetMapping("/htmlRequests/login/{uid}")
-    public ResponseEntity<String> login(@PathVariable("uid") String uid) {
-        Optional<User> user = userRepository.findById(uid);
-        if (user.isPresent()) {
-            String html = htmlFactory.loginPageAction(user.get());
+    @GetMapping("/htmlRequests/home/{logged}/{uid}")
+    public ResponseEntity<String> login(@PathVariable("logged") String logged, @PathVariable("uid") String uid) {
+        if (Boolean.parseBoolean(logged)) {
+            Optional<User> user = userRepository.findById(uid);
+            if (user.isPresent()) {
+                String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged) , user.get());
+                return new ResponseEntity<>(html, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }else {
+            String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged));
             return new ResponseEntity<>(html, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/htmlRequests/championlist/{logged}/{uid}")
+    public ResponseEntity<String> championList(@PathVariable("logged") String logged, @PathVariable("uid") String uid) {
+        if (Boolean.parseBoolean(logged)) {
+            Optional<User> user = userRepository.findById(uid);
+            if (user.isPresent()) {
+                String html = htmlFactory.champList(true, user.get());
+                return new ResponseEntity<>(html, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }else {
+            String html = htmlFactory.champList(false);
+            return new ResponseEntity<>(html, HttpStatus.OK);
         }
     }
 

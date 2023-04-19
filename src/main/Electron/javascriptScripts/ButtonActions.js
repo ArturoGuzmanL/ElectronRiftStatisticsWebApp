@@ -44,14 +44,23 @@ function getLoginPetition(username, password, remember) {
         });
     } else if (xhr.readyState === 4 && xhr.status === 404) {
         console.log("Error");
-        Swal.default.fire({
-            title: "ERROR: name or password incorrect",
+        const Toast = Swal.default.mixin({
+            toast: true,
+            position: 'top',
             color: '#FFFFFF',
-            showDenyButton: false,
-            showCancelButton: false,
-            confirmButtonText: `Ok`,
             background: 'rgba(11, 11, 35, 1)',
-            border: 'border: 2px solid rgba(105, 105, 149, 1)'
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.default.stopTimer)
+                toast.addEventListener('mouseleave', Swal.default.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'error',
+            title: "Incorrect username or password"
         })
         return;
     }
@@ -62,43 +71,58 @@ function getLoginPetition(username, password, remember) {
         showCancelButton: false,
         confirmButtonText: `Ok`,
         background: 'rgba(11, 11, 35, 1)',
-        border: 'border: 2px solid rgba(105, 105, 149, 1)'
     }).then((result) => {
         if (logCorrect) {
-            const tempFilsPath = __dirname + "\\TempHtmlFiles\\";
-            if (!fs.existsSync(tempFilsPath)) {
-                fs.mkdirSync(tempFilsPath);
-            }
-
-            const xhr2 = new XMLHttpRequest();
-            xhr2.open('GET', `http://localhost:8080/api/htmlRequests/login/${id}`, true);
-            xhr2.onload = function() {
-                if (xhr2.readyState === 4 && xhr2.status === 200) {
-                    const filename = "\\loggedPage.html";
-                    const filePath = tempFilsPath + filename;
-                    fs.writeFileSync(filePath, xhr2.responseText, { encoding: 'utf8' });
-                    console.log(filePath);
-                    ipcRenderer.send('change-html', filePath);
-                } else {
-                    console.log("Error");
-                    $('#logError').css('visibility', 'visible').html("ERROR: "+xhr2.status);
+            ipcRenderer.send("get-tempfiles-folder");
+            ipcRenderer.on("get-tempfiles-folder-reply", (event, path) => {
+                const xhr2 = new XMLHttpRequest();
+                xhr2.open('GET', `http://localhost:8080/api/htmlRequests/home/true/${id}`, true);
+                xhr2.onload = function() {
+                    if (xhr2.readyState === 4 && xhr2.status === 200) {
+                        const filename = "\\loggedPage.html";
+                        const filePath = path + filename;
+                        if (!fs.existsSync(path)) {
+                            fs.mkdirSync(path);
+                        }
+                        fs.writeFileSync(filePath, xhr2.responseText, { encoding: 'utf8' });
+                        console.log(filePath);
+                        ipcRenderer.send('change-html', filePath);
+                    } else {
+                        console.log("Error");
+                        $('#logError').css('visibility', 'visible').html("ERROR: "+xhr2.status);
+                    }
                 }
-            }
-            xhr2.send();
+                xhr2.send();
+            });
         }
     });
 }
 
 $('#Signup-button').on('click', function(event) {
-    const sigError = $('#sigError');
     const username = $('#sigUsername').val();
     const password = $('#sigPassword').val();
     const email = $('#sigEmail').val();
     let reply = SignUpActionValidator(username, password, email);
     let xhr;
     if (reply !== "") {
-        sigError.text(reply);
-        sigError.css('visibility', 'visible');
+        const Toast = Swal.default.mixin({
+            toast: true,
+            position: 'top',
+            color: '#FFFFFF',
+            background: 'rgba(11, 11, 35, 1)',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.default.stopTimer)
+                toast.addEventListener('mouseleave', Swal.default.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'error',
+            title: reply
+        })
     } else {
         xhr = new XMLHttpRequest();
         let data = "";
@@ -117,24 +141,52 @@ $('#Signup-button').on('click', function(event) {
         xhr.onload = function() {
             if (xhr.readyState === 4 && xhr.status === 201) {
                 console.log("User created");
-                Swal.default.fire({
-                    title: "User created",
+                const Toast = Swal.default.mixin({
+                    toast: true,
                     color: '#FFFFFF',
-                    showDenyButton: false,
-                    showCancelButton: false,
-                    confirmButtonText: `Ok`,
                     background: 'rgba(11, 11, 35, 1)',
-                    border: 'border: 2px solid rgba(105, 105, 149, 1)'
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.default.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.default.resumeTimer)
+                    }
+                })
+
+                let lineSign = $("#SignPassShow-activeShow");
+                let signPassField = $("#sigPassword");
+                $(".popupSign").removeClass("active");
+                signPassField.attr("type", "password");
+                lineSign.css("visibility", "hidden");
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Account created successfully'
                 })
             } else {
-                Swal.default.fire({
-                    title: "ERROR: " + xhr.status,
+                let lineSign = $("#SignPassShow-activeShow");
+                let signPassField = $("#sigPassword");
+                signPassField.attr("type", "password");
+                lineSign.css("visibility", "hidden");
+                signPassField.val("");
+                const Toast = Swal.default.mixin({
+                    toast: true,
+                    position: 'top',
                     color: '#FFFFFF',
-                    showDenyButton: false,
-                    showCancelButton: false,
-                    confirmButtonText: `Ok`,
                     background: 'rgba(11, 11, 35, 1)',
-                    border: 'border: 2px solid rgba(105, 105, 149, 1)'
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.default.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.default.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Error type: ' + xhr.responseText
                 })
             }
         }
@@ -236,4 +288,3 @@ $('#BrowserInput').on('keydown', function(event) {
         }
     }
 });
-
