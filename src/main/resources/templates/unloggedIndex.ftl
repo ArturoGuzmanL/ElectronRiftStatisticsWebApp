@@ -10,37 +10,7 @@
 
 <!-- Comienzo del header -->
 <div class="blur-toggle" id="blurrDiv">
-  <header class="header">
-
-    <!-- Buscador y botones -->
-    <div class="noselection">
-      <nav class="nav_nav">
-        <ul class="nav_buttons">
-          <li>
-            <a id="back-button" href="#" class="nav_button first_nav" >
-              <svg  xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#302f2f" class="bi bi-caret-left header_object" viewBox="0 0 16 16">
-                <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a id="reload-button" href="#" class="nav_button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#302f2f" class="bi bi-arrow-clockwise header_object" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a id="forward-button" href="#" class="nav_button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#302f2f" class="bi bi-caret-right header_object" viewBox="0 0 16 16">
-                <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
-              </svg>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+  <header class="header_noBrow">
 
     <!-- Botones de cuenta y ventanas -->
     <div class="accountArea  noselection">

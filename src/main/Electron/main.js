@@ -29,14 +29,8 @@ ipcMain.on("logout-from-account", (event) => {
     event.reply("logout-from-account-reply", reply);
 });
 
-ipcMain.on('change-html', (event, newHtml) => {
-    console.log("url before " + mainWindow.webContents.getURL());
-    console.log("new html " + newHtml)
-    const parts = newHtml.split("/");
-    const fileName = parts[parts.length - 1];
-    console.log("file name " + fileName);
-    mainWindow.loadURL('file:///C:/Users/User1/Documents/GitHub/SpringElectronRiftStatisticsWebApp/src/main/Electron/TempHtmlFiles/' + fileName + '#');
-    console.log("url after " + mainWindow.webContents.getURL());
+ipcMain.on('change-html', (event, html) => {
+    mainWindow.loadFile(html);
 });
 
 ipcMain.on('encrypt-text', (event, text) => {
@@ -101,7 +95,8 @@ async function createWindow() {
     if (AccountinfoExists()) {
         requestLoggedPage();
     } else {
-        requestUnloggedPage();
+        mainWindow.loadFile("ProfilePage.html")
+        // requestUnloggedPage();
     }
 }
 
@@ -273,7 +268,7 @@ function requestUnloggedPage() {
     const request = net.request(`http://localhost:8080/api/htmlRequests/home/false/null`);
     request.on('response', (response) => {
         if (response.statusCode === 200) {
-            const filename = "\\unloggedIndex.html";
+            const filename = "\\ElectronPage.html";
             const filePath = tempFilsFolder + filename;
             const fileStream = fs.createWriteStream(filePath);
             response.pipe(fileStream);

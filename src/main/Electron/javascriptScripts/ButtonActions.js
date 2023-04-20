@@ -79,7 +79,7 @@ function getLoginPetition(username, password, remember) {
                 xhr2.open('GET', `http://localhost:8080/api/htmlRequests/home/true/${id}`, true);
                 xhr2.onload = function() {
                     if (xhr2.readyState === 4 && xhr2.status === 200) {
-                        const filename = "\\loggedPage.html";
+                        const filename = "\\ElectronPage.html";
                         const filePath = path + filename;
                         if (!fs.existsSync(path)) {
                             fs.mkdirSync(path);

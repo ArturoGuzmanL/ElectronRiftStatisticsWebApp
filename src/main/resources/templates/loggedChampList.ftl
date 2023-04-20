@@ -12,34 +12,8 @@
 <div class="blur-toggle" id="blurrDiv">
     <header class="header">
 
-        <!-- Buscador y botones -->
-        <div class="noselection">
-            <nav class="nav_nav">
-                <ul class="nav_buttons">
-                    <li>
-                        <a id="back-button" href="#" class="nav_button first_nav" >
-                            <svg  xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#302f2f" class="bi bi-caret-left header_object" viewBox="0 0 16 16">
-                                <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
-                            </svg>
-                        </a>
-                    </li>
-                    <li>
-                        <a id="reload-button" href="#" class="nav_button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#302f2f" class="bi bi-arrow-clockwise header_object" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-                            </svg>
-                        </a>
-                    </li>
-                    <li>
-                        <a id="forward-button" href="#" class="nav_button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#302f2f" class="bi bi-caret-right header_object" viewBox="0 0 16 16">
-                                <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
-                            </svg>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+        <div class="header_Browser" id="header_Browser">
+            <textarea class="header_Browser_ta" id="header_Browser_ta" placeholder="Search summoners, champions..." readonly></textarea>
         </div>
 
         <!-- Botones de cuenta y ventanas -->
@@ -140,6 +114,34 @@
                 </#list>
             </ul>
         </div>
+    </div>
+</div>
+<div class="popupBrowserWindow" id="popupBrowserWindow">
+    <div class="popupBrowserInnerBrow">
+        <label class="popupSearchLabel">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+            <textarea id="BrowserInput" class="popupSearchField" placeholder="Search summoners, champions..."></textarea>
+            <svg id="clearSearch" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#C0C2CB" class="bi bi-x" viewBox="0 0 16 16">
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+        </label>
+        <div class="closeBrowserBtn" id="closeBrowserBtn">
+            <svg width="70" height="70" viewBox="-2.4 -2.4 28.80 28.80" fill="white" xmlns="http://www.w3.org/2000/svg" stroke="white" stroke-width="0.00024000000000000003" transform="rotate(0)">
+                <g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(0,0), scale(1)"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="white" stroke-width="1.104"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <path id="rectangle" opacity="0.4" d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2Z" fill="#34373f"></path>
+                    <path d="M13.0594 12.0001L15.3594 9.70011C15.6494 9.41011 15.6494 8.93011 15.3594 8.64011C15.0694 8.35011 14.5894 8.35011 14.2994 8.64011L11.9994 10.9401L9.69937 8.64011C9.40937 8.35011 8.92937 8.35011 8.63938 8.64011C8.34938 8.93011 8.34938 9.41011 8.63938 9.70011L10.9394 12.0001L8.63938 14.3001C8.34938 14.5901 8.34938 15.0701 8.63938 15.3601C8.78938 15.5101 8.97937 15.5801 9.16937 15.5801C9.35937 15.5801 9.54937 15.5101 9.69937 15.3601L11.9994 13.0601L14.2994 15.3601C14.4494 15.5101 14.6394 15.5801 14.8294 15.5801C15.0194 15.5801 15.2094 15.5101 15.3594 15.3601C15.6494 15.0701 15.6494 14.5901 15.3594 14.3001L13.0594 12.0001Z" fill="#C0C2CB"></path>
+                </g>
+            </svg>
+        </div>
+    </div>
+    <div class="popupBrowserContent" id="popupBrowserContent">
+        <ul class="browserList" id="browserListContainer">
+            <div class="loader disabled" id="loader"></div>
+        </ul>
     </div>
 </div>
 

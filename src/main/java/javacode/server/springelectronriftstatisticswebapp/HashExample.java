@@ -1,5 +1,6 @@
 package javacode.server.springelectronriftstatisticswebapp;
 
+import com.google.gson.stream.JsonWriter;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -7,14 +8,29 @@ import freemarker.template.TemplateException;
 import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
 import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
+import no.stelar7.api.r4j.basic.constants.types.lol.EventType;
 import no.stelar7.api.r4j.basic.constants.types.lol.GameQueueType;
+import no.stelar7.api.r4j.basic.constants.types.lol.LevelUpType;
+import no.stelar7.api.r4j.basic.constants.types.lol.SpellSlotType;
+import no.stelar7.api.r4j.basic.constants.types.lol.TierDivisionType;
 import no.stelar7.api.r4j.basic.utils.LazyList;
+import no.stelar7.api.r4j.basic.utils.Utils;
 import no.stelar7.api.r4j.impl.R4J;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.MatchBuilder;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.MatchListBuilder;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.TimelineBuilder;
 import no.stelar7.api.r4j.impl.lol.raw.DDragonAPI;
+
+import no.stelar7.api.r4j.impl.lol.raw.LeagueAPI;
+import no.stelar7.api.r4j.pojo.lol.league.LeagueEntry;
 import no.stelar7.api.r4j.pojo.lol.match.v5.LOLMatch;
+import no.stelar7.api.r4j.pojo.lol.match.v5.LOLTimeline;
+import no.stelar7.api.r4j.pojo.lol.match.v5.TimelineFrameEvent;
+import no.stelar7.api.r4j.pojo.lol.match.v5.MatchParticipant;
+import no.stelar7.api.r4j.pojo.lol.match.v5.MatchPerks;
+import no.stelar7.api.r4j.pojo.lol.match.v5.PerkSelection;
+import no.stelar7.api.r4j.pojo.lol.match.v5.StatPerk;
+import no.stelar7.api.r4j.pojo.lol.match.v5.TimelineDamageData;
 import no.stelar7.api.r4j.pojo.lol.staticdata.champion.StaticChampion;
 import no.stelar7.api.r4j.pojo.lol.staticdata.profileicon.ProfileIconDetails;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
@@ -24,14 +40,21 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonWriter;
 
 public class HashExample {
     private static final String INSERT_IMAGE = "UPDATE users SET accountimage = ? WHERE ID = ?";
@@ -41,96 +64,153 @@ public class HashExample {
         final R4J r4J = new R4J(SecretFile.CREDS);
         DDragonAPI api = r4J.getDDragonAPI();
         DataCall.setCacheProvider(new FileSystemCacheProvider());
-        Configuration cfg;
 
-        cfg = new Configuration(Configuration.VERSION_2_3_31);
+        MatchListBuilder builder = new MatchListBuilder();
+        Summoner sum = Summoner.byName(LeagueShard.EUW1, "YoSoyMiguel13");
 
-        FileTemplateLoader fileTemplateLoader = new FileTemplateLoader(new File("C:\\Users\\User1\\Documents\\GitHub\\SpringElectronRiftStatisticsWebApp\\src\\main\\resources\\templates"));
-        cfg.setTemplateLoader(fileTemplateLoader);
-
-        String html;
-        Template template;
-        template = cfg.getTemplate("unloggedChampList.ftl");
+        LazyList<String> all = sum.getLeagueGames().getLazy();
+        MatchBuilder mb = new MatchBuilder(sum.getPlatform());
+        mb = mb.withId(all.get(0));
 
 
-        Map<Integer, StaticChampion> list = api.getChampions();
-        Integer championNumber = list.size();
-        List<StaticChampion> champions = new ArrayList<>(list.values());
-        Map<String, Object> data = new HashMap<>();
-        Map<String, String> values = new HashMap<>();
-
-        for (int i = 0; i < championNumber; i++) {
-            StaticChampion champion = champions.get(i % championNumber);
-            values.put(champion.getName(), String.valueOf(champion.getId()));
+        LOLMatch match = mb.getMatch();
+        List<MatchParticipant> participants = match.getParticipants();
+        MatchParticipant participant = participants.get(0);
+        Boolean victoria = participant.didWin();
+        int kills = participant.getKills();
+        int deaths = participant.getDeaths();
+        int assists = participant.getAssists();
+        int KDA = (kills + assists) / deaths;
+        int cs = participant.getTotalMinionsKilled() + participant.getNeutralMinionsKilled();
+        int csPerMin = (int) (cs / match.getGameDurationAsDuration().toMinutes());
+        int visionScore = participant.getVisionScore();
+        int totalKills = 0;
+        for (MatchParticipant p : participants) {
+            totalKills += p.getKills();
         }
+        int KillParticipation = (kills * 100) / totalKills;
+        System.out.println(kills + " / " + totalKills + " = " + KillParticipation);
+        int totalDamageDealt = participant.getTotalDamageDealtToChampions();
+        MatchPerks perks = participant.getPerks();
 
-        List<Map.Entry<String, String>> listSorted = new ArrayList<>(values.entrySet());
+        System.out.println("Victory: " + victoria);
+        System.out.println(kills + " / " + deaths + " / " + assists);
+        System.out.println("KDA: " + KDA);
+        System.out.println("CS: " + cs);
+        System.out.println("CS per min: " + csPerMin);
+        System.out.println("Vision Score: " + visionScore);
+        System.out.println("Kill Participation: " + KillParticipation);
+        System.out.println("Total Damage Dealt: " + totalDamageDealt);
+        participant.getSummoner1Id();
 
-        listSorted.sort(new Comparator<Map.Entry<String, String>>() {
-            public int compare (Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
-                return o1.getKey().compareTo(o2.getKey());
+
+
+
+        TimelineBuilder tb = new TimelineBuilder(sum.getPlatform());
+
+        StringWriter sw = new StringWriter();
+        JsonWriter sb = new JsonWriter(sw);
+        sb.beginObject();
+
+        int i = 0;
+        for (String matchid : all) {
+            if (i++ > 10) break;
+            tb = tb.withId(matchid);
+            mb = mb.withId(matchid);
+
+            LOLMatch match1 = mb.getMatch();
+            LOLTimeline lolTimeline = tb.getTimeline();
+
+            List<TimelineFrameEvent> events = lolTimeline.getFrames().stream()
+                    .flatMap(frame -> frame.getEvents().stream())
+                    .collect(Collectors.toList());
+
+// Filtrar los eventos relacionados con el participante en cuestión (por ejemplo, participante con ID = 1)
+            List<TimelineFrameEvent> participantEvents = events.stream()
+                    .filter(event -> event.getParticipantId() == 1 && event.getType().equals(EventType.SKILL_LEVEL_UP))
+                    .collect(Collectors.toList());
+
+// Ordenar los eventos según su timestamp
+            Collections.sort(participantEvents, Comparator.comparingLong(TimelineFrameEvent::getTimestamp));
+
+// Determinar el orden en el que el participante subió sus habilidades
+            for (int j = 0; j < participantEvents.size(); j++) {
+                TimelineFrameEvent event = participantEvents.get(j);
+                System.out.println("El participante subió su habilidad " + event.getSkillSlot() + " en el evento número " + (j+1));
             }
-        });
 
-        Map<String, String> sortedMap = new LinkedHashMap<>();
 
-        for (Map.Entry<String, String> entry : listSorted) {
-            sortedMap.put(entry.getKey(), entry.getValue());
+//            List<TimelineDamageData> wierdEntries = new ArrayList<>();
+//            lolTimeline.getFrames().forEach(frame -> {
+//                frame.getEvents().forEach(event -> {
+//                    if (event.getType().equals(EventType.LEVEL_UP)) {
+//                        event.
+//                    }
+//                }
+//            });
+//            if (wierdEntries.size() > 0) {
+//                sb.name(tb.getID());
+//                sb.beginArray();
+//                for (TimelineDamageData wierdEntry : wierdEntries) {
+//                    sb.jsonValue(Utils.getGson().toJson(wierdEntry));
+//                }
+//                sb.endArray();
+//            }
         }
-
-        data.put("championIndex", sortedMap);
-
-        StringWriter out = new StringWriter();
-        template.process(data, out);
-        html = out.toString();
-
-        FileWriter writer = new FileWriter("championList.html");
-        writer.write(html);
-        writer.close();
-
-
-
-
-
-
-
-
-
-
-
-
-//        MatchListBuilder builder = new MatchListBuilder();
-//        Summoner sum = Summoner.byName(LeagueShard.EUW1, "YoSoyMiguel13");
+//        sb.endObject();
+//        sb.flush();
 //
-//        String summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/" + sum.getProfileIconId() + ".jpg";
-//        String summonerName = sum.getName();
-//        String summonerRegion = sum.getPlatform().getRealmValue().toUpperCase();
+//        String output = Utils.getGson().toJson(new JsonParser().parse(sw.toString()));
+//        Files.write(Paths.get("C:\\Users\\user1\\Desktop\\errors.json"), output.getBytes(StandardCharsets.UTF_8));
+
+
+
+//        Configuration cfg;
 //
+//        cfg = new Configuration(Configuration.VERSION_2_3_31);
+//
+//        FileTemplateLoader fileTemplateLoader = new FileTemplateLoader(new File("C:\\Users\\User1\\Documents\\GitHub\\SpringElectronRiftStatisticsWebApp\\src\\main\\resources\\templates"));
+//        cfg.setTemplateLoader(fileTemplateLoader);
+//
+//        String html;
+//        Template template;
+//        template = cfg.getTemplate("unloggedChampList.ftl");
+//
+//
+//        Map<Integer, StaticChampion> list = api.getChampions();
+//        Integer championNumber = list.size();
+//        List<StaticChampion> champions = new ArrayList<>(list.values());
+//        Map<String, Object> data = new HashMap<>();
 //        Map<String, String> values = new HashMap<>();
-//        values.put("Img", summonerImg);
-//        values.put("SummName", summonerName);
-//        values.put("SummReg", summonerRegion);
-//        StringSubstitutor sub = new StringSubstitutor(values);
 //
-//        String htmlFragment = "<li class=\"browserItem\">" +
-//                "<a href=\"\" class=\"browserLink\">" +
-//                "<div class=\"cardContainer\">" +
-//                "<div class=\"browserCard\">" +
-//                "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
-//                "</div>" +
-//                "<div class=\"cardPhoto\">" +
-//                "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
-//                "</div>" +
-//                "</div>" +
-//                "<span class=\"browserName\">" +
-//                "<span class=\"browserSummName\">${SummName}</span>" +
-//                "<span class=\"browserSummRegion\">${SummReg}</span>" +
-//                "</span>" +
-//                "</a>" +
-//                "</li>";
+//        for (int i = 0; i < championNumber; i++) {
+//            StaticChampion champion = champions.get(i % championNumber);
+//            values.put(champion.getName(), String.valueOf(champion.getId()));
+//        }
 //
-//        String formattedHtml = sub.replace(htmlFragment);
-//        System.out.println(formattedHtml);
+//        List<Map.Entry<String, String>> listSorted = new ArrayList<>(values.entrySet());
+//
+//        listSorted.sort(new Comparator<Map.Entry<String, String>>() {
+//            public int compare (Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+//                return o1.getKey().compareTo(o2.getKey());
+//            }
+//        });
+//
+//        Map<String, String> sortedMap = new LinkedHashMap<>();
+//
+//        for (Map.Entry<String, String> entry : listSorted) {
+//            sortedMap.put(entry.getKey(), entry.getValue());
+//        }
+//
+//        data.put("championIndex", sortedMap);
+//
+//        StringWriter out = new StringWriter();
+//        template.process(data, out);
+//        html = out.toString();
+//
+//        FileWriter writer = new FileWriter("championList.html");
+//        writer.write(html);
+//        writer.close();
 
 
 

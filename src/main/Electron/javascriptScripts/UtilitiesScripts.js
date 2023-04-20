@@ -11,11 +11,11 @@ $('#sidebar-button').on('click', function(event) {
     if (sidebar.hasClass('active')) {
         setTimeout(() => {PatchSpan.text("Patch notes"); }, 190);
         openedOnButton = true;
-        $('.nav_buttons').css('margin-left', '215px');
+        $('.header_Browser').css('margin-left', '275px');
     } else {
         PatchSpan.text("Patch");
         openedOnButton = false;
-        $('.nav_buttons').css('margin-left', '45px');
+        $('.header_Browser').css('margin-left', '95px');
     }
 
 });
@@ -25,7 +25,7 @@ $('#interactiveSidebar').on('mouseenter', function(event) {
     let PatchSpan = $('#PatchSpan');
     sidebar.addClass('active');
     setTimeout(() => {PatchSpan.text("Patch notes"); }, 190);
-    $('.nav_buttons').css('margin-left', '215px');
+    $('.header_Browser').css('margin-left', '275px');
 });
 
 $('#interactiveSidebar').on('mouseleave', function(event) {
@@ -35,7 +35,7 @@ $('#interactiveSidebar').on('mouseleave', function(event) {
     if (!openedOnButton) {
         sidebar.removeClass('active');
         PatchSpan.text("Patch");
-        $('.nav_buttons').css('margin-left', '45px');
+        $('.header_Browser').css('margin-left', '95px');
     }
 });
 
@@ -92,49 +92,6 @@ $('#close-btn-sign').on('click', function(event) {
     lineSign.css("visibility", "hidden");
 });
 
-$('#back-button').on('click', function(event) {
-    history.back();
-});
-
-$('#reload-button').on('click', function(event) {
-    const { ipcRenderer } = require('electron');
-    const html = window.location.pathname.split('/').pop();
-    ipcRenderer.send("get-tempfiles-folder");
-    ipcRenderer.on("get-tempfiles-folder-reply", (event, tempFilesFolder) => {
-        if (fs.existsSync(tempFilesFolder)) {
-            const xhr = new XMLHttpRequest();
-            let filename;
-            if (html==="loggedPage.html") {
-                ipcRenderer.send("get-uid");
-                ipcRenderer.on("get-uid-reply", (event, uid) => {
-                    xhr.open('GET', `http://localhost:8080/api/htmlRequests/home/true/${uid}`, true);
-                    filename = "loggedPage.html";
-                    xhr.onload = function() {
-                        if (xhr.readyState === 4 && xhr.status === 200) {
-                            const filePath = tempFilesFolder + filename;
-                            if (fs.existsSync(filePath)) {
-                                fs.unlinkSync(filePath);
-                            }
-                            console.log(filePath)
-                            fs.writeFileSync(filePath, xhr.responseText, { encoding: 'utf8' });
-                            ipcRenderer.send('change-html', filePath);
-                        } else {
-                            console.log("Error");
-                        }
-                    }
-                    xhr.send();
-                });
-            }
-        }else {
-            location.reload();
-        }
-    });
-});
-
-$('#forward-button').on('click', function(event) {
-    history.forward();
-});
-
 $('#logPassShow').on('click', function(event) {
     let logPassField = $('#logPassword');
     let line = $('#LogPassShow-activeShow');
@@ -175,6 +132,24 @@ $('#mainSearchField').on('click', function(event) {
     $('#browserListContainer').removeClass("loader");
 });
 
+$("#header_Browser_ta").on("click", function(event) {
+    $('#popupBrowserWindow').toggleClass("active");
+    $('#blurrDiv').toggleClass("active");
+    $('#blurrDiv2').toggleClass("active");
+    $('#sidebar').toggleClass("filtered");
+    $(".header_object").addClass("disabled");
+    $(".sidebar").addClass("disabled");
+    $('#loader').addClass("disabled");
+    $('#browserListContainer').removeClass("loader");
+    if ($("body").css("overflow") === "hidden") {
+        $("body").css("overflow", "visible");
+    }else {
+        $("body").css("overflow", "hidden");
+        window.scrollTo(0, 0);
+    }
+
+});
+
 $('#closeBrowserBtn').on('click', function(event) {
     $('#popupBrowserWindow').toggleClass("active");
     $('#blurrDiv').toggleClass("active");
@@ -185,6 +160,9 @@ $('#closeBrowserBtn').on('click', function(event) {
     $(".header_object").removeClass("disabled");
     $(".sidebar").removeClass("disabled");
     $('#loader').addClass("disabled");
+    if ($("body").css("overflow") === "hidden") {
+        $("body").css("overflow", "visible");
+    }
 });
 
 $('#homePageButton').on('click', function(event) {
@@ -194,10 +172,10 @@ $('#homePageButton').on('click', function(event) {
         if (reply) {
             ipcRenderer.send("get-uid");
             ipcRenderer.on("get-uid-reply", (event, uid) => {
-                htmlPagesRequests("http://localhost:8080/api/htmlRequests/home/" + reply + "/" + uid, "loggedIndex.html")
+                htmlPagesRequests("http://localhost:8080/api/htmlRequests/home/" + reply + "/" + uid, "ElectronPage.html")
             });
         }else {
-            htmlPagesRequests("http://localhost:8080/api/htmlRequests/home/" + reply + "/null", "unloggedIndex.html")
+            htmlPagesRequests("http://localhost:8080/api/htmlRequests/home/" + reply + "/null", "ElectronPage.html")
         }
     });
 });
@@ -209,10 +187,10 @@ $('#championsPageButton').on('click', function(event) {
         if (reply) {
             ipcRenderer.send("get-uid");
             ipcRenderer.on("get-uid-reply", (event, uid) => {
-                htmlPagesRequests("http://localhost:8080/api/htmlRequests/championlist/"+reply+"/"+uid, "loggedChampList.html")
+                htmlPagesRequests("http://localhost:8080/api/htmlRequests/championlist/"+reply+"/"+uid, "ElectronPage.html")
             });
         }else {
-            htmlPagesRequests("http://localhost:8080/api/htmlRequests/championlist/"+reply+"/null", "unloggedChampList.html")
+            htmlPagesRequests("http://localhost:8080/api/htmlRequests/championlist/"+reply+"/null", "ElectronPage.html")
         }
     });
 });

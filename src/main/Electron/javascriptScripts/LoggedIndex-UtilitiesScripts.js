@@ -25,7 +25,7 @@ $('#logout-accept').on('click', function(event) {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     ipcRenderer.send("get-tempfiles-folder");
                     ipcRenderer.on("get-tempfiles-folder-reply", (event, tempFilesFolder) => {
-                        const filename = "\\unloggedIndex.html";
+                        const filename = "\\ElectronPage.html";
                         const filePath = tempFilesFolder + filename;
                         if (!fs.existsSync(tempFilesFolder)) {
                             fs.mkdirSync(tempFilesFolder);
