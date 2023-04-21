@@ -155,47 +155,62 @@
 
     <!-- Contenido de la pagina -->
     <div class="profileInfoContainer">
-            <div class="profileLevel">
-                <div class="profileImage">
-                    <div class="levelBorder">
-                        <p>250</p>
-                    </div>
-                    <img src="../Electron/media/2094.png" alt="profileImage" width="125px">
+        <div class="profileLevel">
+            <div class="profileImage">
+                <div class="levelBorder">
+                    <p>250</p>
                 </div>
+                <img src="../Electron/media/2094.png" alt="profileImage" width="125px">
             </div>
-            <div class="profileInfo">
-                <div class="profileName">
-                    <h1 id="profileName">FakerSlayer</h1>
-                </div>
-                <div class="profileName">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                    </svg>
-                    <h3 id="profileLevelText" class="profileLevelText">This Account is not linked</h3>
-                </div>
+        </div>
+        <div class="profileInfo">
+            <div class="profileName">
+                <h1 id="profileName">FakerSlayer</h1>
             </div>
+            <div class="profileName">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>
+                <h3 id="profileLevelText" class="profileLevelText">This Account is not linked</h3>
+            </div>
+        </div>
     </div>
     <div class="mainContainerProfile">
         <div class="sideContentProfile">
             <div class="eloDisplay">
-                <div class="eloPicker">
-                    <select class="eloSelect">
-                        <option value="Solo/Duo">Solo/Duo</option>
-                        <option value="Flex">Flex</option>
-                    </select>
+                <div class="eloSelectionButtons">
+                    <button id="soloqButton" class="soloqButton">Solo/Duo Queue</button>
+                    <button id="flexqButton" class="flexqButton">Flex Queue</button>
                 </div>
-                <div class="eloInfo">
+                <div class="eloInfoSolo">
+                    <div class="eloStats">
+                        <h1 id="eloTierSolo">Gold IV</h1>
+                        <h3 id="eloLPSolo">2 LP</h3>
+                        <div class="flex">
+                            <h3 id="eloGamesSolo">50W 80L</h3>
+                            <h3 id="eloWinRateSolo">38%</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="eloInfoFlex">
+                    <div class="eloStats">
+                        <h1 id="eloTierFlex">Gold V</h1>
+                        <h3 id="eloLPFlex">50 LP</h3>
+                        <div class="flex">
+                            <h3 id="eloGamesFlex">25W 14L</h3>
+                            <h3 id="eloWinRateFlex">60%</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="eloInfoSolo">
+                    <div class="eloImage">
+                        <img src="../Electron/media/elo/silver.png" alt="silver" width="120px">
+                    </div>
+                </div>
+                <div class="eloInfoFlex">
                     <div class="eloImage">
                         <img src="../Electron/media/elo/gold.png" alt="gold" width="120px">
-                    </div>
-                    <div class="eloStats">
-                        <h1 id="eloTier">Gold IV</h1>
-                        <h3 id="eloLP">2 LP</h3>
-                        <div class="flex">
-                            <h3 id="eloGames">50W 80L</h3>
-                            <h3 id="eloWinRate">38%</h3>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -276,44 +291,682 @@
                             <img src="../Electron/media/champion_squares_rounded/Aatrox.png" alt="ahri" width="45px">
                         </div>
                         <div class="playedWithObject">
-                            <h1 class="playedWithName">AatroxGamingaaaa</h1>
+                            <h1 class="playedWithName">AatroxGaming</h1>
                             <h3 class="playedWithGames">15 games</h3>
                         </div>
                     </div>
                     <div class="recentlyPlayedChampion">
                         <div class="recentlyPlayedChampionImage">
-                            <img src="../Electron/media/champion_squares_rounded/Aatrox.png" alt="ahri" width="60px">
+                            <img src="../Electron/media/champion_squares_rounded/Aatrox.png" alt="ahri" width="45px">
                         </div>
                         <div class="playedWithObject">
                             <h1 class="playedWithName">AatroxGaming</h1>
-                            <h3 class="playedWithGames">5 games</h3>
+                            <h3 class="playedWithGames">15 games</h3>
                         </div>
                     </div>
                     <div class="recentlyPlayedChampion">
                         <div class="recentlyPlayedChampionImage">
-                            <img src="../Electron/media/champion_squares_rounded/Aatrox.png" alt="ahri" width="60px">
+                            <img src="../Electron/media/champion_squares_rounded/Aatrox.png" alt="ahri" width="45px">
                         </div>
                         <div class="playedWithObject">
                             <h1 class="playedWithName">AatroxGaming</h1>
-                            <h3 class="playedWithGames">5 games</h3>
+                            <h3 class="playedWithGames">15 games</h3>
                         </div>
                     </div>
                     <div class="recentlyPlayedChampion">
                         <div class="recentlyPlayedChampionImage">
-                            <img src="../Electron/media/champion_squares_rounded/Aatrox.png" alt="ahri" width="60px">
+                            <img src="../Electron/media/champion_squares_rounded/Aatrox.png" alt="ahri" width="45px">
                         </div>
                         <div class="playedWithObject">
                             <h1 class="playedWithName">AatroxGaming</h1>
-                            <h3 class="playedWithGames">5 games</h3>
+                            <h3 class="playedWithGames">15 games</h3>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-        <div class="gameHistory">
+        <div class="gamesHistory">
             <div class="game20Last">
-
+                <div class="last20Text">
+                    <h1>Last 20</h1>
+                    <h2>10W - 10L</h2>
+                </div>
+                <div class="last20Images">
+                    <div class="last20Champ">
+                        <img src="../Electron/media/champion_squares_rounded/Ahri.png" alt="ahri" width="50px">
+                        <div class="last20ChampInfo">
+                            <h1>100%</h1>
+                            <h3>2W - 0L</h3>
+                            <h3>2.45 KDA</h3>
+                        </div>
+                    </div>
+                    <div class="last20Champ">
+                        <img src="../Electron/media/champion_squares_rounded/Katarina.png" alt="Katarina" width="50px">
+                        <div class="last20ChampInfo">
+                            <h1>100%</h1>
+                            <h3>2W - 0L</h3>
+                            <h3>2.45 KDA</h3>
+                        </div>
+                    </div>
+                    <div class="last20Champ">
+                        <img src="../Electron/media/champion_squares_rounded/Gwen.png" alt="Gwen" width="50px">
+                        <div class="last20ChampInfo">
+                            <h1>100%</h1>
+                            <h3>2W - 0L</h3>
+                            <h3>2.45 KDA</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="history">
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="historyGame">
+                    <div class="historyGamePhotoInfo">
+                        <div class="historyGamePhoto">
+                            <img src="../Electron/media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                        </div>
+                        <div class="historyGameResult">
+                            <h1>VICTORY</h1>
+                            <div class="historyGamePosition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                </svg>
+                                <h3>Support</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historyGameStats">
+                        <div class="historyGamemodeType">
+                            <h3>Ranked Solo</h3>
+                            <h3>3 days ago</h3>
+                        </div>
+                        <div class="historyGameStatNumbers">
+                            <div>
+                                <h1>1.80 KDA</h1>
+                                <h2>2 / 8 / 12</h2>
+                            </div>
+                            <div>
+                                <h1>4 CS/Min</h1>
+                                <h2>120CS</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

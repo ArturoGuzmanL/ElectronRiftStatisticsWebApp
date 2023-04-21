@@ -8,6 +8,20 @@
 </head>
 <body>
 
+<div class="outPopup" id="outPopup">
+    <div class="close-btn" id="close-btn">&times;</div>
+    <div class="form">
+        <h2>Log out</h2>
+        <h1>Are you sure you want to log out?</h1>
+        <div class="form_element">
+            <button type="button" id="logout-accept">Accept</button>
+        </div>
+        <div class="form_element">
+            <button type="button" id="logout-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <!-- Comienzo del header -->
 <div class="blur-toggle" id="blurrDiv">
     <header class="header">
@@ -19,19 +33,6 @@
         <!-- Botones de cuenta y ventanas -->
         <div class="accountArea  noselection">
             <button type="button" class="accountButton" id="show-logout">Log out</button>
-            <div class="outPopup" id="outPopup">
-                <div class="close-btn" id="close-btn">&times;</div>
-                <div class="form">
-                    <h2>Log out</h2>
-                    <h1>Are you sure you want to log out?</h1>
-                    <div class="form_element">
-                        <button type="button" id="logout-accept">Accept</button>
-                    </div>
-                    <div class="form_element">
-                        <button type="button" id="logout-cancel">Cancel</button>
-                    </div>
-                </div>
-            </div>
         </div>
     </header>
     <!-- Fin del header-->

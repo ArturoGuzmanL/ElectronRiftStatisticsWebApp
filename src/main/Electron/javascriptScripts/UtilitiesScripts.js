@@ -220,3 +220,17 @@ function htmlPagesRequests(url, fileName) {
     }
     xhr.send();
 }
+
+$("#soloqButton").on("click", function(event) {
+    $(".eloInfoFlex").removeClass("active");
+    $(".eloInfoSolo").removeClass("disabled");
+    $(".flexqButton").removeClass("active");
+    $(".soloqButton").removeClass("disabled");
+});
+
+$("#flexqButton").on("click", function(event) {
+    $(".eloInfoFlex").addClass("active");
+    $(".eloInfoSolo").addClass("disabled");
+    $(".flexqButton").addClass("active");
+    $(".soloqButton").addClass("disabled");
+});

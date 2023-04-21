@@ -19,7 +19,7 @@ header{
 }
 
 body{
-    background-color: #17172e;
+    background-color: #0a0c23;
 }
 .noselection {
     -webkit-touch-callout: none;
@@ -1187,8 +1187,7 @@ body{
     position: absolute;
     width: calc(100px * 6 + 25%);
     top: 7.5rem;
-    height: 12rem;
-    background: rgba(255, 206, 0, 0.85);
+    height: 11rem;
     left: calc(50% + 40px);
     transform: translateX(-50%);
 }
@@ -1202,32 +1201,31 @@ body{
     height: 100%;
     top: 20rem;
     /*background: rgba(11, 11, 35, 0.85);*/
-    background: red;
     left: calc(50% + 40px);
     transform: translateX(-50%);
 }
 
 .sideContentProfile {
     position: relative;
-    height: 100%;
-    background: rgba(7, 7, 255, 0.85);
-    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
+    height: fit-content;
     display: grid;
     grid-template-rows: repeat(auto-fit, 1fr);
     row-gap: 1rem;
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
+    background: rgba(11, 11, 35, 0.85);
 }
 
 .eloDisplay {
-    border-radius: 15px;
     position: relative;
     height: 100%;
     max-height: 15rem;
-    background: rgba(7, 7, 255, 0.85);
-    border: 5px solid rgb(0, 0, 0);
-    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
+    align-content: center;
+    justify-content: center;
     display: grid;
-    row-gap: 1rem;
-    grid-template-rows: 2fr 4fr;
+    grid-template-rows: 1fr 1fr;
+    background-color: rgba(51, 51, 106, 0.65);
+    border: 2px solid rgba(105, 105, 149, 1);
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
 }
 
 .eloPicker {
@@ -1240,15 +1238,100 @@ body{
     justify-items: center;
 }
 
-.eloInfo {
+#eloTierSolo,
+#eloTierFlex {
+margin-top: 1rem;
+}
+
+.eloInfoSolo {
+    visibility: visible;
     position: relative;
     align-items: center;
     justify-items: center;
-    background: rgba(15, 244, 24, 0.85);
-    border: 2px solid rgba(105, 105, 149, 1);
+    display: flex;
+}
+
+.eloInfoFlex {
+    position: relative;
+    align-items: center;
+    justify-items: center;
+    display: none;
+    visibility: hidden;
+}
+
+.eloInfoFlex.active {
+    display: flex;
+    visibility: visible;
+}
+
+.eloInfoSolo.disabled {
+    display: none;
+    visibility: hidden;
+}
+
+.eloSelectionButtons {
+    position: absolute;
+    top: -1.5rem;
+    left: -2px;
+    width: fit-content;
+}
+
+.soloqButton {
+    position: relative;
+    height: 1.5rem;
+    width: fit-content;
+    border-width: 2px 2px 0 2px;
+    border-style: solid;
+    padding: 0 0.5rem 0 0.5rem;
+    border-color: rgba(105, 105, 149, 1);
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+    background: rgb(51, 51, 106);
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.2);
+}
+
+.flexqButton {
+    border-width: 2px;
+    border-color: transparent;
+    box-shadow: none;
+    background: transparent;
+    padding: 0 0.5rem 0 0.5rem;
+    height: 0;
+    cursor: pointer;
+}
+
+.flexqButton.active {
+    border-width: 2px 2px 0 2px;
+    transition: all 0.3s ease 0s;
+    position: relative;
+    height: 1.5rem;
+    width: fit-content;
+    border-style: solid;
+    padding: 0 0.5rem 0 0.5rem;
+    border-color: rgba(105, 105, 149, 1);
+    background: rgb(38, 38, 83);
     box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
-    display: grid;
-    grid-template-columns: 1fr 1fr
+    outline: none;
+    cursor: pointer;
+}
+
+.soloqButton.disabled {
+    border-width: 2px;
+    border-color: transparent;
+    box-shadow: none;
+    background: transparent;
+    height: 0;
+}
+
+.eloSelectionButtons button {
+
+}
+
+.eloSelectionButtons button:hover {
+    background: rgb(51, 51, 106);
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease 0s;
 }
 
 .eloSelect{
@@ -1257,6 +1340,9 @@ body{
     background: rgba(11, 11, 35, 0.85);
     border: 1px solid #ffffff;
     border-radius: 5px;
+    user-select: none;
+    outline: none;
+    cursor: pointer;
 }
 
 .eloStats {
@@ -1266,9 +1352,6 @@ body{
     grid-template-rows: 1fr 1fr 1fr;
     align-items: center;
     justify-items: center;
-    background: rgba(15, 244, 24, 0.85);
-    border: 2px solid rgba(105, 105, 149, 1);
-    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
 }
 
 .eloStats h1 {
@@ -1285,8 +1368,10 @@ body{
 
 .recentlyPlayed {
     position: relative;
-    height: 100%;
-    background: rgba(255, 107, 24, 0.85);
+    height: fit-content;
+    background-color: rgba(51, 51, 106, 0.65);
+    border: 2px solid rgba(105, 105, 149, 1);
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
     display: grid;
     row-gap: 1rem;
 }
@@ -1309,22 +1394,31 @@ body{
 .recentlyPlayedContent {
     position: relative;
     display: grid;
-    background: #373771;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(auto-fill, minmax(1fr, 1fr));
     column-gap: 1rem;
     margin-left: 1.5rem;
     margin-right: 1.5rem;
     margin-bottom: 1.5rem;
+    gap: 0.35rem;
 }
 
 .recentlyPlayedChampion {
-    background-color: #612227;
-    border-bottom: 1px solid #ffffff;
-    border-top: 1px solid #ffffff;
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.75);
+    border: 2px solid transparent;
+    cursor: pointer;
+    border-radius: 10px;
     padding: 0.5rem 0;
     position: relative;
     display:flex;
     align-items: center;
+    transition: all 0.3s ease 0s;
+}
+
+.recentlyPlayedChampion:hover {
+    box-shadow: inset 0 0 0 1000px rgba(51, 51, 106, 0.5);
+    border: 2px solid rgba(105, 105, 149, 1);
+    background-color: rgb(0, 0, 0);
+    transition: all 0.3s ease 0s;
 }
 
 .recentlyPlayedChampion img {
@@ -1411,23 +1505,26 @@ body{
     position: relative;
     flex: 0 0 93px;
     height: 100%;
-    background: rgba(7, 7, 255, 0.85);
     align-items: center;
     justify-items: center;
     text-align: center;
 }
 
 .levelBorder{
-    position: relative;
-    margin: auto auto auto auto;
+    position: absolute;
+    background-color: #0a0c23;
+    top: -9%;
+    left: 50%;
+    transform: translateX(-50%);
     width: fit-content;
     height: fit-content;
     border: 3px solid #d59543;
-    border-radius: 5px 5px 0 0;
+    border-radius: 5px;
+    padding: 3px;
 }
 
 .levelBorder p {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     padding: 0 0.25rem;
     font-family: "Montserrat", sans-serif;
     color: #ffffff;
@@ -1442,9 +1539,8 @@ body{
     position: relative;
     display: grid;
     grid-template-rows: 1fr 1fr;
-    margin: auto 0;
-    background: rgba(15, 244, 24, 0.85);
-    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
+    margin-top: 0.25rem;
+    margin-bottom: 7rem;
 }
 
 .profileName {
@@ -1452,6 +1548,7 @@ body{
     display: flex;
     align-items: center;
     justify-items: center;
+    gap: 1px;
     margin-left: 1rem;
 }
 
@@ -1461,29 +1558,211 @@ body{
     color: #ffffff;
 }
 
+.profileName svg {
+    padding-bottom: 0.1rem;
+}
+
 .profileLevelText {
     position: relative;
     display: flex;
     align-items: center;
     justify-items: center;
-    margin-left: 1rem;
+    margin-left: 0.5rem;
 }
 
-.gameHistory {
-    background-color: midnightblue;
+.gamesHistory {
     position: relative;
     display: flex;
+    border: 2px solid rgba(69, 69, 102, 0.5);
+    background-color: rgba(24, 20, 56, 0.9);
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
     flex-direction: row;
     flex-wrap: wrap;
     column-gap: 1rem;
     row-gap: 1rem;
     margin: 0 0.5rem 1rem 0.5rem;
+    padding-top: 0.5rem;
 }
 
 .game20Last {
     position: relative;
-    background-color: blueviolet;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(51, 51, 106, 0.65);
+    border: 2px solid rgba(105, 105, 149, 1);
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
+    width: calc(100% - 1rem);
+    left: 50%;
+    transform: translateX(-50%);
+    height: 5rem;
+}
+
+.last20Text {
+    margin-left: 1rem;
+    font-family: "Montserrat", sans-serif;
+}
+
+.last20Champ {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    height: 8rem;
+    height: 5rem;
+    margin-right: 0.5rem;
+}
+
+.last20Text h1 {
+    font-size: 1.2rem;
+    color: #ffffff;
+}
+
+.last20Text h2 {
+    font-size: 0.85rem;
+    color: #ffffff;
+}
+
+.last20Images {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 1rem;
+    margin-right: 1.5rem;
+}
+
+.last20ChampInfo h1{
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.last20ChampInfo h3{
+    font-size: 0.75rem;
+    color: #ffffff;
+}
+
+.history {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(auto-fill, minmax(5rem, 1fr));
+    gap: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: fit-content;
+    margin: 0 0.5rem 1rem 0.5rem;
+}
+
+.historyGame {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    background-color: rgba(51, 51, 106, 0.65);
+    border: 2px solid rgba(105, 105, 149, 1);
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.40);
+    height: 6rem;
+    cursor: pointer;
+    padding-left: 0.15rem;
+}
+
+.historyGame:hover {
+    box-shadow: inset 0 0 0 1000px rgba(40, 40, 81, 0.9);
+    background-color: rgb(0, 0, 0);
+    transition: all 0.3s ease 0s;
+}
+
+.historyGamePhotoInfo {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    column-gap: 0.25rem;
+}
+
+.historyGamePhoto {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+    margin-top: 0.4rem;
+}
+
+.historyGameResult {
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    height: fit-content;
+    margin-top: 0.45rem;
+}
+
+.historyGameResult h1 {
+    padding-left: 0.25rem;
+    font-size: 1.2rem;
+    color: #ffffff;
+}
+
+.historyGamePosition {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-bottom: 1rem;
+}
+
+.historyGamePosition svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.25rem;
+}
+
+.historyGameStats {
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr 2fr;
+}
+
+.historyGamemodeType {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    top: 0.75rem;
+    right: 0.75rem;
+    gap: 1.5rem;
+    height: fit-content;
+}
+
+.historyGameStatNumbers {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    gap: 4rem;
+    padding-right: 0.25rem;
+    margin-right: 4rem;
+    margin-top: 0.85rem;
+    transition: margin-left 0.5s ease 0s;
+}
+
+@media (max-width: 1300px) {
+    .historyGameStatNumbers {
+        margin-left: 1.5rem;
+        transition: margin-left 0.5s ease 0s;
+    }
+}
+
+.historyGameStatNumbers h1 {
+    font-family: "Montserrat", sans-serif;
+    color: #ffffff;
+    margin-bottom: 0.35rem;
+}
+
+.historyGameStatNumbers h2 {
+    font-size: 0.75rem;
+    font-family: "Montserrat", sans-serif;
+    color: #ffffff;
+    margin-bottom: 1rem;
 }
 

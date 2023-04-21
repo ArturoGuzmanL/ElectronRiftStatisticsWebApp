@@ -95,8 +95,8 @@ async function createWindow() {
     if (AccountinfoExists()) {
         requestLoggedPage();
     } else {
-        mainWindow.loadFile("ProfilePage.html")
-        // requestUnloggedPage();
+        // mainWindow.loadFile("ProfilePage.html")
+        requestUnloggedPage();
     }
 }
 
