@@ -246,15 +246,15 @@
                 </div>
                 <div class="recentlyPlayedContent">
                     <#list summonerIndex as summoner>
-                    <div class="recentlyPlayedChampion">
-                        <div class="recentlyPlayedChampionImage">
-                            <img src="http://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${summoner.getImgID()}.png" alt="${summoner.getName()}" width="45px">
+                        <div class="recentlyPlayedChampion">
+                            <div class="recentlyPlayedChampionImage">
+                                <img src="http://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${summoner.getImgID()}.png" alt="${summoner.getName()}" width="45px">
+                            </div>
+                            <div class="playedWithObject">
+                                <h1 class="playedWithName">${summoner.getName()}</h1>
+                                <h3 class="playedWithGames">${summoner.getGamesPlayedTogether()} Games</h3>
+                            </div>
                         </div>
-                        <div class="playedWithObject">
-                            <h1 class="playedWithName">${summoner.getName()}</h1>
-                            <h3 class="playedWithGames">${summoner.getGamesPlayedTogether()} Games</h3>
-                        </div>
-                    </div>
                     </#list>
                 </div>
             </div>
@@ -263,68 +263,56 @@
             <div class="game20Last">
                 <div class="last20Text">
                     <h1>Last 20</h1>
-                    <h2>10W - 10L</h2>
+                    <h2>${last20Games}</h2>
                 </div>
                 <div class="last20Images">
-                    <div class="last20Champ">
-                        <img src="../media/champion_squares_rounded/Ahri.png" alt="ahri" width="50px">
-                        <div class="last20ChampInfo">
-                            <h1>100%</h1>
-                            <h3>2W - 0L</h3>
-                            <h3>2.45 KDA</h3>
+                    <#list last20index as champion>
+                        <div class="last20Champ">
+                            <img src="../media/champion_squares_rounded/${champion.getName()}.png" alt="${champion.getName()}" width="50px">
+                            <div class="last20ChampInfo">
+                                <h1>${champion.getWr()}%</h1>
+                                <h3>${champion.getWins()}W - ${champion.getLosses()}L</h3>
+                                <h3>${champion.getKDA()} KDA</h3>
+                            </div>
                         </div>
-                    </div>
-                    <div class="last20Champ">
-                        <img src="../media/champion_squares_rounded/Katarina.png" alt="Katarina" width="50px">
-                        <div class="last20ChampInfo">
-                            <h1>100%</h1>
-                            <h3>2W - 0L</h3>
-                            <h3>2.45 KDA</h3>
-                        </div>
-                    </div>
-                    <div class="last20Champ">
-                        <img src="../media/champion_squares_rounded/Gwen.png" alt="Gwen" width="50px">
-                        <div class="last20ChampInfo">
-                            <h1>100%</h1>
-                            <h3>2W - 0L</h3>
-                            <h3>2.45 KDA</h3>
-                        </div>
-                    </div>
+                    </#list>
                 </div>
             </div>
             <div class="history">
-                <div class="historyGame">
-                    <div class="historyGamePhotoInfo">
-                        <div class="historyGamePhoto">
-                            <img src="../media/champion_squares_rounded/AurelionSol.png" alt="Asol" width="75px">
+                <#list historyIndex as game>
+                    <div class="historyGame" id="${game.getMatchId()}">
+                        <div class="historyGamePhotoInfo">
+                            <div class="historyGamePhoto">
+                                <img src="../media/champion_squares_rounded/${game.getChampName()}.png" alt="${game.getChampName()}" width="75px">
+                            </div>
+                            <div class="historyGameResult">
+                                <h1 class="">${game.getGameResult()}</h1>
+                                <div class="historyGamePosition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
+                                        <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
+                                    </svg>
+                                    <h3>${game.getMatchRole()}</h3>
+                                </div>
+                            </div>
                         </div>
-                        <div class="historyGameResult">
-                            <h1>VICTORY</h1>
-                            <div class="historyGamePosition">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34">
-                                    <path class="active" fill="#c8aa6e" fill-rule="evenodd" d="M26,13c3.535,0,8-4,8-4H23l-3,3,2,7,5-2-3-4h2ZM22,5L20.827,3H13.062L12,5l5,6Zm-5,9-1-1L13,28l4,3,4-3L18,13ZM11,9H0s4.465,4,8,4h2L7,17l5,2,2-7Z"/>
-                                </svg>
-                                <h3>Support</h3>
+                        <div class="historyGameStats">
+                            <div class="historyGamemodeType">
+                                <h3>${game.getGameType()}</h3>
+                                <h3>${game.getGameDate()}</h3>
+                            </div>
+                            <div class="historyGameStatNumbers">
+                                <div>
+                                    <h1>${game.getKDA()}</h1>
+                                    <h2>${game.getLongKDA()}</h2>
+                                </div>
+                                <div>
+                                    <h1>${game.getCsMin()}</h1>
+                                    <h2>${game.getCsTotal()}</h2>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="historyGameStats">
-                        <div class="historyGamemodeType">
-                            <h3>Ranked Solo</h3>
-                            <h3>3 days ago</h3>
-                        </div>
-                        <div class="historyGameStatNumbers">
-                            <div>
-                                <h1>1.80 KDA</h1>
-                                <h2>2 / 8 / 12</h2>
-                            </div>
-                            <div>
-                                <h1>4 CS/Min</h1>
-                                <h2>120CS</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </#list>
             </div>
         </div>
     </div>

@@ -1,66 +1,45 @@
 package javacode.server.springelectronriftstatisticswebapp;
 
-import com.google.gson.stream.JsonWriter;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import javacode.server.springelectronriftstatisticswebapp.model.ChampionData;
+import javacode.server.springelectronriftstatisticswebapp.model.MatchData;
 import javacode.server.springelectronriftstatisticswebapp.model.SummonerData;
 import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
+import no.stelar7.api.r4j.basic.cache.impl.MongoDBCacheProvider;
+import no.stelar7.api.r4j.basic.cache.impl.MySQLCacheProvider;
 import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
-import no.stelar7.api.r4j.basic.constants.types.lol.EventType;
 import no.stelar7.api.r4j.basic.constants.types.lol.GameQueueType;
-import no.stelar7.api.r4j.basic.constants.types.lol.LevelUpType;
-import no.stelar7.api.r4j.basic.constants.types.lol.SpellSlotType;
-import no.stelar7.api.r4j.basic.constants.types.lol.TierDivisionType;
-import no.stelar7.api.r4j.basic.utils.LazyList;
-import no.stelar7.api.r4j.basic.utils.SummonerCrawler;
-import no.stelar7.api.r4j.basic.utils.Utils;
+import no.stelar7.api.r4j.basic.constants.types.lol.RoleType;
 import no.stelar7.api.r4j.impl.R4J;
-import no.stelar7.api.r4j.impl.lol.builders.champion.ChampionBuilder;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.MatchBuilder;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.MatchListBuilder;
-import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.TimelineBuilder;
 import no.stelar7.api.r4j.impl.lol.raw.DDragonAPI;
-
-import no.stelar7.api.r4j.impl.lol.raw.LeagueAPI;
 import no.stelar7.api.r4j.pojo.lol.league.LeagueEntry;
 import no.stelar7.api.r4j.pojo.lol.match.v5.LOLMatch;
-import no.stelar7.api.r4j.pojo.lol.match.v5.LOLTimeline;
-import no.stelar7.api.r4j.pojo.lol.match.v5.TimelineFrameEvent;
 import no.stelar7.api.r4j.pojo.lol.match.v5.MatchParticipant;
-import no.stelar7.api.r4j.pojo.lol.match.v5.MatchPerks;
-import no.stelar7.api.r4j.pojo.lol.match.v5.PerkSelection;
-import no.stelar7.api.r4j.pojo.lol.match.v5.StatPerk;
-import no.stelar7.api.r4j.pojo.lol.match.v5.TimelineDamageData;
 import no.stelar7.api.r4j.pojo.lol.staticdata.champion.StaticChampion;
-import no.stelar7.api.r4j.pojo.lol.staticdata.profileicon.ProfileIconDetails;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
-import org.apache.commons.text.StringSubstitutor;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonWriter;
+import java.util.function.Supplier;
 
 public class HashExample {
     private static final String INSERT_IMAGE = "UPDATE users SET accountimage = ? WHERE ID = ?";
@@ -81,7 +60,8 @@ public class HashExample {
 
         final R4J r4J = new R4J(SecretFile.CREDS);
         DDragonAPI api = r4J.getDDragonAPI();
-        DataCall.setCacheProvider(new FileSystemCacheProvider());
+        Supplier<FileSystemCacheProvider> fileCache= () -> new FileSystemCacheProvider();
+        DataCall.setCacheProvider(fileCache.get());
 
         MatchListBuilder builder = new MatchListBuilder();;
         Summoner sum = Summoner.byName(LeagueShard.EUW1, "YoSoyMiguel13");
@@ -97,6 +77,8 @@ public class HashExample {
         String flexQlp = "";
         String flexQgames = "";
         String flexQwinrate = "";
+        Integer wins = 0;
+        Integer losses = 0;
         for (LeagueEntry entry : league) {
             if (entry.getQueueType() == GameQueueType.RANKED_SOLO_5X5) {
                 soloQtier = entry.getTierDivisionType().prettyName();
@@ -131,55 +113,85 @@ public class HashExample {
         List<String> last20 = builder.withCount(20).get();
         MatchBuilder mb = new MatchBuilder(sum.getPlatform());
         LOLMatch m;
-        HashMap<Summoner, Integer> participants = new HashMap<>();
+        HashMap<String, Integer> participants = new HashMap<>();
         HashMap<ChampionData, Integer> champions = new HashMap<>();
         HashMap<StaticChampion, Integer> championsStatic = new HashMap<>();
+        ArrayList<MatchData> matchData = new ArrayList<>();
         for (String s : last20) {
             m = mb.withId(s).getMatch();
-            for (MatchParticipant p : m.getParticipants()) {
-                if (!p.getSummonerName().equals(sum.getName())) {
-                    Summoner summ = Summoner.byName(LeagueShard.EUW1, p.getSummonerName());
-                    if (!participants.containsKey(summ)) {
-                        participants.put(summ, 1);
-                    } else {
-                        participants.put(summ, participants.get(summ) + 1);
-                    }
-                }else {
-                    StaticChampion champ = api.getChampion(p.getChampionId());
-                    if (!championsStatic.containsKey(champ)) {
-                        championsStatic.put(champ, 1);
-                        ChampionData champData = new ChampionData();
-                        champData.setName(champ.getName());
-                        champData.setID(String.valueOf(champ.getId()));
-                        int kda = 0;
-                        if (p.getDeaths() != 0) {
-                         kda = (p.getKills() + p.getAssists()) / p.getDeaths();
-                        }else {
-                            kda = p.getKills() + p.getAssists();
-                        }
-                        champData.setKDA(String.valueOf(kda));
-                        if (p.didWin()) {
-                            champData.addWin();
+            MatchData md = new MatchData();
+            if (Duration.between(m.getGameStartAsDate(), m.getGameEndAsDate()).compareTo(Duration.ofMinutes(4)) > 0) {
+                for (MatchParticipant p : m.getParticipants()) {
+                    if (!p.getSummonerName().equals(sum.getSummonerId())) {
+                        if (!participants.containsKey(p.getSummonerId())) {
+                            participants.put(p.getSummonerId(), 1);
                         } else {
-                            champData.addLoss();
+                            participants.put(p.getSummonerId(), participants.get(p.getSummonerId()) + 1);
                         }
-                        champData.updateWinrate();
-                        champions.put(champData, 1);
                     }else {
-                        championsStatic.put(champ, championsStatic.get(champ) + 1);
-                        ChampionData champData;
-                        for (ChampionData c : champions.keySet()) {
-                            if (c.getID().equals(String.valueOf(champ.getId()))) {
-                                champData = c;
-                                int kda = (p.getKills() + p.getAssists()) / p.getDeaths();
-                                champData.setKDA(String.valueOf(Integer.parseInt(champData.getKDA()) + kda));
-                                if (p.didWin()) {
-                                    champData.addWin();
-                                } else {
-                                    champData.addLoss();
+                        md.setMatchId(s);
+                        md.setChampName(p.getChampionName());
+                        md.setGameType(m.getQueue().prettyName());
+                        ZonedDateTime createdate = m.getMatchCreationAsDate();
+
+                        String formattedDate = createdate.format(formatter);
+                        long noOfDaysBetween = ChronoUnit.DAYS.between(createdate, ZonedDateTime.now());
+                        if (noOfDaysBetween < 10) {
+                            md.setGameDate("hace " + noOfDaysBetween + " días");
+                            // hacer algo con formattedDays
+                        } else {
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+                            md.setGameDate(createdate.format(formatter));
+                        }
+
+                        RoleType rt = p.getRole();
+                        switch (rt) {
+                            case DUO_CARRY -> md.setMatchRole("ADC");
+                            case DUO_SUPPORT -> md.setMatchRole("SUPPORT");
+                            case SOLO -> md.setMatchRole("TOP");
+                            case NONE -> md.setMatchRole("JUNGLE");
+                            case DUO -> md.setMatchRole("MID");
+                        }
+                        if (p.didWin()) {
+                            wins++;
+                            md.setGameResult("VICTORY");
+                        }else {
+                            losses++;
+                            md.setGameResult("DEFEAT");
+                        }
+                        StaticChampion champ = api.getChampion(p.getChampionId());
+                        if (!championsStatic.containsKey(champ)) {
+                            championsStatic.put(champ, 1);
+                            ChampionData champData = new ChampionData();
+                            champData.setName(champ.getName());
+                            champData.setID(String.valueOf(champ.getId()));
+                            if (p.didWin()) {
+                                champData.addWin();
+                            } else {
+                                champData.addLoss();
+                            }
+                            champData.updateWinrate();
+                            champData.hasAppeared();
+
+                            champData.setKDA(p.getKills(), p.getDeaths(), p.getAssists());
+                            champions.put(champData, 1);
+                        }else {
+                            championsStatic.put(champ, championsStatic.get(champ) + 1);
+                            ChampionData champData;
+                            for (ChampionData c : champions.keySet()) {
+                                if (c.getID().equals(String.valueOf(champ.getId()))) {
+                                    champData = c;
+                                    if (p.didWin()) {
+                                        champData.addWin();
+                                    } else {
+                                        champData.addLoss();
+                                    }
+                                    champData.updateWinrate();
+                                    champData.hasAppeared();
+
+                                    champData.setKDA(p.getKills(), p.getDeaths(), p.getAssists());
+                                    champions.put(champData, champions.get(champData) + 1);
                                 }
-                                champData.updateWinrate();
-                                champions.put(champData, champions.get(champData) + 1);
                             }
                         }
                     }
@@ -187,64 +199,48 @@ public class HashExample {
             }
         }
 
-        TreeMap<Integer, Summoner> sortedParticipants = new TreeMap<>(Collections.reverseOrder());
-        for (Map.Entry<Summoner, Integer> entry : participants.entrySet()) {
-            if (entry.getValue() >= 2) {
-                sortedParticipants.put(entry.getValue(), entry.getKey());
-            }
-        }
-        TreeMap<Integer, ChampionData> sortedChampions = new TreeMap<>(Collections.reverseOrder());
-        for (Map.Entry<ChampionData, Integer> entry : champions.entrySet()) {
-            if (entry.getValue() >= 1) {
-                sortedChampions.put(entry.getValue(), entry.getKey());
-            }
-        }
-
-        List<Summoner> mostPlayedParticipants = new ArrayList<>();
-        int count = 0;
-        for (Map.Entry<Integer, Summoner> entry : sortedParticipants.entrySet()) {
-            if (count >= 4) {
-                break;
-            }
-            mostPlayedParticipants.add(entry.getValue());
-            count++;
-        }
-        List<ChampionData> mostPlayedChampions = new ArrayList<>();
-        count = 0;
-        for (Map.Entry<Integer, ChampionData> entry : sortedChampions.entrySet()) {
-            if (count >= 4) {
-                break;
-            }
-            mostPlayedChampions.add(entry.getValue());
-            count++;
-        }
-
-        while (mostPlayedParticipants.size() < 4) {
-            mostPlayedParticipants.add(null);
-        }
-        while (mostPlayedChampions.size() < 4) {
-            mostPlayedChampions.add(null);
-        }
-
-        Summoner[] mostPlayedParticipantsArray = mostPlayedParticipants.toArray(new Summoner[mostPlayedParticipants.size()]);
-        ArrayList<SummonerData> mostPlayedParticipantsData = new ArrayList<>();
-
-        ArrayList<ChampionData> mostPlayedChampionsArray = new ArrayList<>();
-
-        for (Summoner mp : mostPlayedParticipantsArray) {
+        List<SummonerData> orderedSummonersList = new ArrayList<>();
+        for (String mp : participants.keySet()) {
             if (mp != null) {
                 SummonerData sd = new SummonerData();
-                sd.setName(mp.getName());
-                sd.setImgID(String.valueOf(mp.getProfileIconId()));
+                sd.setName(mp);
                 sd.setGamesPlayedTogether(String.valueOf(participants.get(mp)));
-                mostPlayedParticipantsData.add(sd);
+                orderedSummonersList.add(sd);
             }
         }
+        Collections.sort(orderedSummonersList);
 
-        for (ChampionData cd : mostPlayedChampions) {
-            if (cd != null) {
-                mostPlayedChampionsArray.add(cd);
+        List<ChampionData> orderedChampionsList = new ArrayList<>();
+        for (Map.Entry<ChampionData, Integer> entry : champions.entrySet()) {
+            orderedChampionsList.add(entry.getKey());
+        }
+        Collections.sort(orderedChampionsList);
+
+        ArrayList<SummonerData> mostPlayedWithSummoners = new ArrayList<>();
+        int count = 0;
+        for (SummonerData entry : orderedSummonersList) {
+            if (count >= 4) {
+                break;
             }
+            Summoner summ = Summoner.bySummonerId(LeagueShard.EUW1, entry.getName());
+            entry.setImgID(String.valueOf(summ.getProfileIconId()));
+            entry.setName(summ.getName());
+            mostPlayedWithSummoners.add(entry);
+            count++;
+        }
+
+        ArrayList<ChampionData> mostPlayedChampions = new ArrayList<>();
+        ArrayList<ChampionData> lastChampions = new ArrayList<>();
+        count = 0;
+        for (ChampionData entry : orderedChampionsList) {
+            if (count < 3) {
+                lastChampions.add(entry);
+            }
+            if (count >= 6) {
+                break;
+            }
+            mostPlayedChampions.add(entry);
+            count++;
         }
 
         if (!soloQlp.equals("")) {
@@ -280,8 +276,10 @@ public class HashExample {
         data.put("flexQwinrate", flexQwinrate);
         data.put("soloQimage", soloQtierShort);
         data.put("flexQimage", flexQtierShort);
-        data.put("championIndex", mostPlayedChampionsArray);
-        data.put("summonerIndex", mostPlayedParticipantsData);
+        data.put("championIndex", mostPlayedChampions);
+        data.put("summonerIndex", mostPlayedWithSummoners);
+        data.put("last20Games", wins + "W " + losses + "L");
+        data.put("last20index", lastChampions);
 
         StringWriter out = new StringWriter();
         template.process(data, out);

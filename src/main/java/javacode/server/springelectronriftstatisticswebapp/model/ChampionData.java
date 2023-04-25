@@ -1,11 +1,16 @@
 package javacode.server.springelectronriftstatisticswebapp.model;
 
-public class ChampionData {
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+public class ChampionData implements Comparable<ChampionData> {
 
     public ChampionData () {
     }
 
-    public ChampionData (String ID, String name, String KDA, String wr, String games) {
+    public ChampionData (String ID, String name, Double KDA, String wr, String games) {
         this.ID = ID;
         this.name = name;
         this.KDA = KDA;
@@ -15,11 +20,15 @@ public class ChampionData {
 
     String ID = "";
     String name = "";
-    String KDA = "";
+    Double KDA = 0.0;
+    int kills = 0;
+    int deaths = 0;
+    int assists = 0;
     String wr = "";
     String wins = "0";
     String losses = "0";
     String games = "0";
+    int timesAppeared = 0;
 
     public String getName () {
         return name;
@@ -29,13 +38,25 @@ public class ChampionData {
         this.name = name;
     }
 
-    public String getKDA () {
+    public Double getKDA () {
         return KDA;
     }
 
-    public void setKDA (String KDA) {
-        this.KDA = KDA;
+    public void setKDA (int kills, int deaths, int assists) {
+        this.kills += kills;
+        this.deaths += deaths;
+        this.assists += assists;
+
+        double KDAAverage = 0;
+        if (this.deaths == 0) {
+            KDAAverage = (double) this.kills + (double) this.assists;
+        }else {
+            KDAAverage = ((double) this.kills + (double) this.assists) / (double) this.deaths;
+        }
+        BigDecimal bd = new BigDecimal(KDAAverage).setScale(2, RoundingMode.HALF_UP);
+        this.KDA = bd.doubleValue();
     }
+
 
     public String getWr () {
         return wr;
@@ -87,8 +108,34 @@ public class ChampionData {
         this.games = String.valueOf(Integer.parseInt(this.games) + 1);
     }
 
+    public void hasAppeared() {
+        this.timesAppeared++;
+    }
+
+    public int getTimesAppeared() {
+        return this.timesAppeared;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChampionData that = (ChampionData) o;
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
     public void updateWinrate() {
         Double wr = (double) ((Integer.parseInt(this.wins) * 100) / (Integer.parseInt(this.games)));
         this.wr = String.valueOf(wr);
+    }
+
+    @Override
+    public int compareTo(ChampionData o) {
+        return Integer.compare(o.timesAppeared, this.timesAppeared);
     }
 }

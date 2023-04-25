@@ -1,6 +1,6 @@
 package javacode.server.springelectronriftstatisticswebapp.model;
 
-public class SummonerData {
+public class SummonerData implements Comparable<SummonerData> {
 
     public SummonerData () {
     }
@@ -47,5 +47,23 @@ public class SummonerData {
 
     public void setGamesPlayedTogether (String gamesPlayedTogether) {
         this.gamesPlayedTogether = gamesPlayedTogether;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChampionData that = (ChampionData) o;
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public int compareTo(SummonerData o) {
+        return Integer.compare(Integer.parseInt(o.gamesPlayedTogether), Integer.parseInt(this.gamesPlayedTogether));
     }
 }
