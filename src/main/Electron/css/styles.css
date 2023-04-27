@@ -1446,9 +1446,10 @@ margin-top: 1rem;
 }
 
 .recentlyPlayedChampionStats h1 {
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     font-family: "Montserrat", sans-serif;
     color: #ffffff;
+    padding-bottom: 0.1rem;
 }
 
 .recentlyPlayedChampionStats h2 {
@@ -1733,8 +1734,13 @@ margin-top: 1rem;
     justify-content: flex-end;
     top: 0.75rem;
     right: 0.75rem;
-    gap: 1.5rem;
+    gap: 1rem;
     height: fit-content;
+}
+
+.historyGamemodeType h3 {
+    font-size: 0.80rem;
+    color: #ffffff;
 }
 
 .historyGameStatNumbers {

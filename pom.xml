@@ -27,12 +27,6 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.9.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.stelar7</groupId>
             <artifactId>R4J</artifactId>
             <version>2.2.9</version>

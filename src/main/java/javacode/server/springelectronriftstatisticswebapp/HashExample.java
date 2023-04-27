@@ -8,8 +8,6 @@ import javacode.server.springelectronriftstatisticswebapp.model.ChampionData;
 import javacode.server.springelectronriftstatisticswebapp.model.MatchData;
 import javacode.server.springelectronriftstatisticswebapp.model.SummonerData;
 import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
-import no.stelar7.api.r4j.basic.cache.impl.MongoDBCacheProvider;
-import no.stelar7.api.r4j.basic.cache.impl.MySQLCacheProvider;
 import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
 import no.stelar7.api.r4j.basic.constants.types.lol.GameQueueType;
@@ -28,7 +26,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.sql.Array;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -122,7 +121,7 @@ public class HashExample {
             MatchData md = new MatchData();
             if (Duration.between(m.getGameStartAsDate(), m.getGameEndAsDate()).compareTo(Duration.ofMinutes(4)) > 0) {
                 for (MatchParticipant p : m.getParticipants()) {
-                    if (!p.getSummonerName().equals(sum.getSummonerId())) {
+                    if (!p.getSummonerId().equals(sum.getSummonerId())) {
                         if (!participants.containsKey(p.getSummonerId())) {
                             participants.put(p.getSummonerId(), 1);
                         } else {
@@ -130,27 +129,65 @@ public class HashExample {
                         }
                     }else {
                         md.setMatchId(s);
+                        String name = p.getChampionName();
                         md.setChampName(p.getChampionName());
-                        md.setGameType(m.getQueue().prettyName());
+                        String gametype = m.getQueue().prettyName();
+                        switch (gametype) {
+                            case "5v5 Dynamic Queue":
+                                gametype = "Normal queue";
+                                break;
+                            case "5v5 Dynamic Ranked Solo Queue":
+                                gametype = "Ranked Solo";
+                                break;
+                            case "5v5 Dynamic Ranked Flex Queue":
+                                gametype = "Ranked Flex";
+                                break;
+                        }
+                        md.setGameType(gametype);
                         ZonedDateTime createdate = m.getMatchCreationAsDate();
 
-                        String formattedDate = createdate.format(formatter);
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
                         long noOfDaysBetween = ChronoUnit.DAYS.between(createdate, ZonedDateTime.now());
-                        if (noOfDaysBetween < 10) {
-                            md.setGameDate("hace " + noOfDaysBetween + " días");
-                            // hacer algo con formattedDays
+                        if (noOfDaysBetween < 1) {
+                            md.setGameDate("hace " + ChronoUnit.HOURS.between(createdate, ZonedDateTime.now()) + " horas");
+                        }else if (noOfDaysBetween < 10) {
+                            if (noOfDaysBetween == 1) {
+                                md.setGameDate("hace " + noOfDaysBetween + " día");
+                            } else {
+                                md.setGameDate("hace " + noOfDaysBetween + " días");
+                            }
                         } else {
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
                             md.setGameDate(createdate.format(formatter));
                         }
+                        double kills = p.getKills();
+                        double deaths = p.getDeaths();
+                        double assists = p.getAssists();
+
+                        if (p.getDeaths() == 0) {
+                            String KDA = String.valueOf(kills + assists);
+                            BigDecimal bd = new BigDecimal(KDA).setScale(1, RoundingMode.HALF_EVEN);
+                            md.setKDA(bd.doubleValue() + " KDA");
+                        } else {
+                            String KDA = String.valueOf((kills+assists)/deaths);
+                            BigDecimal bd = new BigDecimal(KDA).setScale(1, RoundingMode.HALF_EVEN);
+                            md.setKDA(bd.doubleValue() + " KDA");
+                        }
+                        md.setLongKDA(kills + " / " + deaths + " / " + assists);
+                        String csMin = String.valueOf((int) ((p.getTotalMinionsKilled() + p.getNeutralMinionsKilled()) / Duration.between(m.getGameStartAsDate(), m.getGameEndAsDate()).toMinutes()));
+                        md.setCsMin(csMin + " CS/min");
+                        md.setCsTotal(p.getTotalMinionsKilled() + " CS");
 
                         RoleType rt = p.getRole();
-                        switch (rt) {
-                            case DUO_CARRY -> md.setMatchRole("ADC");
-                            case DUO_SUPPORT -> md.setMatchRole("SUPPORT");
-                            case SOLO -> md.setMatchRole("TOP");
-                            case NONE -> md.setMatchRole("JUNGLE");
-                            case DUO -> md.setMatchRole("MID");
+                        if (!gametype.equals("ARAM")) {
+                            switch (rt) {
+                                case CARRY -> md.setMatchRole("ADC");
+                                case SUPPORT -> md.setMatchRole("SUPPORT");
+                                case SOLO -> md.setMatchRole("TOP");
+                                case NONE -> md.setMatchRole("JUNGLE");
+                                case DUO -> md.setMatchRole("MID");
+                            }
+                        }else {
+                            md.setMatchRole("");
                         }
                         if (p.didWin()) {
                             wins++;
@@ -163,7 +200,12 @@ public class HashExample {
                         if (!championsStatic.containsKey(champ)) {
                             championsStatic.put(champ, 1);
                             ChampionData champData = new ChampionData();
-                            champData.setName(champ.getName());
+                            String nam = champ.getName();
+                            nam = nam.replace(" ", "");
+                            if (nam.equals("Nunu&Willump")) {
+                                nam = "Nunu";
+                            }
+                            champData.setName(nam);
                             champData.setID(String.valueOf(champ.getId()));
                             if (p.didWin()) {
                                 champData.addWin();
@@ -194,6 +236,7 @@ public class HashExample {
                                 }
                             }
                         }
+                        matchData.add(md);
                     }
                 }
             }
@@ -280,6 +323,7 @@ public class HashExample {
         data.put("summonerIndex", mostPlayedWithSummoners);
         data.put("last20Games", wins + "W " + losses + "L");
         data.put("last20index", lastChampions);
+        data.put("historyIndex", matchData);
 
         StringWriter out = new StringWriter();
         template.process(data, out);
