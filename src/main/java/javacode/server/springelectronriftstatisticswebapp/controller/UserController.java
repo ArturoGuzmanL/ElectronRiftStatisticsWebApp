@@ -5,6 +5,7 @@ import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactor
 import javacode.server.springelectronriftstatisticswebapp.model.User;
 import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
+import no.stelar7.api.r4j.basic.utils.SummonerCrawler;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +142,22 @@ public class UserController {
         }
     }
 
+    @GetMapping("/htmlRequests/summonerPage/{PUUID}/{logged}/{uid}")
+    public ResponseEntity<String> summonerPage(@PathVariable("logged") String logged, @PathVariable("uid") String uid, @PathVariable("PUUID") String PUUID) {
+        if (Boolean.parseBoolean(logged)) {
+            Optional<User> user = userRepository.findById(uid);
+            if (user.isPresent()) {
+                String html = htmlFactory.summonerPage(true, PUUID, user.get());
+                return new ResponseEntity<>(html, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }else {
+            String html = htmlFactory.summonerPage(false, PUUID);
+            return new ResponseEntity<>(html, HttpStatus.OK);
+        }
+    }
+
     // ------------- General actions  ------------- //
 
     @GetMapping("/browse/{username}/{appid}")
@@ -173,10 +190,11 @@ public class UserController {
                 values.put("Img", summonerImg);
                 values.put("SummName", summonerName);
                 values.put("SummReg", summonerRegion);
+                values.put("summID", summoner.getPUUID());
                 StringSubstitutor sub = new StringSubstitutor(values);
 
-                String htmlFragment = "<li class=\"browserItem\">" +
-                        "<a href=\"\" class=\"browserLink\">" +
+                String htmlFragment = "<li id=\"${summID}\" class=\"browserItem\">" +
+                        "<div href=\"\" class=\"browserLink\">" +
                         "<div class=\"cardContainer\">" +
                         "<div class=\"browserCard\">" +
                         "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
@@ -189,7 +207,7 @@ public class UserController {
                         "<span class=\"browserSummName\">${SummName}</span>" +
                         "<span class=\"browserSummRegion\">${SummReg}</span>" +
                         "</span>" +
-                        "</a>" +
+                        "</div>" +
                         "</li>";
 
                 String formattedHtml = sub.replace(htmlFragment);

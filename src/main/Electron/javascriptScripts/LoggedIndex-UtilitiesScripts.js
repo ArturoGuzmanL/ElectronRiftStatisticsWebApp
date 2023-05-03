@@ -97,10 +97,10 @@ $('#BrowserInput').on('input', function(event) {
         $('#loader').removeClass("disabled");
         $('#browserListContainer').addClass("loader");
 
-        ipcRenderer.send("get-appid");
-        ipcRenderer.on("get-appid-reply", (event, appid) => {
-            timeoutId = setTimeout(function () {
-                if (username === $('#BrowserInput').val()) {
+        timeoutId = setTimeout(function () {
+            if (username === $('#BrowserInput').val()) {
+                ipcRenderer.send("get-appid");
+                ipcRenderer.on("get-appid-reply", (event, appid) => {
                     xhr = new XMLHttpRequest();
                     xhr.open('GET', `http://localhost:8080/api/browse/${username}/${appid}`, true);
                     xhr.onload = function () {
@@ -118,9 +118,9 @@ $('#BrowserInput').on('input', function(event) {
                         }
                     };
                     xhr.send();
-                }
-            }, 1000);
-        });
+                });
+            }
+        }, 1150);
     }else {
         $('#browserListContainer').html("");
     }
@@ -130,8 +130,8 @@ $('#BrowserInput').on('keydown', function(event) {
     let browserListContainer = $('#browserListContainer');
     let browserInput = $('#BrowserInput').val();
 
-    if (event.which === 8) { // El usuario ha pulsado la tecla borrar
-        browserListContainer.html(""); // Borramos el contenido
+    if (event.which === 8) {
+        browserListContainer.html("");
 
         if (browserInput !== "") {
             browserListContainer.addClass("loader").html("<div class=\"loader disabled\" id=\"loader\"></div>");

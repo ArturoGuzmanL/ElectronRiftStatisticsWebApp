@@ -1682,15 +1682,48 @@ margin-top: 1rem;
     position: relative;
     display: grid;
     grid-template-columns: 1fr 2fr;
-    column-gap: 0.25rem;
+    column-gap: 0.65rem;
 }
 
-.historyGamePhoto {
+.historyGamePhotoLost,
+.historyGamePhotoWon {
     display: flex;
     align-items: center;
     width: fit-content;
     height: fit-content;
     margin-top: 0.4rem;
+}
+
+.historyGamePhotoWon img{
+    margin-left: 0.5rem;
+    /*lost color border on red*/
+    border-radius: 20%;
+    background-color: #17204a;
+    box-shadow: 0 0 0.35rem 1px #4caf50;
+}
+
+.historyGamePhotoLost img{
+    margin-left: 0.5rem;
+    /*lost color border on red*/
+    border-radius: 20%;
+    background-color: #17204a;
+    box-shadow: 0 0 0.35rem 1px #f0555f;
+}
+
+.VICTORYh1 {
+    width: fit-content;
+    padding-right: 0.25rem;
+    border: 3px solid #3f8e42;
+    background-color: #3f8e42;
+    border-radius: 0.75rem;
+}
+
+.DEFEATh1 {
+    width: fit-content;
+    padding-right: 0.25rem;
+    border: 3px solid #f0555f;
+    background-color: #f0555f;
+    border-radius: 0.75rem;
 }
 
 .historyGameResult {
@@ -1744,6 +1777,7 @@ margin-top: 1rem;
 }
 
 .historyGameStatNumbers {
+    margin-left: 1.5rem;
     position: relative;
     display: flex;
     align-items: center;
@@ -1761,6 +1795,14 @@ margin-top: 1rem;
         margin-left: 1.5rem;
         transition: margin-left 0.5s ease 0s;
     }
+
+    .historyGameStatNumbers h1 {
+        font-size: 0.9rem;
+    }
+
+    .historyGameStatNumbers h2 {
+        font-size: 0.65rem;
+    }
 }
 
 .historyGameStatNumbers h1 {
@@ -1774,13 +1816,5 @@ margin-top: 1rem;
     font-family: "Montserrat", sans-serif;
     color: #ffffff;
     margin-bottom: 1rem;
-}
-
-.VICTORYh1 {
-    text-shadow: 0 0 0.5rem #00ff00;
-}
-
-.DEFEATh1 {
-     : 0 0 0.5rem #ff0000;
 }
 

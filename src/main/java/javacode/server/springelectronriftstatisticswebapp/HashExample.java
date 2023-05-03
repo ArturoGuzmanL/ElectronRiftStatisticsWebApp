@@ -12,9 +12,12 @@ import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
 import no.stelar7.api.r4j.basic.constants.types.lol.GameQueueType;
 import no.stelar7.api.r4j.basic.constants.types.lol.RoleType;
+import no.stelar7.api.r4j.basic.utils.LazyList;
+import no.stelar7.api.r4j.basic.utils.SummonerCrawler;
 import no.stelar7.api.r4j.impl.R4J;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.MatchBuilder;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.MatchListBuilder;
+import no.stelar7.api.r4j.impl.lol.raw.ChampionAPI;
 import no.stelar7.api.r4j.impl.lol.raw.DDragonAPI;
 import no.stelar7.api.r4j.pojo.lol.league.LeagueEntry;
 import no.stelar7.api.r4j.pojo.lol.match.v5.LOLMatch;
@@ -54,7 +57,7 @@ public class HashExample {
 
         String html;
         Template template;
-        template = cfg.getTemplate("unloggedProfilePage.ftl");
+        template = cfg.getTemplate("unloggedSummonerProfile.ftl");
         Map<String, Object> data = new HashMap<>();
 
         final R4J r4J = new R4J(SecretFile.CREDS);
@@ -63,8 +66,8 @@ public class HashExample {
         DataCall.setCacheProvider(fileCache.get());
 
         MatchListBuilder builder = new MatchListBuilder();;
-        Summoner sum = Summoner.byName(LeagueShard.EUW1, "YoSoyMiguel13");
-        builder = builder.withPuuid(sum.getPUUID()).withPlatform(LeagueShard.EUW1);
+        Summoner sum = Summoner.byPUUID(LeagueShard.UNKNOWN, "xU1ajEqoM2-a8escGrjQUmRahpa_pJU-WWxeDruOhmJ8SWZBsUW_l7YXaXgvMQtPzcQuC9aUBeBcCA");
+        builder = builder.withPuuid(sum.getPUUID()).withPlatform(sum.getPlatform());
         List<LeagueEntry> league = sum.getLeagueEntry();
         String soloQtier = "";
         String soloQtierShort = "";
@@ -131,6 +134,7 @@ public class HashExample {
                         md.setMatchId(s);
                         String name = p.getChampionName();
                         md.setChampName(p.getChampionName());
+                        md.setChampID(String.valueOf(p.getChampionId()));
                         String gametype = m.getQueue().prettyName();
                         switch (gametype) {
                             case "5v5 Dynamic Queue":
@@ -139,7 +143,7 @@ public class HashExample {
                             case "5v5 Dynamic Ranked Solo Queue":
                                 gametype = "Ranked Solo";
                                 break;
-                            case "5v5 Dynamic Ranked Flex Queue":
+                            case "5v5 Ranked Flex Queue":
                                 gametype = "Ranked Flex";
                                 break;
                         }
@@ -172,10 +176,10 @@ public class HashExample {
                             BigDecimal bd = new BigDecimal(KDA).setScale(1, RoundingMode.HALF_EVEN);
                             md.setKDA(bd.doubleValue() + " KDA");
                         }
-                        md.setLongKDA(kills + " / " + deaths + " / " + assists);
+                        md.setLongKDA((int) kills + " / " + (int) deaths + " / " + (int) assists);
                         String csMin = String.valueOf((int) ((p.getTotalMinionsKilled() + p.getNeutralMinionsKilled()) / Duration.between(m.getGameStartAsDate(), m.getGameEndAsDate()).toMinutes()));
                         md.setCsMin(csMin + " CS/min");
-                        md.setCsTotal(p.getTotalMinionsKilled() + " CS");
+                        md.setCsTotal(p.getTotalMinionsKilled() + p.getNeutralMinionsKilled() + " CS");
 
                         RoleType rt = p.getRole();
                         if (!gametype.equals("ARAM")) {
@@ -202,9 +206,6 @@ public class HashExample {
                             ChampionData champData = new ChampionData();
                             String nam = champ.getName();
                             nam = nam.replace(" ", "");
-                            if (nam.equals("Nunu&Willump")) {
-                                nam = "Nunu";
-                            }
                             champData.setName(nam);
                             champData.setID(String.valueOf(champ.getId()));
                             if (p.didWin()) {
