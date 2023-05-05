@@ -5,14 +5,16 @@ public class SummonerData implements Comparable<SummonerData> {
     public SummonerData () {
     }
 
-    public SummonerData (String gamesPlayedTogether, String name, String imgID, String rank) {
+    public SummonerData (String gamesPlayedTogether, String name, String imgID, String rank, String PUUID) {
         this.name = name;
         this.imgID = imgID;
         this.rank = rank;
         this.gamesPlayedTogether = gamesPlayedTogether;
+        this.PUUID = PUUID;
     }
 
     String name;
+    String PUUID;
     String imgID;
     String rank;
     String gamesPlayedTogether;
@@ -47,6 +49,13 @@ public class SummonerData implements Comparable<SummonerData> {
 
     public void setGamesPlayedTogether (String gamesPlayedTogether) {
         this.gamesPlayedTogether = gamesPlayedTogether;
+    }
+    public String getPUUID () {
+        return PUUID;
+    }
+
+    public void setPUUID (String PUUID) {
+        this.PUUID = PUUID;
     }
 
     @Override

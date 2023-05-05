@@ -16,8 +16,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class SpringElectronRiftStatisticsWEbAppApplication {
 
     public static void main (String[] args) {
-        final R4J r4J = new R4J(SecretFile.CREDS);
-        DataCall.setCacheProvider(new FileSystemCacheProvider());
         SpringApplication.run(SpringElectronRiftStatisticsWEbAppApplication.class, args);
     }
 

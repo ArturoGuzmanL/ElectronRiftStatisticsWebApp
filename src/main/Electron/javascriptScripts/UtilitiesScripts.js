@@ -235,21 +235,25 @@ $("#flexqButton").on("click", function(event) {
     $(".soloqButton").addClass("disabled");
 });
 
-
 $('#browserListContainer').on('click', 'li.browserItem', function() {
-    console.log("Se ha ejecutado browserItem");
+    getSummoner.call(this);
+});
+
+$('#recentlyPlayedContent').on('click', 'div.recentlyPlayedSummoner', function() {
+    getSummoner.call(this);
+});
+
+function getSummoner() {
     let summID = $(this).attr("id");
-    console.log(summID);
-    console.log("xU1ajEqoM2-a8escGrjQUmRahpa_pJU-WWxeDruOhmJ8SWZBsUW_l7YXaXgvMQtPzcQuC9aUBeBcCA")
     ipcRenderer.send("is-logged");
     ipcRenderer.on("is-logged-reply", (event, reply) => {
         if (reply) {
             ipcRenderer.send("get-uid");
             ipcRenderer.on("get-uid-reply", (event, uid) => {
-                htmlPagesRequests("http://localhost:8080/api/htmlRequests/summonerPage/"+ summID + "/" + reply + "/" +uid, "ElectronPage.html")
+                htmlPagesRequests("http://localhost:8080/api/htmlRequests/summonerPage/" + summID + "/" + reply + "/" + uid, "ElectronPage.html")
             });
-        }else {
-            htmlPagesRequests("http://localhost:8080/api/htmlRequests/summonerPage/"+ summID + "/" + reply + "/null", "ElectronPage.html")
+        } else {
+            htmlPagesRequests("http://localhost:8080/api/htmlRequests/summonerPage/" + summID + "/" + reply + "/null", "ElectronPage.html")
         }
     });
-});
+}

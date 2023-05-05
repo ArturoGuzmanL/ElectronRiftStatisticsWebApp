@@ -143,6 +143,7 @@
 
 <script src="../node_modules/sweetalert2/src/SweetAlert.js"></script>
 <script type="module" src="../javascriptScripts/UtilitiesScripts.js"></script>
+<script type="module" src="../javascriptScripts/LoggedIndex-UtilitiesScripts.js"></script>
 <script type="module" src="../javascriptScripts/ButtonActions.js"></script>
 </body>
 </html>

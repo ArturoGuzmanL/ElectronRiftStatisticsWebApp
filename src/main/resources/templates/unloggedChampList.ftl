@@ -168,7 +168,7 @@
                 <#list championIndex as ChampionName, ChampionID>
                     <li>
                         <a href="#" id="${ChampionID}" class="ChampionObject">
-                            <img class="ChampionImage" src="https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${ChampionID}.png" alt="${ChampionName}">
+                            <img class="ChampionImage" src="../media/championIcons/${ChampionID}.png" alt="${ChampionName}">
                             <span class="ChampionName">${ChampionName}</span>
                         </a>
                     </li>
@@ -208,6 +208,7 @@
 
 <!-- Fin del contenido de la pagina -->
 
+<script src="../node_modules/sweetalert2/src/SweetAlert.js"></script>
 <script type="module" src="../javascriptScripts/UtilitiesScripts.js"></script>
 <script type="module" src="../javascriptScripts/ButtonActions.js"></script>
 </body>

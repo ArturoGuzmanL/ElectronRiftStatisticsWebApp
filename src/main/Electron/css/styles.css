@@ -1066,6 +1066,7 @@ body{
     80%{background-size: 50% 50%,20% 20%,20% 20%,20% 20%}
 }
 
+.itemListContainer,
 .championListContainer {
     z-index: -1;
     position: absolute;
@@ -1087,6 +1088,15 @@ body{
     row-gap: 1.5rem;
 }
 
+.itemList {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    row-gap: 1.5rem;
+}
+
+
+.ItemObject,
 .ChampionObject {
     position: relative;
     align-items: center;
@@ -1094,6 +1104,81 @@ body{
     justify-items: center;
 }
 
+.itemTooltip {
+    z-index: 1;
+    position: absolute;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f0555f;
+    top: -150%;
+    min-width: 15rem;
+}
+
+.tooltipTitle {
+    position: relative;
+    display: flex;
+    gap: 0.5rem;
+    color: #FFFFFF;
+    align-items: center;
+    padding-left: 0.5rem;
+}
+
+.tooltipTitle img {
+    width: 2rem;
+    height: 2rem;
+}
+
+.price {
+    margin-left: auto;
+    margin-right: 0.25rem;
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
+}
+
+.price img {
+    width: 20px;
+    height: 15px;
+}
+
+.statsList {
+    border-top: 1px solid #FFFFFF;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(auto-fit, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+}
+
+.statItem {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 0.25rem;
+    width: fit-content;
+}
+
+.statItem h1 {
+    font-size: 0.8rem;
+    color: #FFFFFF;
+}
+
+.statItem h2 {
+    font-size: 0.8rem;
+    color: #FFFFFF;
+}
+
+.statItem img {
+    width: 1rem;
+    height: 1rem;
+}
+
+.ItemObject:hover .ItemImage,
 .ChampionObject:hover .ChampionImage {
     scale: 1.05;
     border-color: #2c5386;
@@ -1101,6 +1186,7 @@ body{
     transition: scale 0.3s ease 0s;
 }
 
+.ItemObject:hover .ItemImage:hover::before,
 .ChampionObject:hover .ChampionImage:hover::before {
     z-index: -1;
     top: -100px;
@@ -1120,6 +1206,15 @@ body{
     transition: scale 0.3s ease 0s, border-color 0.3s ease 0s, box-shadow 0.75s ease 0s;
 }
 
+.ItemImage {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    border: 1px solid #eaf5fa;
+    transition: scale 0.3s ease 0s, border-color 0.3s ease 0s, box-shadow 0.75s ease 0s;
+}
+
 .ChampionName {
     position: relative;
     font-size: 1rem;
@@ -1129,6 +1224,7 @@ body{
     height: 20%;
 }
 
+.itemsTitle,
 .ChampionsTitle {
     position: relative;
     top: 10rem;
@@ -1138,11 +1234,13 @@ body{
     height: 50%;
 }
 
+.itemsTitle h1,
 .ChampionsTitle h1 {
     font-size: 4rem;
     font-family: "Montserrat", sans-serif;
 }
 
+.itemsTitle p,
 .ChampionsTitle p {
     z-index: -1;
     font-size: 1.5rem;
@@ -1241,7 +1339,7 @@ body{
 
 #eloTierSolo,
 #eloTierFlex {
-margin-top: 1rem;
+    margin-top: 1rem;
 }
 
 .eloInfoSolo {
@@ -1406,6 +1504,7 @@ margin-top: 1rem;
     gap: 0.35rem;
 }
 
+.recentlyPlayedSummoner,
 .recentlyPlayedChampion {
     box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.75);
     border: 2px solid transparent;
@@ -1418,6 +1517,7 @@ margin-top: 1rem;
     transition: all 0.3s ease 0s;
 }
 
+.recentlyPlayedSummoner:hover,
 .recentlyPlayedChampion:hover {
     box-shadow: inset 0 0 0 1000px rgba(51, 51, 106, 0.5);
     border: 2px solid rgba(105, 105, 149, 1);
@@ -1425,6 +1525,7 @@ margin-top: 1rem;
     transition: all 0.3s ease 0s;
 }
 
+.recentlyPlayedSummoner img,
 .recentlyPlayedChampion img {
     margin-right: 0.5rem;
     margin-left: 0.5rem;

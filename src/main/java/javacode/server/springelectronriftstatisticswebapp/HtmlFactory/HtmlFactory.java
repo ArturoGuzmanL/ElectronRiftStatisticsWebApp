@@ -198,7 +198,7 @@ public class HtmlFactory {
                 template = cfg.getTemplate("unloggedSummonerProfile.ftl");
             }
 
-            MatchListBuilder builder = new MatchListBuilder();;
+            MatchListBuilder builder = new MatchListBuilder();
             Summoner summoner = SummonerAPI.getInstance().getSummonerByPUUID(LeagueShard.UNKNOWN, summonerPUUID);
 
             builder = builder.withPuuid(summoner.getPUUID()).withPlatform(summoner.getPlatform());
@@ -286,7 +286,10 @@ public class HtmlFactory {
 
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
                             long noOfDaysBetween = ChronoUnit.DAYS.between(createdate, ZonedDateTime.now());
-                            if (noOfDaysBetween < 1) {
+                            long noOfHoursBetween = ChronoUnit.HOURS.between(createdate, ZonedDateTime.now());
+                            if (noOfHoursBetween < 1) {
+                                md.setGameDate("hace " + ChronoUnit.MINUTES.between(createdate, ZonedDateTime.now()) + " minutos");
+                            } else if (noOfDaysBetween < 1) {
                                 md.setGameDate("hace " + ChronoUnit.HOURS.between(createdate, ZonedDateTime.now()) + " horas");
                             }else if (noOfDaysBetween < 10) {
                                 if (noOfDaysBetween == 1) {
@@ -402,6 +405,7 @@ public class HtmlFactory {
                 }
                 Summoner summ = Summoner.bySummonerId(LeagueShard.EUW1, entry.getName());
                 entry.setImgID(String.valueOf(summ.getProfileIconId()));
+                entry.setPUUID(summ.getPUUID());
                 entry.setName(summ.getName());
                 mostPlayedWithSummoners.add(entry);
                 count++;

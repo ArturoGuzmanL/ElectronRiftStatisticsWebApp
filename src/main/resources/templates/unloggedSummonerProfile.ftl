@@ -246,9 +246,9 @@
                     <div class="recentlyPlayedHeader">
                         <h1>Played With</h1>
                     </div>
-                    <div class="recentlyPlayedContent">
+                    <div class="recentlyPlayedContent" id="recentlyPlayedContent">
                         <#list summonerIndex as summoner>
-                            <div class="recentlyPlayedChampion">
+                            <div class="recentlyPlayedSummoner" id="${summoner.getPUUID()}">
                                 <div class="recentlyPlayedChampionImage">
                                     <img src="http://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${summoner.getImgID()}.png" alt="${summoner.getName()}" width="45px">
                                 </div>
@@ -351,6 +351,7 @@
 
 <!-- Fin del contenido de la pagina -->
 
+<script src="../node_modules/sweetalert2/src/SweetAlert.js"></script>
 <script type="module" src="../javascriptScripts/UtilitiesScripts.js"></script>
 <script type="module" src="../javascriptScripts/ButtonActions.js"></script>
 </body>

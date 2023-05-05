@@ -2,10 +2,15 @@ package javacode.server.springelectronriftstatisticswebapp.controller;
 
 
 import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
+import javacode.server.springelectronriftstatisticswebapp.SecretFile;
 import javacode.server.springelectronriftstatisticswebapp.model.User;
 import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
+import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
+import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
 import no.stelar7.api.r4j.basic.utils.SummonerCrawler;
+import no.stelar7.api.r4j.impl.R4J;
+import no.stelar7.api.r4j.impl.lol.raw.DDragonAPI;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/api/")
@@ -43,6 +49,14 @@ public class UserController {
         regions.add(LeagueShard.OC1);
         regions.add(LeagueShard.RU);
         regions.add(LeagueShard.TR1);
+    }
+
+    final R4J r4J = new R4J(SecretFile.CREDS);
+    DDragonAPI api = r4J.getDDragonAPI();
+    Supplier<FileSystemCacheProvider> fileCache= () -> new FileSystemCacheProvider();
+
+    public UserController() {
+        DataCall.setCacheProvider(fileCache.get());
     }
 
 

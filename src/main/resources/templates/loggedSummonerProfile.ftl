@@ -24,15 +24,17 @@
 
 <!-- Comienzo del header -->
 <div class="blur-toggle" id="blurrDiv">
-    <header class="header_noBrow">
+    <header class="header">
+
+        <div class="header_Browser" id="header_Browser">
+            <textarea class="header_Browser_ta" id="header_Browser_ta" placeholder="Search summoners, champions..." readonly></textarea>
+        </div>
 
         <!-- Botones de cuenta y ventanas -->
         <div class="accountArea  noselection">
             <button type="button" class="accountButton" id="show-logout">Log out</button>
         </div>
     </header>
-    <!-- Fin del header-->
-</div>
     <!-- Fin del header-->
 
     <!-- Comienzo del sidebar -->
@@ -185,9 +187,9 @@
                 <div class="recentlyPlayedHeader">
                     <h1>Played With</h1>
                 </div>
-                <div class="recentlyPlayedContent">
+                <div class="recentlyPlayedContent" id="recentlyPlayedContent">
                     <#list summonerIndex as summoner>
-                        <div class="recentlyPlayedChampion">
+                        <div class="recentlyPlayedSummoner" id="${summoner.getPUUID()}">
                             <div class="recentlyPlayedChampionImage">
                                 <img src="http://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${summoner.getImgID()}.png" alt="${summoner.getName()}" width="45px">
                             </div>
@@ -256,7 +258,6 @@
         </div>
     </div>
 </div>
-</div>
 
 <div class="popupBrowserWindow" id="popupBrowserWindow">
     <div class="popupBrowserInnerBrow">
@@ -290,7 +291,9 @@
 
 <!-- Fin del contenido de la pagina -->
 
+<script src="../node_modules/sweetalert2/src/SweetAlert.js"></script>
 <script type="module" src="../javascriptScripts/UtilitiesScripts.js"></script>
+<script type="module" src="../javascriptScripts/LoggedIndex-UtilitiesScripts.js"></script>
 <script type="module" src="../javascriptScripts/ButtonActions.js"></script>
 </body>
 </html>

@@ -23,22 +23,33 @@ import no.stelar7.api.r4j.pojo.lol.league.LeagueEntry;
 import no.stelar7.api.r4j.pojo.lol.match.v5.LOLMatch;
 import no.stelar7.api.r4j.pojo.lol.match.v5.MatchParticipant;
 import no.stelar7.api.r4j.pojo.lol.staticdata.champion.StaticChampion;
+import no.stelar7.api.r4j.pojo.lol.staticdata.item.InventoryDataStats;
+import no.stelar7.api.r4j.pojo.lol.staticdata.item.Item;
+import no.stelar7.api.r4j.pojo.lol.staticdata.shared.Image;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
 
+import javax.swing.*;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -69,270 +80,306 @@ public class HashExample {
         Summoner sum = Summoner.byPUUID(LeagueShard.UNKNOWN, "xU1ajEqoM2-a8escGrjQUmRahpa_pJU-WWxeDruOhmJ8SWZBsUW_l7YXaXgvMQtPzcQuC9aUBeBcCA");
         builder = builder.withPuuid(sum.getPUUID()).withPlatform(sum.getPlatform());
         List<LeagueEntry> league = sum.getLeagueEntry();
-        String soloQtier = "";
-        String soloQtierShort = "";
-        String soloQlp = "";
-        String soloQgames = "";
-        String soloQwinrate = "";
-        String flexQtier = "";
-        String flexQtierShort = "";
-        String flexQlp = "";
-        String flexQgames = "";
-        String flexQwinrate = "";
-        Integer wins = 0;
-        Integer losses = 0;
-        for (LeagueEntry entry : league) {
-            if (entry.getQueueType() == GameQueueType.RANKED_SOLO_5X5) {
-                soloQtier = entry.getTierDivisionType().prettyName();
-                soloQtierShort = entry.getTierDivisionType().prettyName().split(" ")[0].toLowerCase();
-                soloQlp = String.valueOf(entry.getLeaguePoints());
-                soloQgames = String.valueOf(entry.getWins() + entry.getLosses());
-                soloQwinrate = String.valueOf((int) ((double) entry.getWins() / (entry.getWins() + entry.getLosses()) * 100));
-            } else if (entry.getQueueType() == GameQueueType.RANKED_FLEX_SR) {
-                flexQtier = entry.getTierDivisionType().prettyName();
-                flexQtierShort = entry.getTierDivisionType().prettyName().split(" ")[0].toLowerCase();
-                flexQlp = String.valueOf(entry.getLeaguePoints());
-                flexQgames = String.valueOf(entry.getWins() + entry.getLosses());
-                flexQwinrate = String.valueOf((int) ((double) entry.getWins() / (entry.getWins() + entry.getLosses()) * 100));
-            }
-        }
-        if (soloQtier.equals("")) {
-            soloQtier = "Unranked";
-            soloQtierShort = "";
-            soloQlp = "";
-            soloQgames = "";
-            soloQwinrate = "";
-        }
-        if (flexQtier.equals("")) {
-            flexQtier = "Unranked";
-            flexQtierShort = "";
-            flexQlp = "";
-            flexQgames = "";
-            flexQwinrate = "";
-        }
 
-        MatchListBuilder builderMT = new MatchListBuilder();
-        List<String> last20 = builder.withCount(20).get();
-        MatchBuilder mb = new MatchBuilder(sum.getPlatform());
-        LOLMatch m;
-        HashMap<String, Integer> participants = new HashMap<>();
-        HashMap<ChampionData, Integer> champions = new HashMap<>();
-        HashMap<StaticChampion, Integer> championsStatic = new HashMap<>();
-        ArrayList<MatchData> matchData = new ArrayList<>();
-        for (String s : last20) {
-            m = mb.withId(s).getMatch();
-            MatchData md = new MatchData();
-            if (Duration.between(m.getGameStartAsDate(), m.getGameEndAsDate()).compareTo(Duration.ofMinutes(4)) > 0) {
-                for (MatchParticipant p : m.getParticipants()) {
-                    if (!p.getSummonerId().equals(sum.getSummonerId())) {
-                        if (!participants.containsKey(p.getSummonerId())) {
-                            participants.put(p.getSummonerId(), 1);
-                        } else {
-                            participants.put(p.getSummonerId(), participants.get(p.getSummonerId()) + 1);
-                        }
-                    }else {
-                        md.setMatchId(s);
-                        String name = p.getChampionName();
-                        md.setChampName(p.getChampionName());
-                        md.setChampID(String.valueOf(p.getChampionId()));
-                        String gametype = m.getQueue().prettyName();
-                        switch (gametype) {
-                            case "5v5 Dynamic Queue":
-                                gametype = "Normal queue";
-                                break;
-                            case "5v5 Dynamic Ranked Solo Queue":
-                                gametype = "Ranked Solo";
-                                break;
-                            case "5v5 Ranked Flex Queue":
-                                gametype = "Ranked Flex";
-                                break;
-                        }
-                        md.setGameType(gametype);
-                        ZonedDateTime createdate = m.getMatchCreationAsDate();
-
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
-                        long noOfDaysBetween = ChronoUnit.DAYS.between(createdate, ZonedDateTime.now());
-                        if (noOfDaysBetween < 1) {
-                            md.setGameDate("hace " + ChronoUnit.HOURS.between(createdate, ZonedDateTime.now()) + " horas");
-                        }else if (noOfDaysBetween < 10) {
-                            if (noOfDaysBetween == 1) {
-                                md.setGameDate("hace " + noOfDaysBetween + " día");
-                            } else {
-                                md.setGameDate("hace " + noOfDaysBetween + " días");
-                            }
-                        } else {
-                            md.setGameDate(createdate.format(formatter));
-                        }
-                        double kills = p.getKills();
-                        double deaths = p.getDeaths();
-                        double assists = p.getAssists();
-
-                        if (p.getDeaths() == 0) {
-                            String KDA = String.valueOf(kills + assists);
-                            BigDecimal bd = new BigDecimal(KDA).setScale(1, RoundingMode.HALF_EVEN);
-                            md.setKDA(bd.doubleValue() + " KDA");
-                        } else {
-                            String KDA = String.valueOf((kills+assists)/deaths);
-                            BigDecimal bd = new BigDecimal(KDA).setScale(1, RoundingMode.HALF_EVEN);
-                            md.setKDA(bd.doubleValue() + " KDA");
-                        }
-                        md.setLongKDA((int) kills + " / " + (int) deaths + " / " + (int) assists);
-                        String csMin = String.valueOf((int) ((p.getTotalMinionsKilled() + p.getNeutralMinionsKilled()) / Duration.between(m.getGameStartAsDate(), m.getGameEndAsDate()).toMinutes()));
-                        md.setCsMin(csMin + " CS/min");
-                        md.setCsTotal(p.getTotalMinionsKilled() + p.getNeutralMinionsKilled() + " CS");
-
-                        RoleType rt = p.getRole();
-                        if (!gametype.equals("ARAM")) {
-                            switch (rt) {
-                                case CARRY -> md.setMatchRole("ADC");
-                                case SUPPORT -> md.setMatchRole("SUPPORT");
-                                case SOLO -> md.setMatchRole("TOP");
-                                case NONE -> md.setMatchRole("JUNGLE");
-                                case DUO -> md.setMatchRole("MID");
-                            }
-                        }else {
-                            md.setMatchRole("");
-                        }
-                        if (p.didWin()) {
-                            wins++;
-                            md.setGameResult("VICTORY");
-                        }else {
-                            losses++;
-                            md.setGameResult("DEFEAT");
-                        }
-                        StaticChampion champ = api.getChampion(p.getChampionId());
-                        if (!championsStatic.containsKey(champ)) {
-                            championsStatic.put(champ, 1);
-                            ChampionData champData = new ChampionData();
-                            String nam = champ.getName();
-                            nam = nam.replace(" ", "");
-                            champData.setName(nam);
-                            champData.setID(String.valueOf(champ.getId()));
-                            if (p.didWin()) {
-                                champData.addWin();
-                            } else {
-                                champData.addLoss();
-                            }
-                            champData.updateWinrate();
-                            champData.hasAppeared();
-
-                            champData.setKDA(p.getKills(), p.getDeaths(), p.getAssists());
-                            champions.put(champData, 1);
-                        }else {
-                            championsStatic.put(champ, championsStatic.get(champ) + 1);
-                            ChampionData champData;
-                            for (ChampionData c : champions.keySet()) {
-                                if (c.getID().equals(String.valueOf(champ.getId()))) {
-                                    champData = c;
-                                    if (p.didWin()) {
-                                        champData.addWin();
-                                    } else {
-                                        champData.addLoss();
-                                    }
-                                    champData.updateWinrate();
-                                    champData.hasAppeared();
-
-                                    champData.setKDA(p.getKills(), p.getDeaths(), p.getAssists());
-                                    champions.put(champData, champions.get(champData) + 1);
-                                }
-                            }
-                        }
-                        matchData.add(md);
-                    }
+        Map<Integer, Item> items = api.getItems();
+        int contador = 0;
+        ArrayList<String> itemStats = new ArrayList<>();
+        ArrayList<String> s2 = new ArrayList<>();
+        for (Item item : items.values()) {
+            InventoryDataStats ivdata = item.getStats();
+            System.out.println(item.getName());
+            ArrayList<String> stats = new ArrayList<>();
+            stats = new ArrayList<>(Arrays.asList(item.getSanitizedDescription().split("\\n")));
+            Iterator<String> it = stats.iterator();
+            while (it.hasNext()) {
+                String x = it.next();
+                String [] x1 = x.split(" ", 2);
+                String x2 = x1[x1.length - 1];
+                if (!s2.contains(x2) && x.length() < 30) {
+                    s2.add(x2);
                 }
             }
         }
+        System.out.println(s2);
 
-        List<SummonerData> orderedSummonersList = new ArrayList<>();
-        for (String mp : participants.keySet()) {
-            if (mp != null) {
-                SummonerData sd = new SummonerData();
-                sd.setName(mp);
-                sd.setGamesPlayedTogether(String.valueOf(participants.get(mp)));
-                orderedSummonersList.add(sd);
-            }
-        }
-        Collections.sort(orderedSummonersList);
+        /*
+        Move speed, base mana regen, base health regen, health, critical strike chance, ability power, mana, health, armor, magic resist, attack damage, attack speed, life steal, Ability Haste, Heal and Shield Power, Magic Penetration, Armor Penetration, Tenacity,
+         */
 
-        List<ChampionData> orderedChampionsList = new ArrayList<>();
-        for (Map.Entry<ChampionData, Integer> entry : champions.entrySet()) {
-            orderedChampionsList.add(entry.getKey());
-        }
-        Collections.sort(orderedChampionsList);
 
-        ArrayList<SummonerData> mostPlayedWithSummoners = new ArrayList<>();
-        int count = 0;
-        for (SummonerData entry : orderedSummonersList) {
-            if (count >= 4) {
-                break;
-            }
-            Summoner summ = Summoner.bySummonerId(LeagueShard.EUW1, entry.getName());
-            entry.setImgID(String.valueOf(summ.getProfileIconId()));
-            entry.setName(summ.getName());
-            mostPlayedWithSummoners.add(entry);
-            count++;
-        }
+//        StringWriter out = new StringWriter();
+//        template.process(data, out);
+//        html = out.toString();
 
-        ArrayList<ChampionData> mostPlayedChampions = new ArrayList<>();
-        ArrayList<ChampionData> lastChampions = new ArrayList<>();
-        count = 0;
-        for (ChampionData entry : orderedChampionsList) {
-            if (count < 3) {
-                lastChampions.add(entry);
-            }
-            if (count >= 6) {
-                break;
-            }
-            mostPlayedChampions.add(entry);
-            count++;
-        }
+//        FileWriter writer = new FileWriter("Prueba.html");
+//        writer.write(html);
+//        writer.close();
 
-        if (!soloQlp.equals("")) {
-            soloQlp = soloQlp + " LP";
-        }
-        if (!flexQlp.equals("")) {
-            flexQlp = flexQlp + " LP";
-        }
-        if (!soloQwinrate.equals("")) {
-            soloQwinrate = soloQwinrate + "%";
-        }
-        if (!flexQwinrate.equals("")) {
-            flexQwinrate = flexQwinrate + "%";
-        }
-        if (!soloQgames.equals("")) {
-            soloQgames = soloQgames + " Games";
-        }
-        if (!flexQgames.equals("")) {
-            flexQgames = flexQgames + " Games";
-        }
 
-        data.put("profileLevel", sum.getSummonerLevel());
-        data.put("profileImageID", String.valueOf(sum.getProfileIconId()).replace(".", ""));
-        data.put("profileUsername", sum.getName());
-        data.put("isLinkedAccount", "this account is not linked yet");
-        data.put("soloQtier", soloQtier);
-        data.put("soloQlp", soloQlp);
-        data.put("soloQgames", soloQgames);
-        data.put("soloQwinrate", soloQwinrate);
-        data.put("flexQtier", flexQtier);
-        data.put("flexQlp", flexQlp);
-        data.put("flexQgames", flexQgames);
-        data.put("flexQwinrate", flexQwinrate);
-        data.put("soloQimage", soloQtierShort);
-        data.put("flexQimage", flexQtierShort);
-        data.put("championIndex", mostPlayedChampions);
-        data.put("summonerIndex", mostPlayedWithSummoners);
-        data.put("last20Games", wins + "W " + losses + "L");
-        data.put("last20index", lastChampions);
-        data.put("historyIndex", matchData);
 
-        StringWriter out = new StringWriter();
-        template.process(data, out);
-        html = out.toString();
 
-        FileWriter writer = new FileWriter("Prueba.html");
-        writer.write(html);
-        writer.close();
+
+
+//        String soloQtier = "";
+//        String soloQtierShort = "";
+//        String soloQlp = "";
+//        String soloQgames = "";
+//        String soloQwinrate = "";
+//        String flexQtier = "";
+//        String flexQtierShort = "";
+//        String flexQlp = "";
+//        String flexQgames = "";
+//        String flexQwinrate = "";
+//        Integer wins = 0;
+//        Integer losses = 0;
+//        for (LeagueEntry entry : league) {
+//            if (entry.getQueueType() == GameQueueType.RANKED_SOLO_5X5) {
+//                soloQtier = entry.getTierDivisionType().prettyName();
+//                soloQtierShort = entry.getTierDivisionType().prettyName().split(" ")[0].toLowerCase();
+//                soloQlp = String.valueOf(entry.getLeaguePoints());
+//                soloQgames = String.valueOf(entry.getWins() + entry.getLosses());
+//                soloQwinrate = String.valueOf((int) ((double) entry.getWins() / (entry.getWins() + entry.getLosses()) * 100));
+//            } else if (entry.getQueueType() == GameQueueType.RANKED_FLEX_SR) {
+//                flexQtier = entry.getTierDivisionType().prettyName();
+//                flexQtierShort = entry.getTierDivisionType().prettyName().split(" ")[0].toLowerCase();
+//                flexQlp = String.valueOf(entry.getLeaguePoints());
+//                flexQgames = String.valueOf(entry.getWins() + entry.getLosses());
+//                flexQwinrate = String.valueOf((int) ((double) entry.getWins() / (entry.getWins() + entry.getLosses()) * 100));
+//            }
+//        }
+//        if (soloQtier.equals("")) {
+//            soloQtier = "Unranked";
+//            soloQtierShort = "";
+//            soloQlp = "";
+//            soloQgames = "";
+//            soloQwinrate = "";
+//        }
+//        if (flexQtier.equals("")) {
+//            flexQtier = "Unranked";
+//            flexQtierShort = "";
+//            flexQlp = "";
+//            flexQgames = "";
+//            flexQwinrate = "";
+//        }
+//
+//        MatchListBuilder builderMT = new MatchListBuilder();
+//        List<String> last20 = builder.withCount(20).get();
+//        MatchBuilder mb = new MatchBuilder(sum.getPlatform());
+//        LOLMatch m;
+//        HashMap<String, Integer> participants = new HashMap<>();
+//        HashMap<ChampionData, Integer> champions = new HashMap<>();
+//        HashMap<StaticChampion, Integer> championsStatic = new HashMap<>();
+//        ArrayList<MatchData> matchData = new ArrayList<>();
+//        for (String s : last20) {
+//            m = mb.withId(s).getMatch();
+//            MatchData md = new MatchData();
+//            if (Duration.between(m.getGameStartAsDate(), m.getGameEndAsDate()).compareTo(Duration.ofMinutes(4)) > 0) {
+//                for (MatchParticipant p : m.getParticipants()) {
+//                    if (!p.getSummonerId().equals(sum.getSummonerId())) {
+//                        if (!participants.containsKey(p.getSummonerId())) {
+//                            participants.put(p.getSummonerId(), 1);
+//                        } else {
+//                            participants.put(p.getSummonerId(), participants.get(p.getSummonerId()) + 1);
+//                        }
+//                    }else {
+//                        md.setMatchId(s);
+//                        String name = p.getChampionName();
+//                        md.setChampName(p.getChampionName());
+//                        md.setChampID(String.valueOf(p.getChampionId()));
+//                        String gametype = m.getQueue().prettyName();
+//                        switch (gametype) {
+//                            case "5v5 Dynamic Queue":
+//                                gametype = "Normal queue";
+//                                break;
+//                            case "5v5 Dynamic Ranked Solo Queue":
+//                                gametype = "Ranked Solo";
+//                                break;
+//                            case "5v5 Ranked Flex Queue":
+//                                gametype = "Ranked Flex";
+//                                break;
+//                        }
+//                        md.setGameType(gametype);
+//                        ZonedDateTime createdate = m.getMatchCreationAsDate();
+//
+//                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+//                        long noOfDaysBetween = ChronoUnit.DAYS.between(createdate, ZonedDateTime.now());
+//                        if (noOfDaysBetween < 1) {
+//                            md.setGameDate("hace " + ChronoUnit.HOURS.between(createdate, ZonedDateTime.now()) + " horas");
+//                        }else if (noOfDaysBetween < 10) {
+//                            if (noOfDaysBetween == 1) {
+//                                md.setGameDate("hace " + noOfDaysBetween + " día");
+//                            } else {
+//                                md.setGameDate("hace " + noOfDaysBetween + " días");
+//                            }
+//                        } else {
+//                            md.setGameDate(createdate.format(formatter));
+//                        }
+//                        double kills = p.getKills();
+//                        double deaths = p.getDeaths();
+//                        double assists = p.getAssists();
+//
+//                        if (p.getDeaths() == 0) {
+//                            String KDA = String.valueOf(kills + assists);
+//                            BigDecimal bd = new BigDecimal(KDA).setScale(1, RoundingMode.HALF_EVEN);
+//                            md.setKDA(bd.doubleValue() + " KDA");
+//                        } else {
+//                            String KDA = String.valueOf((kills+assists)/deaths);
+//                            BigDecimal bd = new BigDecimal(KDA).setScale(1, RoundingMode.HALF_EVEN);
+//                            md.setKDA(bd.doubleValue() + " KDA");
+//                        }
+//                        md.setLongKDA((int) kills + " / " + (int) deaths + " / " + (int) assists);
+//                        String csMin = String.valueOf((int) ((p.getTotalMinionsKilled() + p.getNeutralMinionsKilled()) / Duration.between(m.getGameStartAsDate(), m.getGameEndAsDate()).toMinutes()));
+//                        md.setCsMin(csMin + " CS/min");
+//                        md.setCsTotal(p.getTotalMinionsKilled() + p.getNeutralMinionsKilled() + " CS");
+//
+//                        RoleType rt = p.getRole();
+//                        if (!gametype.equals("ARAM")) {
+//                            switch (rt) {
+//                                case CARRY -> md.setMatchRole("ADC");
+//                                case SUPPORT -> md.setMatchRole("SUPPORT");
+//                                case SOLO -> md.setMatchRole("TOP");
+//                                case NONE -> md.setMatchRole("JUNGLE");
+//                                case DUO -> md.setMatchRole("MID");
+//                            }
+//                        }else {
+//                            md.setMatchRole("");
+//                        }
+//                        if (p.didWin()) {
+//                            wins++;
+//                            md.setGameResult("VICTORY");
+//                        }else {
+//                            losses++;
+//                            md.setGameResult("DEFEAT");
+//                        }
+//                        StaticChampion champ = api.getChampion(p.getChampionId());
+//                        if (!championsStatic.containsKey(champ)) {
+//                            championsStatic.put(champ, 1);
+//                            ChampionData champData = new ChampionData();
+//                            String nam = champ.getName();
+//                            nam = nam.replace(" ", "");
+//                            champData.setName(nam);
+//                            champData.setID(String.valueOf(champ.getId()));
+//                            if (p.didWin()) {
+//                                champData.addWin();
+//                            } else {
+//                                champData.addLoss();
+//                            }
+//                            champData.updateWinrate();
+//                            champData.hasAppeared();
+//
+//                            champData.setKDA(p.getKills(), p.getDeaths(), p.getAssists());
+//                            champions.put(champData, 1);
+//                        }else {
+//                            championsStatic.put(champ, championsStatic.get(champ) + 1);
+//                            ChampionData champData;
+//                            for (ChampionData c : champions.keySet()) {
+//                                if (c.getID().equals(String.valueOf(champ.getId()))) {
+//                                    champData = c;
+//                                    if (p.didWin()) {
+//                                        champData.addWin();
+//                                    } else {
+//                                        champData.addLoss();
+//                                    }
+//                                    champData.updateWinrate();
+//                                    champData.hasAppeared();
+//
+//                                    champData.setKDA(p.getKills(), p.getDeaths(), p.getAssists());
+//                                    champions.put(champData, champions.get(champData) + 1);
+//                                }
+//                            }
+//                        }
+//                        matchData.add(md);
+//                    }
+//                }
+//            }
+//        }
+//
+//        List<SummonerData> orderedSummonersList = new ArrayList<>();
+//        for (String mp : participants.keySet()) {
+//            if (mp != null) {
+//                SummonerData sd = new SummonerData();
+//                sd.setName(mp);
+//                sd.setGamesPlayedTogether(String.valueOf(participants.get(mp)));
+//                orderedSummonersList.add(sd);
+//            }
+//        }
+//        Collections.sort(orderedSummonersList);
+//
+//        List<ChampionData> orderedChampionsList = new ArrayList<>();
+//        for (Map.Entry<ChampionData, Integer> entry : champions.entrySet()) {
+//            orderedChampionsList.add(entry.getKey());
+//        }
+//        Collections.sort(orderedChampionsList);
+//
+//        ArrayList<SummonerData> mostPlayedWithSummoners = new ArrayList<>();
+//        int count = 0;
+//        for (SummonerData entry : orderedSummonersList) {
+//            if (count >= 4) {
+//                break;
+//            }
+//            Summoner summ = Summoner.bySummonerId(LeagueShard.EUW1, entry.getName());
+//            entry.setImgID(String.valueOf(summ.getProfileIconId()));
+//            entry.setName(summ.getName());
+//            mostPlayedWithSummoners.add(entry);
+//            count++;
+//        }
+//
+//        ArrayList<ChampionData> mostPlayedChampions = new ArrayList<>();
+//        ArrayList<ChampionData> lastChampions = new ArrayList<>();
+//        count = 0;
+//        for (ChampionData entry : orderedChampionsList) {
+//            if (count < 3) {
+//                lastChampions.add(entry);
+//            }
+//            if (count >= 6) {
+//                break;
+//            }
+//            mostPlayedChampions.add(entry);
+//            count++;
+//        }
+//
+//        if (!soloQlp.equals("")) {
+//            soloQlp = soloQlp + " LP";
+//        }
+//        if (!flexQlp.equals("")) {
+//            flexQlp = flexQlp + " LP";
+//        }
+//        if (!soloQwinrate.equals("")) {
+//            soloQwinrate = soloQwinrate + "%";
+//        }
+//        if (!flexQwinrate.equals("")) {
+//            flexQwinrate = flexQwinrate + "%";
+//        }
+//        if (!soloQgames.equals("")) {
+//            soloQgames = soloQgames + " Games";
+//        }
+//        if (!flexQgames.equals("")) {
+//            flexQgames = flexQgames + " Games";
+//        }
+//
+//        data.put("profileLevel", sum.getSummonerLevel());
+//        data.put("profileImageID", String.valueOf(sum.getProfileIconId()).replace(".", ""));
+//        data.put("profileUsername", sum.getName());
+//        data.put("isLinkedAccount", "this account is not linked yet");
+//        data.put("soloQtier", soloQtier);
+//        data.put("soloQlp", soloQlp);
+//        data.put("soloQgames", soloQgames);
+//        data.put("soloQwinrate", soloQwinrate);
+//        data.put("flexQtier", flexQtier);
+//        data.put("flexQlp", flexQlp);
+//        data.put("flexQgames", flexQgames);
+//        data.put("flexQwinrate", flexQwinrate);
+//        data.put("soloQimage", soloQtierShort);
+//        data.put("flexQimage", flexQtierShort);
+//        data.put("championIndex", mostPlayedChampions);
+//        data.put("summonerIndex", mostPlayedWithSummoners);
+//        data.put("last20Games", wins + "W " + losses + "L");
+//        data.put("last20index", lastChampions);
+//        data.put("historyIndex", matchData);
+
+
+
+
 
 
 
@@ -386,7 +433,13 @@ public class HashExample {
 //                }
 //                sb.endArray();
 //            }
+
+
+
     }
+
+
+
 //        sb.endObject();
 //        sb.flush();
 //

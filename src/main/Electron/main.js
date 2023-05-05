@@ -95,8 +95,8 @@ async function createWindow() {
     if (AccountinfoExists()) {
         requestLoggedPage();
     } else {
-        // mainWindow.loadFile("ProfilePage.html")
-        requestUnloggedPage();
+        mainWindow.loadFile("Pruebashtml/ItemsPage.html")
+        // requestUnloggedPage();
     }
 }
 
@@ -239,7 +239,7 @@ function requestLoggedPage() {
                 const request = net.request(`http://localhost:8080/api/htmlRequests/home/true/${uidA}`);
                 request.on('response', (response) => {
                     if (response.statusCode === 200) {
-                        const filename = "loggedPage.html";
+                        const filename = "ElectronPage.html";
                         const filePath = path.join(tempFilsPath, filename);
 
                         const fileStream = fs.createWriteStream(filePath);
