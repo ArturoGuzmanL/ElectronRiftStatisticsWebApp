@@ -26,6 +26,7 @@ import no.stelar7.api.r4j.pojo.lol.staticdata.champion.StaticChampion;
 import no.stelar7.api.r4j.pojo.lol.staticdata.item.InventoryDataStats;
 import no.stelar7.api.r4j.pojo.lol.staticdata.item.Item;
 import no.stelar7.api.r4j.pojo.lol.staticdata.shared.Image;
+import no.stelar7.api.r4j.pojo.lol.staticdata.shared.MetaData;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
 
 import javax.swing.*;
@@ -84,10 +85,41 @@ public class HashExample {
         Map<Integer, Item> items = api.getItems();
         int contador = 0;
         ArrayList<String> itemStats = new ArrayList<>();
+
+        ArrayList<Item> itemsList = new ArrayList<>(Arrays.asList(items.values().toArray(new Item[0])));
+        ArrayList<String> itemListStarterItems = new ArrayList<>(List.of("Doran's Shield", "Doran's Blade", "Doran's Ring", "Dark Seal", "Cull", "Scorchclaw Pup", "Gustwalker Hatchling", "Mosstomper Seedling", "Guardian's Horn", "Guardian's Orb", "Guardian's Blade", "Guardian's Hammer", "Spellthief's Edge", "Shard of True Ice", "Steel Shoulderguards", "Relic Shield", "Spectral Sickle", "Tear of the Goddess"));
+        ArrayList<String> itemListBoots = new ArrayList<>(List.of("Boots", "Slightly Magical Footwear", "Berserker's Greaves, Boots of Swiftness", "Sorcerer's Shoes", "Plated Steelcaps", "Mercury's Treads", "Mobility Boots", "Ionian Boots of Lucidity"));
+        ArrayList<String> itemListWards = new ArrayList<>(List.of("Scarecrow Effigy", "Stealth Ward", "Farsight Alteration", "Oracle Lens"));
+        ArrayList<String> itemListConsumables = new ArrayList<>(List.of("Eye of the Herald", "Health Potion", "Refillable Potion", "Corrupting Potion", "Total Biscuit of Everlasting Will", "Poro-Snax", "Control Ward", "Elixir of Iron", "Elixir of Sorcery", "Elixir of Wrath", "Minion Dematerializer", "Your Cut", "Stopwatch", "Broken Stopwatch"));
+        ArrayList<String> itemListBasicItems = new ArrayList<>(List.of("Faerie Charm", "Rejuvenation Bead", "Cloak of Agility", "Blasting Wand", "Sapphire Crystal", "Ruby Crystal", "Cloth Armor", "Null-Magic Mantle", "Long Sword", "Pickaxe", "B. F. Sword", "Dagger", "Amplifying Tome", "Needlessly Large Rod", "Sheen"));
+        ArrayList<String> itemListEpicItems = new ArrayList<>(List.of("Giant's Belt", "Chain Vest", "Recurve Bow", "Vampiric Scepter", "Negatron Cloak", "Kircheis Shard", "Last Whisper", "Glacial Buckler", "Phage", "Hearthbound Axe", "Winged Moonplate", "Kindlegem", "Bramble Vest", "Tiamat", "Warden's Mail", "Zeal", "Aegis of the Legion", "Fiendish Codex", "Aether Wisp", "Forbidden Idol", "Caulfield's Warhammer", "Serrated Dirk", "Watchful Wardstone", "Quicksilver Sash", "Hextech Alternator", "Seeker's Armguard", "Hexdrinker", "Spectre's Cowl", "Crystalline Bracer", "Lost Chapter", "Catalyst of Aeons", "Oblivion Orb", "Blighting Jewel", "Verdant Barrier", "Leeching Leer", "Bandleglass Mirror", "Ironspike Whip", "Bami's Cinder", "Noonquiver", "Rageknife", "Executioner's Calling", "Targon's Buckler", "Frostfang", "Harrowing Crescent", "Runesteel Spaulders"));
+        ArrayList<String> itemListLegendaryItems = new ArrayList<>(List.of("Abyssal Mask", "Edge of Night", "Warmog's Armor" , "Mercurial Scimitar", "Serpent's Fang", "Shadowflame", "Winter's Approach", "Archangel's Staff", "Void Staff", "Mikael's Blessing", "Anathema's Chains", "Morellonomicon", "Essence Reaver", "Serylda's Grudge", "Fimbulwinter", "Ardent Censer", "Force of Nature", "Mortal Reminder", "Shard of True Ice", "Wit's End", "Zhonya's Hourglass", "Spirit Visage", "Navori Quickblades", "Spear Of Shojin", "Nashor's Tooth", "Zeke's Convergence", "Muramana", "Youmuu's Ghostblade", "Silvermere Dawn", "Axiom Arc", "Guardian Angel", "Banshee's Veil", "Gargoyle Stoneplate", "Frozen Heart", "Black Cleaver", "Staff of Flowing Water", "Sterak's Gage", "Pauldrons of Whiterock", "Guinsoo's Rageblade", "Phantom Dancer", "Stormrazor", "Sunfire Aegis", "Rabadon's Deathcap", "Horizon Focus", "Black Mist Scythe", "Blade of The Ruined King", "Hullbreaker", "Randuin's Omen", "The Collector", "Rapid Firecannon", "Infinity Edge", "Bloodthirster", "Thornmail", "Titanic Hydra", "Ravenous Hydra", "Bulwark of the Mountain", "Knight's Vow", "Chempunk Chainsword", "Lich Bane", "Redemption", "Turbo Chemtank", "Chemtech Putrifier", "Cosmic Drive", "Dead Man's Plate", "Death's Dance", "Demonic Embrace", "Lord Dominik's Regards", "Manamune", "Maw of Malmortius", "Mejai's Soulstealer", "Runaan's Hurricane", "Rylai's Crystal Scepter", "Seraph's Embrace", "Umbral Glaive", "Vigilant Wardstone"));
+        ArrayList<String> itemListMythicItems = new ArrayList<>();
+        ArrayList<String> itemListOrnnItems = new ArrayList<>();
+        ArrayList<String> itemListChampionItems = new ArrayList<>();
+
+        ArrayList<String> itemDepth1 = new ArrayList<>();
+
         ArrayList<String> s2 = new ArrayList<>();
         for (Item item : items.values()) {
+            String name = item.getName();
+            if (name.contains("<br>")) {
+                name = name.replaceAll("<br>", "");
+                name = name.replaceAll("<.+?>", "");
+            }
             InventoryDataStats ivdata = item.getStats();
-            System.out.println(item.getName());
+            System.out.println(name);
+            System.out.println(item.getDepth());
+            System.out.println(item.getTags());
+            System.out.println("*****************************************");
+            ArrayList<String> tags = new ArrayList<>();
+            for (String tag : item.getTags()) {
+                if (!itemDepth1.contains(tag)) {
+                    tags.add(tag);
+                }
+            }
+            itemDepth1.addAll(tags);
+
             ArrayList<String> stats = new ArrayList<>();
             stats = new ArrayList<>(Arrays.asList(item.getSanitizedDescription().split("\\n")));
             Iterator<String> it = stats.iterator();
@@ -100,7 +132,58 @@ public class HashExample {
                 }
             }
         }
-        System.out.println(s2);
+
+        for (Item item : itemsList) {
+            String name = item.getName();
+            if (name.contains("<br>")) {
+                name = name.replaceAll("<br>", "");
+                name = name.replaceAll("<.+?>", "");
+            }
+
+
+            if (item.getTags() != null && item.getTags().contains("Boots")) {
+                itemListBoots.add(name);
+            }else if (item.getTags() != null && item.getTags().contains("Vision") && item.getTags().contains("Trinket")) {
+                itemListWards.add(name);
+            }else if (item.isConsumed()) {
+                itemListConsumables.add(name);
+                if (name.contains("Silver Serpents")) {
+                    name = name.replaceAll("500 Silver Serpents", "");
+                    itemListChampionItems.add(name);
+                }
+            }else if (name.equals("Kalista's Black Spear")) {
+                if (!itemListChampionItems.contains(name)) itemListChampionItems.add(name);
+            }else if (item.getDepth() == 0) {
+                if (item.getTags() != null && item.getTags().contains("Jungle") || item.getName().contains("Doran's") || item.getName().contains("Guardian's")) {
+                    if (!item.getName().equals("Hailblade") && !item.getName().equals("Emberknife") && !item.getName().equals("Obsidian Edge")) {
+                        itemListStarterItems.add(name);
+                    }
+                }else if (item.getTags() != null && item.getTags().contains("Lane") && item.getTags().contains("GoldPer")) {
+                    if (! item.getName().equals("Harrowing Crescent")) {
+                        itemListStarterItems.add(name);
+                    }
+                } else if (item.getName().equals("Cull") || item.getName().equals("Dark Seal")) {
+                    itemListStarterItems.add(name);
+                } else {
+                    if (!item.getName().contains("Bounty") && !item.getName().contains("Tower") && !item.getName().contains("Turret")) {
+                        itemListBasicItems.add(name);
+                    }
+                }
+            }else if (item.getDepth() == 2) {
+                itemListEpicItems.add(name);
+            }
+        }
+
+        System.out.println("Tags" + itemDepth1);
+        System.out.println("___________________________________");
+
+        System.out.println("Boots: " + itemListBoots);
+        System.out.println("Wards: " + itemListWards);
+        System.out.println("Consumables: " + itemListConsumables);
+        System.out.println("Champion Items: " + itemListChampionItems);
+        System.out.println("Basic Items: " + itemListBasicItems);
+        System.out.println("Starter Items: " + itemListStarterItems);
+        System.out.println("Epic Items: " + itemListEpicItems);
 
         /*
         Move speed, base mana regen, base health regen, health, critical strike chance, ability power, mana, health, armor, magic resist, attack damage, attack speed, life steal, Ability Haste, Heal and Shield Power, Magic Penetration, Armor Penetration, Tenacity,
