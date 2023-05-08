@@ -87,16 +87,35 @@ public class HashExample {
         ArrayList<String> itemStats = new ArrayList<>();
 
         ArrayList<Item> itemsList = new ArrayList<>(Arrays.asList(items.values().toArray(new Item[0])));
-        ArrayList<String> itemListStarterItems = new ArrayList<>(List.of("Doran's Shield", "Doran's Blade", "Doran's Ring", "Dark Seal", "Cull", "Scorchclaw Pup", "Gustwalker Hatchling", "Mosstomper Seedling", "Guardian's Horn", "Guardian's Orb", "Guardian's Blade", "Guardian's Hammer", "Spellthief's Edge", "Shard of True Ice", "Steel Shoulderguards", "Relic Shield", "Spectral Sickle", "Tear of the Goddess"));
-        ArrayList<String> itemListBoots = new ArrayList<>(List.of("Boots", "Slightly Magical Footwear", "Berserker's Greaves, Boots of Swiftness", "Sorcerer's Shoes", "Plated Steelcaps", "Mercury's Treads", "Mobility Boots", "Ionian Boots of Lucidity"));
+        ArrayList<String> itemListStarterItems = new ArrayList<>(List.of("Doran's Shield", "Doran's Blade", "Doran's Ring", "Dark Seal", "Cull", "Scorchclaw Pup", "Gustwalker Hatchling", "Mosstomper Seedling", "Guardian's Horn", "Guardian's Orb", "Guardian's Blade", "Guardian's Hammer", "Spellthief's Edge", "Steel Shoulderguards", "Relic Shield", "Spectral Sickle", "Tear of the Goddess"));
+        ArrayList<String> itemListStarterItemsIDs = new ArrayList<>(List.of("1054", "1055", "1056", "1082", "1083", "1101", "1102", "1103", "2051", "3070", "3112", "3177", "3184", "3850", "3854", "3858", "3862"));
+
+        ArrayList<String> itemListBoots = new ArrayList<>(List.of("Boots", "Slightly Magical Footwear", "Berserker's Greaves", "Boots of Swiftness", "Sorcerer's Shoes", "Plated Steelcaps", "Mercury's Treads", "Mobility Boots", "Ionian Boots of Lucidity"));
+        ArrayList<String> itemListBootsIDs = new ArrayList<>(List.of("1001", "2422", "3006", "3009", "3020", "3047", "3111", "3117", "3158"));
+
         ArrayList<String> itemListWards = new ArrayList<>(List.of("Scarecrow Effigy", "Stealth Ward", "Farsight Alteration", "Oracle Lens"));
+        ArrayList<String> itemListWardsIDs = new ArrayList<>(List.of("3330", "3340", "3363", "3364"));
+
         ArrayList<String> itemListConsumables = new ArrayList<>(List.of("Eye of the Herald", "Health Potion", "Refillable Potion", "Corrupting Potion", "Total Biscuit of Everlasting Will", "Poro-Snax", "Control Ward", "Elixir of Iron", "Elixir of Sorcery", "Elixir of Wrath", "Minion Dematerializer", "Your Cut", "Stopwatch", "Broken Stopwatch"));
+        ArrayList<String> itemListConsumablesIDs = new ArrayList<>(List.of("1104"," 2003"," 2010"," 2031"," 2033"," 2052"," 2055"," 2138"," 2139"," 2140"," 2403"," 2420"," 2421"," 2424"," 3400"," 3513"));
+
         ArrayList<String> itemListBasicItems = new ArrayList<>(List.of("Faerie Charm", "Rejuvenation Bead", "Cloak of Agility", "Blasting Wand", "Sapphire Crystal", "Ruby Crystal", "Cloth Armor", "Null-Magic Mantle", "Long Sword", "Pickaxe", "B. F. Sword", "Dagger", "Amplifying Tome", "Needlessly Large Rod", "Sheen"));
+        ArrayList<String> itemListBasicItemsIDs = new ArrayList<>(List.of("1004", "1006", "1018", "1026", "1027", "1028", "1029", "1033", "1036", "1037", "1038", "1042", "1052", "1058", "3057"));
+
         ArrayList<String> itemListEpicItems = new ArrayList<>(List.of("Giant's Belt", "Chain Vest", "Recurve Bow", "Vampiric Scepter", "Negatron Cloak", "Kircheis Shard", "Last Whisper", "Glacial Buckler", "Phage", "Hearthbound Axe", "Winged Moonplate", "Kindlegem", "Bramble Vest", "Tiamat", "Warden's Mail", "Zeal", "Aegis of the Legion", "Fiendish Codex", "Aether Wisp", "Forbidden Idol", "Caulfield's Warhammer", "Serrated Dirk", "Watchful Wardstone", "Quicksilver Sash", "Hextech Alternator", "Seeker's Armguard", "Hexdrinker", "Spectre's Cowl", "Crystalline Bracer", "Lost Chapter", "Catalyst of Aeons", "Oblivion Orb", "Blighting Jewel", "Verdant Barrier", "Leeching Leer", "Bandleglass Mirror", "Ironspike Whip", "Bami's Cinder", "Noonquiver", "Rageknife", "Executioner's Calling", "Targon's Buckler", "Frostfang", "Harrowing Crescent", "Runesteel Spaulders"));
+        ArrayList<String> itemListEpicItemsIDs = new ArrayList<>(List.of("1011", "1031", "1043", "1053", "1057", "2015", "3024", "3035", "3044", "3051", "3066", "3067", "3076", "3077", "3082", "3086", "3105", "3108", "3113", "3114", "3123", "3133", "3134", "3140", "3145", "3155", "3191", "3211", "3801", "3802", "3803", "3851", "3855", "3859", "3863", "3916", "4630", "4632", "4635", "4638", "4642", "6029", "6660", "6670", "6677"));
+
         ArrayList<String> itemListLegendaryItems = new ArrayList<>(List.of("Abyssal Mask", "Edge of Night", "Warmog's Armor" , "Mercurial Scimitar", "Serpent's Fang", "Shadowflame", "Winter's Approach", "Archangel's Staff", "Void Staff", "Mikael's Blessing", "Anathema's Chains", "Morellonomicon", "Essence Reaver", "Serylda's Grudge", "Fimbulwinter", "Ardent Censer", "Force of Nature", "Mortal Reminder", "Shard of True Ice", "Wit's End", "Zhonya's Hourglass", "Spirit Visage", "Navori Quickblades", "Spear Of Shojin", "Nashor's Tooth", "Zeke's Convergence", "Muramana", "Youmuu's Ghostblade", "Silvermere Dawn", "Axiom Arc", "Guardian Angel", "Banshee's Veil", "Gargoyle Stoneplate", "Frozen Heart", "Black Cleaver", "Staff of Flowing Water", "Sterak's Gage", "Pauldrons of Whiterock", "Guinsoo's Rageblade", "Phantom Dancer", "Stormrazor", "Sunfire Aegis", "Rabadon's Deathcap", "Horizon Focus", "Black Mist Scythe", "Blade of The Ruined King", "Hullbreaker", "Randuin's Omen", "The Collector", "Rapid Firecannon", "Infinity Edge", "Bloodthirster", "Thornmail", "Titanic Hydra", "Ravenous Hydra", "Bulwark of the Mountain", "Knight's Vow", "Chempunk Chainsword", "Lich Bane", "Redemption", "Turbo Chemtank", "Chemtech Putrifier", "Cosmic Drive", "Dead Man's Plate", "Death's Dance", "Demonic Embrace", "Lord Dominik's Regards", "Manamune", "Maw of Malmortius", "Mejai's Soulstealer", "Runaan's Hurricane", "Rylai's Crystal Scepter", "Seraph's Embrace", "Umbral Glaive", "Vigilant Wardstone"));
-        ArrayList<String> itemListMythicItems = new ArrayList<>();
-        ArrayList<String> itemListOrnnItems = new ArrayList<>();
-        ArrayList<String> itemListChampionItems = new ArrayList<>();
+        ArrayList<String> itemListLegendaryItemsIDs = new ArrayList<>(List.of("3003", "3004", "3011", "3026", "3031", "3033", "3036", "3040", "3041", "3042", "3046", "3050", "3053", "3065", "3068", "3071", "3072", "3074", "3075", "3083", "3085", "3089", "3091", "3094", "3095", "3100", "3102", "3107", "3109", "3110", "3115", "3116", "3119", "3121", "3124", "3135", "3139", "3142", "3143", "3153", "3156", "3157", "3161", "3165", "3179", "3181", "3193", "3222", "3504", "3508", "3742", "3748", "3814", "3853", "3857", "3860", "3864", "4401", "4628", "4629", "4637", "4643", "4645", "6035", "6333", "6609", "6616", "6664", "6675", "6676", "6694", "6695", "6696", "8001", "8020"));
+
+        ArrayList<String> itemListMythicItems = new ArrayList<>(List.of("Crown of the Shattered Queen", "Luden's Tempest", "Locket of the Iron Solari", "Liandry's Anguish", "Iceborn Gauntlet", "Immortal Shieldbow", "Jak'Sho, The Protean", "Kraken Slayer", "Imperial Mandate", "Hextech Rocketbelt", "Trinity Force", "Divine Sunderer", "Night Harvester", "Heartsteel", "Shurelya's Battlesong", "Moonstone Renewer", "Goredrinker", "Stridebreaker", "Duskblade of Draktharr", "Rod of Ages", "Eclipse", "Everfrost", "Radiant Virtue", "Prowler's Claw", "Evenshroud", "Riftmaker", "Galeforce"));
+        ArrayList<String> itemListMythicItemsIDs = new ArrayList<>(List.of("2065", "3001", "3078", "3084", "3152", "3190", "4005", "4633", "4636", "4644", "6617", "6630", "6631", "6632", "6653", "6655", "6656", "6657", "6662", "6665", "6667", "6671", "6672", "6673", "6691", "6692", "6693"));
+
+        ArrayList<String> itemListOrnnItems = new ArrayList<>(List.of("Caesura", "Eye of Luden", "Reliquary of the Golden Dawn", "Liandry's Lament", "Frozen Fist", "Bloodward", "The Unspoken Parasite", "Wyrmfallen Sacrifice", "Seat of Command", "Upgraded Aeropack", "Infinity Force", "Deicide", "Vespertide", "Leviathan", "Shurelya's Requiem", "Starcaster", "Ceaseless Hunger", "Dreamshatter", "Draktharr's Shadowcarver", "Convergence", "Syzygy", "Eternal Winter", "Primordial Dawn", "Sandshrike's Claw", "Equinox", "Icathia's Curse", "Typhoon"));
+        ArrayList<String> itemListOrnnItemsIDs = new ArrayList<>(List.of("7000", "7001", "7002", "7005", "7006", "7007", "7008", "7009", "7010", "7011", "7012", "7013", "7014", "7015", "7016", "7017", "7018", "7019", "7020", "7021", "7022", "7023", "7024", "7025", "7026", "7027"));
+
+        ArrayList<String> itemListChampionItems = new ArrayList<>(List.of("Kalista's Black Spear", "Fire at Will", "Death's Daughter", "Raise Morale"));
+        ArrayList<String> itemListChampionItemsIDs = new ArrayList<>(List.of("3599", "3600", "3901", "3902", "3903"));
 
         ArrayList<String> itemDepth1 = new ArrayList<>();
 
@@ -138,52 +157,58 @@ public class HashExample {
             if (name.contains("<br>")) {
                 name = name.replaceAll("<br>", "");
                 name = name.replaceAll("<.+?>", "");
-            }
-
-
-            if (item.getTags() != null && item.getTags().contains("Boots")) {
-                itemListBoots.add(name);
-            }else if (item.getTags() != null && item.getTags().contains("Vision") && item.getTags().contains("Trinket")) {
-                itemListWards.add(name);
-            }else if (item.isConsumed()) {
-                itemListConsumables.add(name);
                 if (name.contains("Silver Serpents")) {
                     name = name.replaceAll("500 Silver Serpents", "");
-                    itemListChampionItems.add(name);
                 }
-            }else if (name.equals("Kalista's Black Spear")) {
-                if (!itemListChampionItems.contains(name)) itemListChampionItems.add(name);
-            }else if (item.getDepth() == 0) {
-                if (item.getTags() != null && item.getTags().contains("Jungle") || item.getName().contains("Doran's") || item.getName().contains("Guardian's")) {
-                    if (!item.getName().equals("Hailblade") && !item.getName().equals("Emberknife") && !item.getName().equals("Obsidian Edge")) {
-                        itemListStarterItems.add(name);
-                    }
-                }else if (item.getTags() != null && item.getTags().contains("Lane") && item.getTags().contains("GoldPer")) {
-                    if (! item.getName().equals("Harrowing Crescent")) {
-                        itemListStarterItems.add(name);
-                    }
-                } else if (item.getName().equals("Cull") || item.getName().equals("Dark Seal")) {
-                    itemListStarterItems.add(name);
-                } else {
-                    if (!item.getName().contains("Bounty") && !item.getName().contains("Tower") && !item.getName().contains("Turret")) {
-                        itemListBasicItems.add(name);
-                    }
-                }
-            }else if (item.getDepth() == 2) {
-                itemListEpicItems.add(name);
+            }
+            if (itemListStarterItems.contains(name)) {
+                itemListStarterItemsIDs.add(String.valueOf(item.getId()));
+            } else if (itemListBoots.contains(name)) {
+                itemListBootsIDs.add(String.valueOf(item.getId()));
+            } else if (itemListWards.contains(name)) {
+                itemListWardsIDs.add(String.valueOf(item.getId()));
+            } else if (itemListConsumables.contains(name)) {
+                itemListConsumablesIDs.add(String.valueOf(item.getId()));
+            } else if (itemListChampionItems.contains(name)) {
+                itemListChampionItemsIDs.add(String.valueOf(item.getId()));
+            } else if (itemListBasicItems.contains(name)) {
+                itemListBasicItemsIDs.add(String.valueOf(item.getId()));
+            } else if (itemListEpicItems.contains(name)) {
+                itemListEpicItemsIDs.add(String.valueOf(item.getId()));
+            } else if (itemListLegendaryItems.contains(name)) {
+                itemListLegendaryItemsIDs.add(String.valueOf(item.getId()));
+            } else if (itemListMythicItems.contains(name)) {
+                itemListMythicItemsIDs.add(String.valueOf(item.getId()));
+            } else if (itemListOrnnItems.contains(name)) {
+                itemListOrnnItemsIDs.add(String.valueOf(item.getId()));
+            } else {
+                System.out.println("No se ha encontrado el item: " + name);
             }
         }
 
         System.out.println("Tags" + itemDepth1);
         System.out.println("___________________________________");
-
         System.out.println("Boots: " + itemListBoots);
+        System.out.println("Boots ids: " + itemListBootsIDs);
         System.out.println("Wards: " + itemListWards);
+        System.out.println("Wards ids: " + itemListWardsIDs);
         System.out.println("Consumables: " + itemListConsumables);
+        System.out.println("Consumables ids: " + itemListConsumablesIDs);
         System.out.println("Champion Items: " + itemListChampionItems);
+        System.out.println("Champion Items ids: " + itemListChampionItemsIDs);
         System.out.println("Basic Items: " + itemListBasicItems);
+        System.out.println("Basic Items ids: " + itemListBasicItemsIDs);
         System.out.println("Starter Items: " + itemListStarterItems);
+        System.out.println("Starter Items ids: " + itemListStarterItemsIDs);
         System.out.println("Epic Items: " + itemListEpicItems);
+        System.out.println("Epic Items ids: " + itemListEpicItemsIDs);
+        System.out.println("Legendary Items: " + itemListLegendaryItems);
+        System.out.println("Legendary Items ids: " + itemListLegendaryItemsIDs);
+        System.out.println("Mythic Items: " + itemListMythicItems);
+        System.out.println("Mythic Items ids: " + itemListMythicItemsIDs);
+        System.out.println("Ornn Items: " + itemListOrnnItems);
+        System.out.println("Ornn Items ids: " + itemListOrnnItemsIDs);
+        System.out.println("___________________________________");
 
         /*
         Move speed, base mana regen, base health regen, health, critical strike chance, ability power, mana, health, armor, magic resist, attack damage, attack speed, life steal, Ability Haste, Heal and Shield Power, Magic Penetration, Armor Penetration, Tenacity,
