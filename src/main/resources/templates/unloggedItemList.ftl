@@ -161,249 +161,51 @@
             <p>Check all the items, their stats and descriptions here</p>
         </div>
         <div id="itemListContainer" class="itemListContainer">
-            <h1 class="itemSection">Starter items</h1>
-            <ul id="itemList" class="itemList">
-                <li id="Kraken Slayer" class="item">
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/6672.png" alt="Boots">
-                    </a>
-                    <div class="itemTooltip" id="Kraken SlayerT">
-                        <div class="tooltipTitle">
-                            <img src="../media/itemIcons/6672.png" width="40" height="40">
-                            <h1>Kraken Slayer</h1>
-                            <div class="price">
-                                <h2>3400</h2>
-                                <img src="../media/itemIcons/Gold.png" alt="Gold">
+            <#list sectionList as section>
+                <h1 class="itemSection">${section.getName()}</h1>
+                <ul id="itemList" class="itemList">
+                    <#list section.getItemList() as item>
+                        <li id="${item.getName()}" class="item">
+                            <a href="#" class="ItemObject">
+                                <img class="ItemImage" src="../media/itemIcons/${item.getID()}.png" alt="${item.getName()}">
+                            </a>
+                            <div class="itemTooltip" id="${item.getTooltipName()}">
+                                <div class="tooltipTitle">
+                                    <img src="../media/itemIcons/${item.getID()}.png" width="40" height="40">
+                                    <h1>${item.getName()}</h1>
+                                    <div class="price">
+                                        <h2>${item.getPrice()}</h2>
+                                        <img src="../media/itemIcons/${item.getGoldType()}.png" alt="${item.getGoldTypeB()}">
+                                    </div>
+                                </div>
+                                <div class="itemStats">
+                                    <#if item.getItemStatsData()??>
+                                        <ul class="statsList">
+                                            <#list item.getItemStatsData() as stat>
+                                                <li class="statItem">
+                                                    <img src="../media/statIcons/${stat.getIconType()}.png">
+                                                    <h1>${stat.getNumber()}</h1>
+                                                    <h2>${stat.getType()}</h2>
+                                                </li>
+                                            </#list>
+                                        </ul>
+                                    </#if>
+                                    <#if item.getItemDescData()??>
+                                        <ul class="itemDescription">
+                                            <#list item.getItemDescData() as desc>
+                                                <li class="descriptionItem">
+                                                    <h1>${desc.getTitle()}</h1>
+                                                    <h2>${desc.getText()}</h2>
+                                                </li>
+                                            </#list>
+                                        </ul>
+                                    </#if>
+                                </div>
                             </div>
-                        </div>
-                        <div class="itemStats">
-                            <ul class="statsList">
-                                <li class="statItem">
-                                    <img src="../media/statIcons/Attack_damage_icon.png">
-                                    <h1>65</h1>
-                                    <h2>Attack Damage</h2>
-                                </li>
-                                <li class="statItem">
-                                    <img src="../media/statIcons/Critical_strike_chance_icon.png">
-                                    <h1>20%</h1>
-                                    <h2>Critical Strike Chance</h2>
-                                </li>
-                                <li class="statItem">
-                                    <img src="../media/statIcons/Attack_speed_icon.png">
-                                    <h1>25%</h1>
-                                    <h2>Attack Speed</h2>
-                                </li>
-                            </ul>
-                            <ul class="itemDescription">
-                                <li class="descriptionItem">
-                                    <h1>Bring It Down:</h1>
-                                    <h2>Every third Attack deals additional true damage.</h2>
-                                </li>
-                                <li class="descriptionItem">
-                                    <h1>Mythic Passive:</h1>
-                                    <h2>Grants all other Legendary items Attack Speed.</h2>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-                <li id="Kraken SlayeA" class="item">
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/1011.png" alt="Boots">
-                    </a>
-                    <div class="itemTooltip" id="Kraken SlayeAT">
-                        <div class="tooltipTitle">
-                            <img src="../media/itemIcons/6672.png" width="40" height="40">
-                            <h1>aaa Slayer</h1>
-                            <div class="price">
-                                <h2>3400</h2>
-                                <img src="../media/itemIcons/Gold.png" alt="Gold">
-                            </div>
-                        </div>
-                        <div class="itemStats">
-                            <ul class="statsList">
-                                <li class="statItem">
-                                    <img src="../media/statIcons/Attack_damage_icon.png">
-                                    <h1>65</h1>
-                                    <h2>Attack Damage</h2>
-                                </li>
-                                <li class="statItem">
-                                    <img src="../media/statIcons/Critical_strike_chance_icon.png">
-                                    <h1>20%</h1>
-                                    <h2>Critical Strike Chance</h2>
-                                </li>
-                                <li class="statItem">
-                                    <img src="../media/statIcons/Attack_speed_icon.png">
-                                    <h1>25%</h1>
-                                    <h2>Attack Speed</h2>
-                                </li>
-                            </ul>
-                            <ul class="itemDescription">
-                                <li class="descriptionItem">
-                                    <h1>Bring It Down:</h1>
-                                    <h2>Every third Attack deals additional true damage.</h2>
-                                </li>
-                                <li class="descriptionItem">
-                                    <h1>Mythic Passive:</h1>
-                                    <h2>Grants all other Legendary items Attack Speed.</h2>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/1042.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/2419.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/2422.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/3042.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/3155.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/7027.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/7016.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/7001.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/6672.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/4633.png" alt="Boots">
-                    </a>
-                </li>
-            </ul>
-            <h1 class="itemSection">Starter items</h1>
-            <ul id="itemList2" class="itemList">
-                <li id="Kraken SlayerA" class="item">
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/6672.png" alt="Boots">
-                    </a>
-                    <div class="itemTooltip" id="Kraken SlayerAT">
-                        <div class="tooltipTitle">
-                            <img src="../media/itemIcons/6672.png" width="40" height="40">
-                            <h1>Kraken SlayerAAA</h1>
-                            <div class="price">
-                                <h2>3400</h2>
-                                <img src="../media/itemIcons/Gold.png" alt="Gold">
-                            </div>
-                        </div>
-                        <div class="itemStats">
-                            <ul class="statsList">
-                                <li class="statItem">
-                                    <img src="../media/statIcons/Attack_damage_icon.png">
-                                    <h1>65</h1>
-                                    <h2>Attack Damage</h2>
-                                </li>
-                                <li class="statItem">
-                                    <img src="../media/statIcons/Critical_strike_chance_icon.png">
-                                    <h1>20%</h1>
-                                    <h2>Critical Strike Chance</h2>
-                                </li>
-                                <li class="statItem">
-                                    <img src="../media/statIcons/Attack_speed_icon.png">
-                                    <h1>25%</h1>
-                                    <h2>Attack Speed</h2>
-                                </li>
-                            </ul>
-                            <ul class="itemDescription">
-                                <li class="descriptionItem">
-                                    <h1>Bring It Down:</h1>
-                                    <h2>Every third Attack deals additional true damage.</h2>
-                                </li>
-                                <li class="descriptionItem">
-                                    <h1>Mythic Passive:</h1>
-                                    <h2>Grants all other Legendary items Attack Speed.</h2>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/1011.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/1042.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/2419.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/2422.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/3042.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/3155.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/7027.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/7016.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/7001.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/6672.png" alt="Boots">
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="ItemObject">
-                        <img class="ItemImage" src="../media/itemIcons/4633.png" alt="Boots">
-                    </a>
-                </li>
-            </ul>
+                        </li>
+                    </#list>
+                </ul>
+            </#list>
         </div>
     </div>
 

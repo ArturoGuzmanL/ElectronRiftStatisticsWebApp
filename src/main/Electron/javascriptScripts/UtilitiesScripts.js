@@ -243,6 +243,15 @@ $('#recentlyPlayedContent').on('click', 'div.recentlyPlayedSummoner', function()
     getSummoner.call(this);
 });
 
+document.addEventListener('mousemove', fn, false);
+function fn(e) {
+    const tooltip = $('.itemTooltip');
+    for (let i=tooltip.length; i--;) {
+        tooltip[i].style.left = (e.pageX - 200) + 'px';
+        tooltip[i].style.top = (e.pageY - 350) + 'px';
+    }
+}
+
 function getSummoner() {
     let summID = $(this).attr("id");
     ipcRenderer.send("is-logged");
@@ -257,3 +266,5 @@ function getSummoner() {
         }
     });
 }
+
+
