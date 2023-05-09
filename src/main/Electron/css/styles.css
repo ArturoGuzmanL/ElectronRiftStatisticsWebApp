@@ -1081,6 +1081,10 @@ body{
     transform: translateX(-50%);
 }
 
+.itemListContainer {
+    padding: 2rem 1rem 2rem 1rem;
+}
+
 .championList {
     list-style: none;
     display: grid;
@@ -1100,7 +1104,6 @@ body{
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
     margin: 0 0 1.5rem 0;
     font-family: "Montserrat", sans-serif;
     font-size: 1.4rem;
@@ -1116,19 +1119,17 @@ body{
 }
 
 .itemTooltip {
-    z-index: 1;
+    z-index: 10;
     position: absolute;
+    top: -100000%;
     display: none;
     flex-direction: column;
     padding: 1rem 0.1rem 0 0;
     box-shadow: inset 0 0 0 1000px rgba(0,0,0,.80);
     border: 2px solid rgba(105, 105, 149, 1);
-    min-width: 15rem;
+    min-width: 25rem;
+    max-width: 25rem;
     height: fit-content;
-}
-
-.item:hover .itemTooltip {
-    display: flex;
 }
 
 
@@ -1214,6 +1215,7 @@ body{
     margin: 0.5rem 0 0 0;
     padding: 0 0 0.5rem 0;
     border-bottom: 1px solid #FFFFFF;
+    max-width: 20rem;
 }
 
 .descriptionItem:last-child {
@@ -1233,7 +1235,6 @@ body{
 
 .ItemObject:hover .ItemImage,
 .ChampionObject:hover .ChampionImage {
-    scale: 1.05;
     border: 1px solid #eaf5fa60;
     box-shadow: 0 0 10px 3px #2c5386;
     transition: scale 0.3s ease 0s;

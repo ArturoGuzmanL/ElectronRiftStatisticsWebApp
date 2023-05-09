@@ -1,6 +1,7 @@
 const fs = require("fs");
 const $ = require( "jquery" );
 const {ipcRenderer} = require("electron");
+const repl = require("repl");
 let openedOnButton = false;
 
 
@@ -166,7 +167,6 @@ $('#closeBrowserBtn').on('click', function(event) {
 });
 
 $('#homePageButton').on('click', function(event) {
-    console.log("Se ha ejecutado homePage");
     ipcRenderer.send("is-logged");
     ipcRenderer.on("is-logged-reply", (event, reply) => {
         if (reply) {
@@ -181,7 +181,6 @@ $('#homePageButton').on('click', function(event) {
 });
 
 $('#championsPageButton').on('click', function(event) {
-    console.log("Se ha ejecutado championsPage");
     ipcRenderer.send("is-logged");
     ipcRenderer.on("is-logged-reply", (event, reply) => {
         if (reply) {
@@ -191,6 +190,20 @@ $('#championsPageButton').on('click', function(event) {
             });
         }else {
             htmlPagesRequests("http://localhost:8080/api/htmlRequests/championlist/"+reply+"/null", "ElectronPage.html")
+        }
+    });
+});
+
+$('#itemsPageButton').on('click', function(event) {
+   ipcRenderer.send("is-logged");
+    ipcRenderer.on("is-logged-reply", (event, reply) => {
+        if (reply) {
+            ipcRenderer.send("get-uid");
+            ipcRenderer.on("get-uid-reply", (event, uid) => {
+                htmlPagesRequests("http://localhost:8080/api/htmlRequests/itemlist/"+reply+"/"+uid, "ElectronPage.html")
+            });
+        }else {
+            htmlPagesRequests("http://localhost:8080/api/htmlRequests/itemlist/"+reply+"/null", "ElectronPage.html")
         }
     });
 });
@@ -239,18 +252,51 @@ $('#browserListContainer').on('click', 'li.browserItem', function() {
     getSummoner.call(this);
 });
 
-$('#recentlyPlayedContent').on('click', 'div.recentlyPlayedSummoner', function() {
-    getSummoner.call(this);
+$(document).ready(function() {
+    const itemListContainer = $('#itemListContainer');
+    const itemImages = $('.ItemObject');
+    const itemTooltips = $('.itemTooltip');
+
+
+    itemImages.mouseleave(function() {
+        const tooltip = $(this).next();
+        tooltip.css('display', 'none');
+    });
+    itemImages.mouseenter(function() {
+        const tooltip = $(this).next();
+        tooltip.css('display', 'flex');
+    });
+
+    itemImages.hover(function(e) {
+        const itemImage = $(this);
+        const itemImageRect = itemImage[0].getBoundingClientRect();
+        const tooltip = $(itemImage.next());
+        const tooltipRect = tooltip[0].getBoundingClientRect();
+        const containerRect = itemListContainer[0].getBoundingClientRect();
+        const itemImageXl = itemImage.offset().left - containerRect.left + itemImageRect.width;
+        const itemImageYt = itemImage.offset().top - containerRect.top - itemImageRect.height + 10 - window.scrollY;
+        const tooltipWidth = tooltip.outerWidth();
+        const tooltipHeight = tooltip.outerHeight();
+
+        let tooltipLeft = itemImageXl;
+        let tooltipTop = itemImageYt;
+
+        const spaceBelow = window.innerHeight - (itemImageYt - scrollY + 40);
+        if (spaceBelow < tooltipRect.height+297) {
+            tooltipTop = itemImageYt - tooltipRect.height - 15;
+        }
+
+        if (tooltipLeft + tooltipWidth > window.innerWidth - 240) {
+            tooltipLeft = itemImage.offset().left - containerRect.left - tooltipWidth - 10;
+        }
+
+        tooltip.css({
+            left: tooltipLeft + 'px',
+            top: tooltipTop + 'px'
+        });
+    });
 });
 
-document.addEventListener('mousemove', fn, false);
-function fn(e) {
-    const tooltip = $('.itemTooltip');
-    for (let i=tooltip.length; i--;) {
-        tooltip[i].style.left = (e.pageX - 200) + 'px';
-        tooltip[i].style.top = (e.pageY - 350) + 'px';
-    }
-}
 
 function getSummoner() {
     let summID = $(this).attr("id");

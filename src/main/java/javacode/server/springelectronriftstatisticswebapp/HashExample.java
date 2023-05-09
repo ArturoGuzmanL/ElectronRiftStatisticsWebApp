@@ -20,7 +20,9 @@ import no.stelar7.api.r4j.pojo.lol.staticdata.item.Item;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +71,7 @@ public class HashExample {
         ArrayList<String> itemListWardsIDs = new ArrayList<>(List.of("3330", "3340", "3363", "3364"));
 
         ArrayList<String> itemListConsumables = new ArrayList<>(List.of("Eye of the Herald", "Health Potion", "Refillable Potion", "Corrupting Potion", "Total Biscuit of Everlasting Will", "Poro-Snax", "Control Ward", "Elixir of Iron", "Elixir of Sorcery", "Elixir of Wrath", "Minion Dematerializer", "Your Cut", "Stopwatch", "Broken Stopwatch"));
-        ArrayList<String> itemListConsumablesIDs = new ArrayList<>(List.of("1104", "2003", "2010", "2031", "2033", "2052", "2055", "2138", "2139", "2140", "2403", "2420", "2421", "2424", "3400", "3513"));
+        ArrayList<String> itemListConsumablesIDs = new ArrayList<>(List.of("3513", "2003", "2010", "2031", "2033", "2052", "2055", "2138", "2139", "2140", "2403", "2420", "2421", "3400"));
 
         ArrayList<String> itemListBasicItems = new ArrayList<>(List.of("Faerie Charm", "Rejuvenation Bead", "Cloak of Agility", "Blasting Wand", "Sapphire Crystal", "Ruby Crystal", "Cloth Armor", "Null-Magic Mantle", "Long Sword", "Pickaxe", "B. F. Sword", "Dagger", "Amplifying Tome", "Needlessly Large Rod", "Sheen"));
         ArrayList<String> itemListBasicItemsIDs = new ArrayList<>(List.of("1004", "1006", "1018", "1026", "1027", "1028", "1029", "1033", "1036", "1037", "1038", "1042", "1052", "1058", "3057"));
@@ -84,7 +86,7 @@ public class HashExample {
         ArrayList<String> itemListMythicItemsIDs = new ArrayList<>(List.of("2065", "3001", "3078", "3084", "3152", "3190", "4005", "4633", "4636", "4644", "6617", "6630", "6631", "6632", "6653", "6655", "6656", "6657", "6662", "6665", "6667", "6671", "6672", "6673", "6691", "6692", "6693"));
 
         ArrayList<String> itemListOrnnItems = new ArrayList<>(List.of("Caesura", "Eye of Luden", "Reliquary of the Golden Dawn", "Liandry's Lament", "Frozen Fist", "Bloodward", "The Unspoken Parasite", "Wyrmfallen Sacrifice", "Seat of Command", "Upgraded Aeropack", "Infinity Force", "Deicide", "Vespertide", "Leviathan", "Shurelya's Requiem", "Starcaster", "Ceaseless Hunger", "Dreamshatter", "Draktharr's Shadowcarver", "Convergence", "Syzygy", "Eternal Winter", "Primordial Dawn", "Sandshrike's Claw", "Equinox", "Icathia's Curse", "Typhoon"));
-        ArrayList<String> itemListOrnnItemsIDs = new ArrayList<>(List.of("7000", "7001", "7002", "7005", "7006", "7007", "7008", "7009", "7010", "7011", "7012", "7013", "7014", "7015", "7016", "7017", "7018", "7019", "7020", "7021", "7022", "7023", "7024", "7025", "7026", "7027"));
+        ArrayList<String> itemListOrnnItemsIDs = new ArrayList<>(List.of("7000", "7001", "7002", "7005", "7006", "7007", "7008", "7009", "7010", "7011", "7012", "7013", "7014", "7015", "7016", "7017", "7018", "7019", "7020", "7021", "7022", "7023", "7024", "7025", "7026", "7027", "7028"));
 
         ArrayList<String> itemListChampionItems = new ArrayList<>(List.of("Kalista's Black Spear", "Fire at Will", "Death's Daughter", "Raise Morale"));
         ArrayList<String> itemListChampionItemsIDs = new ArrayList<>(List.of("3600", "3901", "3902", "3903"));
@@ -101,11 +103,6 @@ public class HashExample {
                 name = name.replaceAll("<.+?>", "");
             }
             InventoryDataStats ivdata = item.getStats();
-            System.out.println(name);
-            System.out.println(item.getDepth());
-            System.out.println(item.getSanitizedDescription());
-            System.out.println(item.getTags());
-            System.out.println("*****************************************");
             ArrayList<String> tags = new ArrayList<>();
             for (String tag : item.getTags()) {
                 if (! itemDepth1.contains(tag)) {
@@ -127,17 +124,26 @@ public class HashExample {
             }
         }
 
-        System.out.println(itemDepth1);
-        SeparateStats(api, itemListStarterItemsIDs, false, "Starter items");
-        SeparateStats(api, itemListWardsIDs, false, "Wards");
-        SeparateStats(api, itemListConsumablesIDs, false, "Consumables");
-        SeparateStats(api, itemListBootsIDs, false, "Boots");
-        SeparateStats(api, itemListBasicItemsIDs, false, "Basic items");
-        SeparateStats(api, itemListEpicItemsIDs, false, "Epic items");
-        SeparateStats(api, itemListLegendaryItemsIDs, false, "Legendary items");
-        SeparateStats(api, itemListMythicItemsIDs, false, "Mythic items");
-        SeparateStats(api, itemListOrnnItemsIDs, false, "Ornn items");
-        SeparateStats(api, itemListChampionItemsIDs, true, "Champion items");
+        sections.add(SeparateStats(api, itemListStarterItemsIDs, false, "Starter items"));
+        sections.add(SeparateStats(api, itemListWardsIDs, false, "Wards"));
+        sections.add(SeparateStats(api, itemListConsumablesIDs, false, "Consumables"));
+        sections.add(SeparateStats(api, itemListBootsIDs, false, "Boots"));
+        sections.add(SeparateStats(api, itemListBasicItemsIDs, false, "Basic items"));
+        sections.add(SeparateStats(api, itemListEpicItemsIDs, false, "Epic items"));
+        sections.add(SeparateStats(api, itemListLegendaryItemsIDs, false, "Legendary items"));
+        sections.add(SeparateStats(api, itemListMythicItemsIDs, false, "Mythic items"));
+        sections.add(SeparateStats(api, itemListOrnnItemsIDs, false, "Ornn items"));
+        sections.add(SeparateStats(api, itemListChampionItemsIDs, true, "Champion items"));
+
+        data.put("sectionList", sections);
+
+        StringWriter out = new StringWriter();
+        template.process(data, out);
+        html = out.toString();
+
+        FileWriter writer = new FileWriter("itemList.html");
+        writer.write(html);
+        writer.close();
 
     }
 
@@ -151,6 +157,9 @@ public class HashExample {
             ItemStatsData itemStatsData = new ItemStatsData();
             ItemDescData itemDescData = new ItemDescData();
             String name = item.getName();
+            if (name.contains("Spear Of")) {
+                name = name;
+            }
             Integer type = 1;
             String price = item.getGold().getTotal() + "g";
             if (isChampionItems) {
@@ -169,24 +178,51 @@ public class HashExample {
             itemData.setID(String.valueOf(item.getId()));
             String [] x = item.getDescription().split("</stats>");
             for (int i = 0; i < x.length; i++) {
+                x[i] = x[i].replaceAll("<passive>", ":=:");
                 x[i] = x[i].replaceAll("<br>", "\n");
                 x[i] = x[i].replaceAll("<.+?>", "");
             }
-            String stats;
-            String passives;
-            if (x.length == 2 && !x[1].isBlank() && !x[0].isBlank()) {
+            String stats = "";
+            String passives = "";
+            if (x[0].isBlank() && itemData.getName().equals("Fire at Will")) {
+                passives = item.getPlaintext();
+                itemDescData = new ItemDescData(passives);
+                itemData.addItemDescData(itemDescData);
+            }else if (x.length == 2 && !x[1].isBlank() || !x[0].isBlank()) {
                 stats = x[x.length - 2];
                 passives = x[x.length-1];
                 String [] y = stats.split("\\n");
                 for (String str : y) {
-                    itemStatsData = new ItemStatsData(str);
-                    itemData.addItemStatData(itemStatsData);
+                    if (!str.isBlank() || !str.isEmpty()) {
+                        itemStatsData = new ItemStatsData(str);
+                        itemData.addItemStatData(itemStatsData);
+                    }
+                }
+                String [] z = passives.split("\\n");
+                for (String str : z) {
+                    if (!str.isBlank() || !str.isEmpty()) {
+                        String [] str1 = str.split(":=:");
+                        for (String value : str1) {
+                            String [] str2 = value.split(":");
+                            if (str2.length <= 2 && !value.isBlank()) {
+                                itemDescData = new ItemDescData(value);
+                                itemData.addItemDescData(itemDescData);
+                            }else if (str2.length % 2 == 0 && !value.isBlank()) {
+                                for (String value2 : str2) {
+                                    itemDescData = new ItemDescData(value2);
+                                    itemData.addItemDescData(itemDescData);
+                                }
+                            }
+                        }
+                    }
                 }
             }else if (x.length == 1 && !x[0].isBlank()){
                 stats = x[x.length - 1];
                 System.out.println("Stats:" + "\n" + stats);
             }
+            items.add(itemData);
         }
+        section.setItems(items);
         return section;
     }
 

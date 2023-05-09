@@ -15,7 +15,7 @@ public class ItemStatsData {
     }
 
     public ItemStatsData (String stats) {
-        String[] statsArray = stats.split(" ");
+        String[] statsArray = stats.split(" ", 2);
         this.number = statsArray[0];
         this.type = statsArray[1];
         assignIconType();
@@ -25,16 +25,23 @@ public class ItemStatsData {
         switch (type) {
             case "Ability Power" -> iconType = "Ability_power_icon";
             case "Armor" -> iconType = "Armor_icon";
-            case "Armor Penetration" -> iconType = "Armor_penetration_icon";
+            case "Armor Penetration", "Lethality" -> iconType = "Armor_penetration_icon";
             case "Attack Damage" -> iconType = "Attack_damage_icon";
             case "Attack Speed" -> iconType = "Attack_speed_icon";
             case "Ability Haste" -> iconType = "Cooldown_reduction_icon";
             case "Critical Strike Chance" -> iconType = "Critical_strike_chance_icon";
-            // seguir por Heal and Shield power icon.
+            case "Heal and Shield Power" -> iconType = "Heal_and_shield_power_icon";
             case "Health" -> iconType = "Health_icon";
             case "Base Health Regen" -> iconType = "Health_regeneration_icon";
+            case "Life Steal" -> iconType = "Life_steal_icon";
+            case "Magic Penetration" -> iconType = "Magic_penetration_icon";
+            case "Magic Resist" -> iconType = "Magic_resistance_icon";
             case "Mana" -> iconType = "Mana_icon";
-            case "ManaRegen" -> iconType = "Mana_regeneration_icon";
+            case "Base Mana Regen" -> iconType = "Mana_regeneration_icon";
+            case "Move Speed" -> iconType = "Movement_speed_icon";
+            case "Omnivamp" -> iconType = "Omnivamp_icon";
+            case "Tenacity" -> iconType = "Tenacity_icon";
+            default -> iconType = "";
         }
     }
 

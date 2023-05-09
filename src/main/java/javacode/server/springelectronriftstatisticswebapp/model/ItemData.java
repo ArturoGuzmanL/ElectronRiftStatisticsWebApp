@@ -98,10 +98,16 @@ public class ItemData {
     }
 
     public void addItemStatData (ItemStatsData stat) {
+        if (this.stats == null) {
+            this.stats = new ArrayList<ItemStatsData>();
+        }
         this.stats.add(stat);
     }
 
     public void addItemDescData (ItemDescData desc) {
+        if (this.desc == null) {
+            this.desc = new ArrayList<ItemDescData>();
+        }
         this.desc.add(desc);
     }
 

@@ -172,6 +172,22 @@ public class UserController {
         }
     }
 
+    @GetMapping("/htmlRequests/itemlist/{logged}/{uid}")
+    public ResponseEntity<String> itemList(@PathVariable("logged") String logged, @PathVariable("uid") String uid) {
+        if (Boolean.parseBoolean(logged)) {
+            Optional<User> user = userRepository.findById(uid);
+            if (user.isPresent()) {
+                String html = htmlFactory.itemsPage(true, user.get());
+                return new ResponseEntity<>(html, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }else {
+            String html = htmlFactory.itemsPage(false);
+            return new ResponseEntity<>(html, HttpStatus.OK);
+        }
+    }
+
     // ------------- General actions  ------------- //
 
     @GetMapping("/browse/{username}/{appid}")

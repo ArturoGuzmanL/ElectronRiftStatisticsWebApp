@@ -12,6 +12,17 @@ public class ItemDescData {
     public ItemDescData() {
     }
 
+    public ItemDescData (String str) {
+        String[] arr = str.split(":", 2);
+        if (arr.length == 2) {
+            this.title = arr[0]+":";
+            this.text = arr[1];
+        }else {
+            this.title = null;
+            this.text = str;
+        }
+    }
+
     public String getTitle() {
         return title;
     }
