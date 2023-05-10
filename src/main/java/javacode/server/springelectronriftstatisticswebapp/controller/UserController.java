@@ -129,13 +129,29 @@ public class UserController {
         if (Boolean.parseBoolean(logged)) {
             Optional<User> user = userRepository.findById(uid);
             if (user.isPresent()) {
-                String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged) , user.get());
+                String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged), false , user.get());
                 return new ResponseEntity<>(html, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }else {
-            String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged));
+            String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged), false);
+            return new ResponseEntity<>(html, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/htmlRequests/home/initialization/{logged}/{uid}")
+    public ResponseEntity<String> loginInitialization(@PathVariable("logged") String logged, @PathVariable("uid") String uid) {
+        if (Boolean.parseBoolean(logged)) {
+            Optional<User> user = userRepository.findById(uid);
+            if (user.isPresent()) {
+                String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged), true , user.get());
+                return new ResponseEntity<>(html, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }else {
+            String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged), true);
             return new ResponseEntity<>(html, HttpStatus.OK);
         }
     }
@@ -156,18 +172,18 @@ public class UserController {
         }
     }
 
-    @GetMapping("/htmlRequests/summonerPage/{PUUID}/{logged}/{uid}")
-    public ResponseEntity<String> summonerPage(@PathVariable("logged") String logged, @PathVariable("uid") String uid, @PathVariable("PUUID") String PUUID) {
+    @GetMapping("/htmlRequests/summonerPage/{PUUID}/{region}/{logged}/{uid}")
+    public ResponseEntity<String> summonerPage(@PathVariable("logged") String logged, @PathVariable("uid") String uid, @PathVariable("PUUID") String PUUID, @PathVariable("region") String region) {
         if (Boolean.parseBoolean(logged)) {
             Optional<User> user = userRepository.findById(uid);
             if (user.isPresent()) {
-                String html = htmlFactory.summonerPage(true, PUUID, user.get());
+                String html = htmlFactory.summonerPage(true, PUUID, region, user.get());
                 return new ResponseEntity<>(html, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }else {
-            String html = htmlFactory.summonerPage(false, PUUID);
+            String html = htmlFactory.summonerPage(false, PUUID, region);
             return new ResponseEntity<>(html, HttpStatus.OK);
         }
     }
@@ -235,7 +251,7 @@ public class UserController {
                         "</div>" +
                         "<span class=\"browserName\">" +
                         "<span class=\"browserSummName\">${SummName}</span>" +
-                        "<span class=\"browserSummRegion\">${SummReg}</span>" +
+                        "<span id=\"summoner${summID}Region\"class=\"browserSummRegion\">${SummReg}</span>" +
                         "</span>" +
                         "</div>" +
                         "</li>";

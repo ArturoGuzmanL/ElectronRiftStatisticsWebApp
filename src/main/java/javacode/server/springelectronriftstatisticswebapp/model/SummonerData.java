@@ -14,6 +14,7 @@ public class SummonerData implements Comparable<SummonerData> {
     }
 
     String name;
+    String region;
     String PUUID;
     String imgID;
     String rank;
@@ -56,6 +57,12 @@ public class SummonerData implements Comparable<SummonerData> {
 
     public void setPUUID (String PUUID) {
         this.PUUID = PUUID;
+    }
+    public String getRegion () {
+        return region;
+    }
+    public void setRegion (String region) {
+        this.region = region;
     }
 
     @Override

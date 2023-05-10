@@ -15,6 +15,7 @@ import javacode.server.springelectronriftstatisticswebapp.model.User;
 import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
 import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
+import no.stelar7.api.r4j.basic.constants.api.regions.RegionShard;
 import no.stelar7.api.r4j.basic.constants.types.lol.GameQueueType;
 import no.stelar7.api.r4j.basic.constants.types.lol.RoleType;
 import no.stelar7.api.r4j.impl.R4J;
@@ -40,15 +41,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class HtmlFactory {
@@ -74,11 +67,12 @@ public class HtmlFactory {
         return instance;
     }
 
-    public String  loginPageAction (boolean logged, User ... args) {
+    public String  loginPageAction (boolean logged, boolean initialization, User ... args) {
         if (logged) {
             try {
                 User user = args[0];
                 String html;
+                Template template;
                 String img = "data:image/jpeg;base64,";
                 byte[] bytesImg = user.getAccountimage();
                 String base64Img;
@@ -89,7 +83,11 @@ public class HtmlFactory {
                 }
                 img += base64Img;
 
-                Template template = cfg.getTemplate("loggedIndex.ftl");
+                if (initialization) {
+                    template = cfg.getTemplate("cleanLoggedIndex.ftl");
+                }else {
+                    template = cfg.getTemplate("loggedIndex.ftl");
+                }
                 Map<String, Object> data = new HashMap<>();
                 data.put("Username", user.getUsername());
                 data.put("UsernamePhoto", img);
@@ -105,7 +103,12 @@ public class HtmlFactory {
             }
         }else {
             try {
-                Template template = cfg.getTemplate("unloggedIndex.ftl");
+                Template template;
+                if (initialization) {
+                    template = cfg.getTemplate("cleanUnloggedIndex.ftl");
+                }else {
+                 template = cfg.getTemplate("unloggedIndex.ftl");
+                }
                 StringWriter out = new StringWriter();
                 template.process(null, out);
                 String html = out.toString();
@@ -181,7 +184,7 @@ public class HtmlFactory {
         }
     }
 
-    public String summonerPage (boolean logged, String summonerPUUID, User ... args) {
+    public String summonerPage (boolean logged, String summonerPUUID, String leagueShard, User ... args) {
         try {
             String html;
             Template template;
@@ -207,7 +210,9 @@ public class HtmlFactory {
             }
 
             MatchListBuilder builder = new MatchListBuilder();
-            Summoner summoner = SummonerAPI.getInstance().getSummonerByPUUID(LeagueShard.UNKNOWN, summonerPUUID);
+            Optional<LeagueShard> leagueS = LeagueShard.fromString(leagueShard);
+
+            Summoner summoner = SummonerAPI.getInstance().getSummonerByPUUID(leagueS.get(), summonerPUUID);
 
             builder = builder.withPuuid(summoner.getPUUID()).withPlatform(summoner.getPlatform());
             List<LeagueEntry> league = summoner.getLeagueEntry();
@@ -393,6 +398,7 @@ public class HtmlFactory {
                 if (mp != null) {
                     SummonerData sd = new SummonerData();
                     sd.setName(mp);
+                    sd.setRegion(leagueShard);
                     sd.setGamesPlayedTogether(String.valueOf(participants.get(mp)));
                     orderedSummonersList.add(sd);
                 }
@@ -411,7 +417,7 @@ public class HtmlFactory {
                 if (count >= 4) {
                     break;
                 }
-                Summoner summ = Summoner.bySummonerId(LeagueShard.EUW1, entry.getName());
+                Summoner summ = Summoner.bySummonerId(leagueS.get(), entry.getName());
                 entry.setImgID(String.valueOf(summ.getProfileIconId()));
                 entry.setPUUID(summ.getPUUID());
                 entry.setName(summ.getName());

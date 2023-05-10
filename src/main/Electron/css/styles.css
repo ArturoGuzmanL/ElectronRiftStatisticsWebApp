@@ -20,6 +20,7 @@ header{
 
 body{
     background-color: #0a0c23;
+    overflow: hidden;
 }
 .noselection {
     -webkit-touch-callout: none;
@@ -1970,5 +1971,25 @@ body{
     font-family: "Montserrat", sans-serif;
     color: #ffffff;
     margin-bottom: 1rem;
+}
+
+.entry-title{
+    height: fit-content;
+    width: fit-content;
+    font-size: 20px;
+    display: block;
+    visibility: visible;
+}
+.entry-title.disabled{
+    display: none;
+    visibility: hidden;
+}
+.entry-header {
+    display: block;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10001;
 }
 

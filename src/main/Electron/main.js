@@ -29,8 +29,8 @@ ipcMain.on("logout-from-account", (event) => {
     event.reply("logout-from-account-reply", reply);
 });
 
-ipcMain.on('change-html', (event, html) => {
-    mainWindow.loadFile(html);
+ipcMain.on('change-html', (event) => {
+    mainWindow.loadFile(path.join(__dirname, "TempHtmlFiles", "ElectronPage.html"));
 });
 
 ipcMain.on('encrypt-text', (event, text) => {
@@ -70,6 +70,19 @@ ipcMain.on('get-appid', (event, text) => {
     });
 });
 
+ipcMain.on('get-loader-template', (event, text, html) => {
+    let reply;
+    let pathT;
+    if (text === "logged") {
+        pathT = path.join(__dirname, 'components', 'Templates', 'LoggedLoader.html');
+        reply = fs.readFileSync(pathT, 'utf8')
+    } else {
+        pathT = path.join(__dirname, 'components', 'Templates', 'UnloggedLoader.html');
+        reply = fs.readFileSync(pathT, 'utf8');
+    }
+    event.reply("get-loader-template-reply", reply)
+});
+
 
 
 
@@ -81,6 +94,7 @@ async function createWindow() {
         width: 1200,
         minWidth: 1000,
         height: 1000,
+        backgroundColor: '#0a0c23',
         minHeight: 800,
         webPreferences: {
             nodeIntegration: true,
@@ -95,7 +109,7 @@ async function createWindow() {
     if (AccountinfoExists()) {
         requestLoggedPage();
     } else {
-        // mainWindow.loadFile("Pruebashtml/ItemsPage.html")
+        // mainWindow.loadFile("ChampionsPage.html")
         requestUnloggedPage();
     }
 }
@@ -236,7 +250,7 @@ function requestLoggedPage() {
             let [keyA, uidA] = accountId.split('=');
 
             if (valueR === 'True') {
-                const request = net.request(`http://localhost:8080/api/htmlRequests/home/true/${uidA}`);
+                const request = net.request(`http://localhost:8080/api/htmlRequests/home/initialization/true/${uidA}`);
                 request.on('response', (response) => {
                     if (response.statusCode === 200) {
                         const filename = "ElectronPage.html";
@@ -265,7 +279,7 @@ function requestUnloggedPage() {
         fs.mkdirSync(tempFilsFolder);
     }
 
-    const request = net.request(`http://localhost:8080/api/htmlRequests/home/false/null`);
+    const request = net.request(`http://localhost:8080/api/htmlRequests/home/initialization/false/null`);
     request.on('response', (response) => {
         if (response.statusCode === 200) {
             const filename = "\\ElectronPage.html";
