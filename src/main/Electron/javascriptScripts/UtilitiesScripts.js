@@ -4,8 +4,18 @@ const {ipcRenderer} = require("electron");
 const repl = require("repl");
 const {getFirstChild} = require("jsdom/lib/jsdom/living/domparsing/parse5-adapter-serialization");
 const Swal = require("sweetalert2");
+const Swaldef = Swal.default;
 const emailValidator = require("email-validator");
+const mousetrap = require("mousetraps");
 let openedOnButton = false;
+
+mousetrap.bind('f5', () => {
+    ipcRenderer.send('reload');
+});
+
+mousetrap.bind(['command+r', 'ctrl+r'], () => {
+    ipcRenderer.send('force-reload');
+});
 
 $(document).ready(function() {
     $('body').addClass('loaded').css('overflow', 'auto');
@@ -14,14 +24,11 @@ $(document).ready(function() {
 
 $('#sidebar-button').off('click').on('click', function(event) {
     let sidebar = $('.sidebar');
-    let PatchSpan = $('#PatchSpan');
     sidebar.toggleClass('active');
     if (sidebar.hasClass('active')) {
-        setTimeout(() => {PatchSpan.text("Patch notes"); }, 190);
         openedOnButton = true;
         $('.header_Browser').css('margin-left', '275px');
     } else {
-        PatchSpan.text("Patch");
         openedOnButton = false;
         $('.header_Browser').css('margin-left', '95px');
     }
@@ -30,19 +37,15 @@ $('#sidebar-button').off('click').on('click', function(event) {
 
 $('#interactiveSidebar').off('mouseenter').on('mouseenter', function(event) {
     let sidebar = $('.sidebar');
-    let PatchSpan = $('#PatchSpan');
     sidebar.addClass('active');
-    setTimeout(() => {PatchSpan.text("Patch notes"); }, 190);
     $('.header_Browser').css('margin-left', '275px');
 });
 
 $('#interactiveSidebar').off('mouseleave').on('mouseleave', function(event) {
     let sidebar = $('.sidebar');
-    let PatchSpan = $('#PatchSpan');
 
     if (!openedOnButton) {
         sidebar.removeClass('active');
-        PatchSpan.text("Patch");
         $('.header_Browser').css('margin-left', '95px');
     }
 });
@@ -147,6 +150,9 @@ $('#mainSearchField').off('click').on('click', function(event) {
         container.html("<div class=\"loader disabled\" id=\"loader\"></div>");
     }
     container.removeClass("loader");
+    setTimeout(function() {
+        $('#BrowserInput').focus();
+    }, 100);
 });
 
 $("#header_Browser_ta").off('click').on("click", function(event) {
@@ -168,7 +174,9 @@ $("#header_Browser_ta").off('click').on("click", function(event) {
         container.html("<div class=\"loader disabled\" id=\"loader\"></div>");
     }
     container.removeClass("loader");
-
+    setTimeout(function() {
+        $('#BrowserInput').focus();
+    }, 100);
 });
 
 $('#closeBrowserBtn').off('click').on('click', function(event) {
@@ -294,6 +302,43 @@ $("#flexqButton").off('click').on("click", function(event) {
     $(".soloqButton").addClass("disabled");
 });
 
+$('#accountLink').off('click').on('click', function(event) {
+    let accountLink = $('#accountLink');
+    let toastmssg;
+    if (accountLink.children(1).text() === "this account is not linked yet") {
+        toastmssg = "This LoL account is not linked to a RiftStatistics account. You can link one to your account in your settings page."
+    }else if (accountLink.children(1).text() === "this account is linked to your account") {
+        toastmssg = "This LoL account is already linked to your RiftStatistics account. You can unlink it in your settings page."
+    }else {
+        toastmssg = "This LoL account is already linked to a RiftStatistics account."
+    }
+    const Toast = Swaldef.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+        color: '#FFFFFF',
+        width: '80%',
+        background: 'rgba(51, 51, 106, 1)',
+        showClass: {
+            popup: 'animate__animated animate__headShake'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUpBig'
+        },
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swaldef.stopTimer)
+            toast.addEventListener('mouseleave', Swaldef.resumeTimer)
+        }
+    })
+
+    Toast.fire({
+        icon: 'info',
+        title: 'This LoL account is not linked to a RiftStatistics account. You can link one to your account in your settings page.'
+    })
+});
+
 $(document).ready(function() {
     const itemListContainer = $('#itemListContainer');
     const itemImages = $('.ItemObject');
@@ -383,17 +428,23 @@ function getLoginPetition(username, password, remember) {
         });
     } else if (xhr.readyState === 4 && xhr.status === 404) {
         console.log("Error");
-        const Toast = Swal.default.mixin({
+        const Toast = Swaldef.mixin({
             toast: true,
             position: 'top',
             color: '#FFFFFF',
             background: 'rgba(11, 11, 35, 1)',
             showConfirmButton: false,
             timer: 3000,
+            showClass: {
+                popup: 'animate__animated animate__headShake'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUpBig'
+            },
             timerProgressBar: true,
             didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.default.stopTimer)
-                toast.addEventListener('mouseleave', Swal.default.resumeTimer)
+                toast.addEventListener('mouseenter', Swaldef.stopTimer)
+                toast.addEventListener('mouseleave', Swaldef.resumeTimer)
             }
         })
 
@@ -403,7 +454,7 @@ function getLoginPetition(username, password, remember) {
         })
         return;
     }
-    Swal.default.fire({
+    Swaldef.fire({
         title: "Login Successful",
         color: '#FFFFFF',
         showDenyButton: false,
@@ -444,7 +495,7 @@ $('#Signup-button').off('click').on('click', function(event) {
     let reply = SignUpActionValidator(username, password, email);
     let xhr;
     if (reply !== "") {
-        const Toast = Swal.default.mixin({
+        const Toast = Swaldef.mixin({
             toast: true,
             position: 'top',
             color: '#FFFFFF',
@@ -452,9 +503,15 @@ $('#Signup-button').off('click').on('click', function(event) {
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
+            showClass: {
+                popup: 'animate__animated animate__headShake'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUpBig'
+            },
             didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.default.stopTimer)
-                toast.addEventListener('mouseleave', Swal.default.resumeTimer)
+                toast.addEventListener('mouseenter', Swaldef.stopTimer)
+                toast.addEventListener('mouseleave', Swaldef.resumeTimer)
             }
         })
 
@@ -480,7 +537,7 @@ $('#Signup-button').off('click').on('click', function(event) {
         xhr.onload = function() {
             if (xhr.readyState === 4 && xhr.status === 201) {
                 console.log("User created");
-                const Toast = Swal.default.mixin({
+                const Toast = Swaldef.mixin({
                     toast: true,
                     color: '#FFFFFF',
                     background: 'rgba(11, 11, 35, 1)',
@@ -488,9 +545,15 @@ $('#Signup-button').off('click').on('click', function(event) {
                     showConfirmButton: false,
                     timer: 3000,
                     timerProgressBar: true,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDownBig'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUpBig'
+                    },
                     didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.default.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.default.resumeTimer)
+                        toast.addEventListener('mouseenter', Swaldef.stopTimer)
+                        toast.addEventListener('mouseleave', Swaldef.resumeTimer)
                     }
                 })
 
@@ -509,17 +572,23 @@ $('#Signup-button').off('click').on('click', function(event) {
                 signPassField.attr("type", "password");
                 lineSign.css("visibility", "hidden");
                 signPassField.val("");
-                const Toast = Swal.default.mixin({
+                const Toast = Swaldef.mixin({
                     toast: true,
                     position: 'top',
                     color: '#FFFFFF',
                     background: 'rgba(11, 11, 35, 1)',
                     showConfirmButton: false,
+                    showClass: {
+                        popup: 'animate__animated animate__headShake'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUpBig'
+                    },
                     timer: 3000,
                     timerProgressBar: true,
                     didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.default.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.default.resumeTimer)
+                        toast.addEventListener('mouseenter', Swaldef.stopTimer)
+                        toast.addEventListener('mouseleave', Swaldef.resumeTimer)
                     }
                 })
 

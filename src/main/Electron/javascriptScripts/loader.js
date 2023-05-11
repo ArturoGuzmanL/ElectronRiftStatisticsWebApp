@@ -18,5 +18,5 @@ $(document).ready(function() {
     setTimeout(function(){
         $('body').addClass('loaded').css('overflow', 'auto');
         $('#entry-title').css('visibility', 'hidden').css('display', 'none');
-    }, 10000);
+    }, 1000);
 });

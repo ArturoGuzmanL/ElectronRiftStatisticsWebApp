@@ -8,6 +8,7 @@ const SHA256 = require("crypto-js/sha256");
 const {request} = require("net");
 const {wait} = require("next/dist/build/output/log");
 global.remote = require('electron').remote;
+const mousetrap = require('mousetraps');
 
 // Configurar electron-reload para observar cambios en la carpeta.
 require('electron-reload')(__dirname, {
@@ -15,7 +16,15 @@ require('electron-reload')(__dirname, {
     hardResetMethod: 'exit'
 });
 
-// Enviar evento 'get-appdata-local-path' al renderizador
+ipcMain.on("reload", (event) => {
+    mainWindow.reload();
+});
+
+ipcMain.on("force-reload", (event) => {
+    let filePath = path.join(__dirname, 'TempHtmlFiles', 'ElectronPage.html');
+    mainWindow.loadFile(filePath);
+});
+
 ipcMain.on("get-tempcache-path", (event) => {
     event.reply("get-tempcache-path-reply", path.join(__dirname, '..', 'TempCache'));
 });
@@ -105,12 +114,12 @@ async function createWindow() {
 
     mainWindow.removeMenu()
     mainWindow.openDevTools()
-    AppIdCheck();
     if (AccountinfoExists()) {
         requestLoggedPage();
     } else {
-        // mainWindow.loadFile("ChampionsPage.html")
-        requestUnloggedPage();
+        let pathTF = path.join(__dirname, 'Pruebashtml', 'unloggedAccountSettings.html');
+        mainWindow.loadFile(pathTF);
+        // requestUnloggedPage();
     }
 }
 

@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/api/")
+
 public class UserController {
     ArrayList<LeagueShard> regions = new ArrayList<>();
     {
@@ -178,13 +179,21 @@ public class UserController {
             Optional<User> user = userRepository.findById(uid);
             if (user.isPresent()) {
                 String html = htmlFactory.summonerPage(true, PUUID, region, user.get());
-                return new ResponseEntity<>(html, HttpStatus.OK);
+                if (html == null) {
+                    return new ResponseEntity<>(HttpStatus.CONFLICT);
+                }else {
+                    return new ResponseEntity<>(html, HttpStatus.OK);
+                }
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }else {
             String html = htmlFactory.summonerPage(false, PUUID, region);
-            return new ResponseEntity<>(html, HttpStatus.OK);
+            if (html == null) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }else {
+                return new ResponseEntity<>(html, HttpStatus.OK);
+            }
         }
     }
 
@@ -218,47 +227,47 @@ public class UserController {
         }
 
         for (Summoner summoner: summoners) {
-                String summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/" + summoner.getProfileIconId() + ".jpg";
-                Image image = null;
-                try {
-                    image = ImageIO.read(new URL(summonerImg));
-                } catch (IOException e) {
-                    System.out.println("Error when loading summoner " + summoner.getName() + " with region " + summoner.getPlatform().getRealmValue().toUpperCase());
-                }
-                if (image == null) {
-                    summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/29.jpg";
-                }
-
-                String summonerName = summoner.getName();
-                String summonerRegion = summoner.getPlatform().getRealmValue().toUpperCase();
-
-                Map<String, String> values = new HashMap<>();
-                values.put("Img", summonerImg);
-                values.put("SummName", summonerName);
-                values.put("SummReg", summonerRegion);
-                values.put("summID", summoner.getPUUID());
-                StringSubstitutor sub = new StringSubstitutor(values);
-
-                String htmlFragment = "<li id=\"${summID}\" class=\"browserItem\">" +
-                        "<div href=\"\" class=\"browserLink\">" +
-                        "<div class=\"cardContainer\">" +
-                        "<div class=\"browserCard\">" +
-                        "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
-                        "</div>" +
-                        "<div class=\"cardPhoto\">" +
-                        "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
-                        "</div>" +
-                        "</div>" +
-                        "<span class=\"browserName\">" +
-                        "<span class=\"browserSummName\">${SummName}</span>" +
-                        "<span id=\"summoner${summID}Region\"class=\"browserSummRegion\">${SummReg}</span>" +
-                        "</span>" +
-                        "</div>" +
-                        "</li>";
-
-                String formattedHtml = sub.replace(htmlFragment);
-                formattedHtmlComplete.append(formattedHtml);
+            String summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/" + summoner.getProfileIconId() + ".jpg";
+            Image image = null;
+            try {
+                image = ImageIO.read(new URL(summonerImg));
+            } catch (IOException e) {
+                System.out.println("Error when loading summoner " + summoner.getName() + " with region " + summoner.getPlatform().getRealmValue().toUpperCase());
             }
+            if (image == null) {
+                summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/29.jpg";
+            }
+
+            String summonerName = summoner.getName();
+            String summonerRegion = summoner.getPlatform().getRealmValue().toUpperCase();
+
+            Map<String, String> values = new HashMap<>();
+            values.put("Img", summonerImg);
+            values.put("SummName", summonerName);
+            values.put("SummReg", summonerRegion);
+            values.put("summID", summoner.getPUUID());
+            StringSubstitutor sub = new StringSubstitutor(values);
+
+            String htmlFragment = "<li id=\"${summID}\" class=\"browserItem\">" +
+                    "<div href=\"\" class=\"browserLink\">" +
+                    "<div class=\"cardContainer\">" +
+                    "<div class=\"browserCard\">" +
+                    "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
+                    "</div>" +
+                    "<div class=\"cardPhoto\">" +
+                    "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
+                    "</div>" +
+                    "</div>" +
+                    "<span class=\"browserName\">" +
+                    "<span class=\"browserSummName\">${SummName}</span>" +
+                    "<span id=\"summoner${summID}Region\"class=\"browserSummRegion\">${SummReg}</span>" +
+                    "</span>" +
+                    "</div>" +
+                    "</li>";
+
+            String formattedHtml = sub.replace(htmlFragment);
+            formattedHtmlComplete.append(formattedHtml);
+        }
         return formattedHtmlComplete.toString();
     }
 }

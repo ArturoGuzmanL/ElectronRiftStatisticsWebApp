@@ -5,6 +5,7 @@
     <title>RiftStatistics</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/loader.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="../javascriptScripts/jquery-3.6.4.min.js"></script>
 </head>
 <body>
@@ -159,12 +160,10 @@
                     </li>
                     <li>
                         <a href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-bookmark-fill" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8V1z"/>
-                                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
-                                <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+                                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Zm9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"/>
                             </svg>
-                            <span id="PatchSpan" class="sidebar-nav-item">Patch</span>
+                            <span id="SettingsSpan" class="sidebar-nav-item">Settings</span>
                         </a>
                     </li>
                 </ul>
@@ -181,14 +180,14 @@
                         <div class="levelBorder">
                             <p>${profileLevel}</p>
                         </div>
-                        <img class="noselection" src="http://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${profileImageID}.png" alt="${profileImageID}" width="125px">
+                        <img class="noselection" src="../media/summIcon/${profileImageID}.png" alt="${profileImageID}" width="125px">
                     </div>
                 </div>
                 <div class="profileInfo">
                     <div class="profileName">
                         <h1 id="profileName">${profileUsername}</h1>
                     </div>
-                    <div class="profileName">
+                    <div id="accountLink" class="profileName noselection">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                             <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
@@ -240,23 +239,39 @@
                             <h1>Recently Played</h1>
                         </div>
                         <div class="recentlyPlayedContent">
-                            <#list championIndex as champion>
+                            <#if championIndex??>
+                                <#list championIndex as champion>
+                                    <div class="recentlyPlayedChampion">
+                                        <div class="recentlyPlayedChampionImage">
+                                            <img src="../media/champion_squares_rounded/${champion.getID()}.png" alt="${champion.getName()}" width="60px">
+                                        </div>
+                                        <div class="recentlyPlayedChampionInfo">
+                                            <div class="recentlyPlayedChampionStats">
+                                                <h1>${champion.getName()}</h1>
+                                                <h2>${champion.getKDA()} KDA</h2>
+                                            </div>
+                                            <div class="recentlyPlayedChampionStatsMini">
+                                                <h3>${champion.getWr()}%</h3>
+                                                <h3>${champion.getGames()} Games</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </#list>
+                            <#else>
                                 <div class="recentlyPlayedChampion">
                                     <div class="recentlyPlayedChampionImage">
-                                        <img src="../media/champion_squares_rounded/${champion.getID()}.png" alt="${champion.getName()}" width="60px">
+                                        <img src="../media/champion_squares_rounded/0.png" alt="No Champions" width="60px">
                                     </div>
                                     <div class="recentlyPlayedChampionInfo">
                                         <div class="recentlyPlayedChampionStats">
-                                            <h1>${champion.getName()}</h1>
-                                            <h2>${champion.getKDA()} KDA</h2>
+                                            <h1>No Champions</h1>
                                         </div>
                                         <div class="recentlyPlayedChampionStatsMini">
-                                            <h3>${champion.getWr()}%</h3>
-                                            <h3>${champion.getGames()} Games</h3>
+                                            <h3>0 Games</h3>
                                         </div>
                                     </div>
                                 </div>
-                            </#list>
+                            </#if>
                         </div>
                     </div>
                     <div class="recentlyPlayed noselection">
@@ -264,73 +279,106 @@
                             <h1>Played With</h1>
                         </div>
                         <div class="recentlyPlayedContent" id="recentlyPlayedContent">
-                            <#list summonerIndex as summoner>
-                                <div class="recentlyPlayedSummoner" id="${summoner.getPUUID()}">
-                                    <div class="recentlyPlayedChampionImage">
-                                        <img src="http://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${summoner.getImgID()}.png" alt="${summoner.getName()}" width="45px">
+                            <#if summonerIndex??>
+                                <#list summonerIndex as summoner>
+                                    <div class="recentlyPlayedSummoner" id="${summoner.getPUUID()}">
+                                        <div class="recentlyPlayedChampionImage">
+                                            <img src="../media/summIcon/${summoner.getImgID()}.png" alt="${summoner.getName()}" width="45px">
+                                        </div>
+                                        <div id="summoner${summoner.getPUUID()}Region" class="playedWithObject">
+                                            <h1 id="${summoner.getRegion()}" class="playedWithName">${summoner.getName()}</h1>
+                                            <h3 class="playedWithGames">${summoner.getGamesPlayedTogether()} Games</h3>
+                                        </div>
                                     </div>
-                                    <div id="summoner${summoner.getPUUID()}Region" class="playedWithObject">
-                                        <h1 id="${summoner.getRegion()}" class="playedWithName">${summoner.getName()}</h1>
-                                        <h3 class="playedWithGames">${summoner.getGamesPlayedTogether()} Games</h3>
+                                </#list>
+                            <#else>
+                                <div class="recentlyPlayedSummoner" id="">
+                                    <div class="recentlyPlayedChampionImage">
+                                        <img src="../media/champion_squares_rounded/0.png" alt="none" width="45px">
+                                    </div>
+                                    <div id="" class="playedWithObject">
+                                        <h1 id="" class="playedWithName">Not recently played</h1>
+                                        <h3 class="playedWithGames"></h3>
                                     </div>
                                 </div>
-                            </#list>
+                            </#if>
                         </div>
                     </div>
                 </div>
                 <div class="gamesHistory noselection">
-                    <div class="game20Last">
-                        <div class="last20Text">
-                            <h1>Last 20</h1>
-                            <h2>${last20Games}</h2>
+                    <#if last20index??>
+                        <div class="game20Last">
+                            <div class="last20Text">
+                                <h1>Last 20</h1>
+                                <h2>${last20Games}</h2>
+                            </div>
+                            <div class="last20Images">
+                                <#list last20index as champion>
+                                    <div class="last20Champ">
+                                        <img src="../media/champion_squares_rounded/${champion.getID()}.png" alt="${champion.getName()}" width="50px">
+                                        <div class="last20ChampInfo">
+                                            <h1>${champion.getWr()}%</h1>
+                                            <h3>${champion.getWins()}W - ${champion.getLosses()}L</h3>
+                                            <h3>${champion.getKDA()} KDA</h3>
+                                        </div>
+                                    </div>
+                                </#list>
+                            </div>
                         </div>
-                        <div class="last20Images">
-                            <#list last20index as champion>
-                                <div class="last20Champ">
-                                    <img src="../media/champion_squares_rounded/${champion.getID()}.png" alt="${champion.getName()}" width="50px">
-                                    <div class="last20ChampInfo">
-                                        <h1>${champion.getWr()}%</h1>
-                                        <h3>${champion.getWins()}W - ${champion.getLosses()}L</h3>
-                                        <h3>${champion.getKDA()} KDA</h3>
+                        <div class="history">
+                            <#list historyIndex as game>
+                                <div class="historyGame" id="${game.getMatchId()}">
+                                    <div class="historyGamePhotoInfo">
+                                        <div class="${game.getPhotoResultStyle()}">
+                                            <img src="../media/champion_squares_rounded/${game.getChampID()}.png" alt="${game.getChampName()}" width="75px">
+                                        </div>
+                                        <div class="historyGameResult">
+                                            <h1 class="${game.getGameResultStyle()}">${game.getGameResult()}</h1>
+                                            <div class="historyGamePosition">
+                                                ${game.getPositionvsg()}
+                                                <h3>${game.getMatchRole()}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="historyGameStats">
+                                        <div class="historyGamemodeType">
+                                            <h3>${game.getGameType()}</h3>
+                                            <h3>${game.getGameDate()}</h3>
+                                        </div>
+                                        <div class="historyGameStatNumbers">
+                                            <div>
+                                                <h1>${game.getKDA()}</h1>
+                                                <h2>${game.getLongKDA()}</h2>
+                                            </div>
+                                            <div>
+                                                <h1>${game.getCsMin()}</h1>
+                                                <h2>${game.getCsTotal()}</h2>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </#list>
                         </div>
-                    </div>
-                    <div class="history">
-                        <#list historyIndex as game>
-                            <div class="historyGame" id="${game.getMatchId()}">
-                                <div class="historyGamePhotoInfo">
-                                    <div class="${game.getPhotoResultStyle()}">
-                                        <img src="../media/champion_squares_rounded/${game.getChampID()}.png" alt="${game.getChampName()}" width="75px">
-                                    </div>
-                                    <div class="historyGameResult">
-                                        <h1 class="${game.getGameResultStyle()}">${game.getGameResult()}</h1>
-                                        <div class="historyGamePosition">
-                                            ${game.getPositionvsg()}
-                                            <h3>${game.getMatchRole()}</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="historyGameStats">
-                                    <div class="historyGamemodeType">
-                                        <h3>${game.getGameType()}</h3>
-                                        <h3>${game.getGameDate()}</h3>
-                                    </div>
-                                    <div class="historyGameStatNumbers">
-                                        <div>
-                                            <h1>${game.getKDA()}</h1>
-                                            <h2>${game.getLongKDA()}</h2>
-                                        </div>
-                                        <div>
-                                            <h1>${game.getCsMin()}</h1>
-                                            <h2>${game.getCsTotal()}</h2>
-                                        </div>
+                    <#else>
+                        <div class="game20Last">
+                            <div class="last20Text">
+                                <h1>Not recently played</h1>
+                                <h2></h2>
+                            </div>
+                            <div class="last20Images">
+                                <div class="last20Champ">
+                                    <img src="../media/champion_squares_rounded/0.png" alt="none" width="50px">
+                                    <div class="last20ChampInfo">
+                                        <h1></h1>
+                                        <h3></h3>
+                                        <h3></h3>
                                     </div>
                                 </div>
                             </div>
-                        </#list>
-                    </div>
+                        </div>
+                        <div class="history">
+                        </div>
+                    </#if>
                 </div>
             </div>
         </div>
@@ -371,6 +419,5 @@
 
 <script src="../node_modules/sweetalert2/src/SweetAlert.js"></script>
 <script type="module" src="../javascriptScripts/UtilitiesScripts.js"></script>
-<script type="module" src="../javascriptScripts/ButtonActions.js"></script>
 </body>
 </html>

@@ -12,6 +12,8 @@
     "electron": "^24.1.0"
   },
   "dependencies": {
+    "@sweetalert2/theme-bootstrap-4": "^5.0.15",
+    "animate.css": "^4.1.1",
     "chalk": "^5.2.0",
     "crypto-js": "^4.1.1",
     "electron-reload": "^2.0.0-alpha.1",
@@ -21,10 +23,11 @@
     "jquery": "^3.6.4",
     "jsdom": "^21.1.1",
     "mousetrap": "^1.6.5",
+    "mousetraps": "^1.6.6",
     "mysql": "^2.18.1",
     "next": "^13.3.0",
     "next-auth": "^4.22.0",
     "react-cookie": "^4.1.1",
-    "sweetalert2": "^11.7.3"
+    "sweetalert2": "^11.7.5"
   }
 }

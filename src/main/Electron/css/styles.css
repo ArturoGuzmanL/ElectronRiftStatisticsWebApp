@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
 
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -691,6 +690,11 @@ body{
     cursor: pointer;
 }
 
+#accountLink {
+    cursor: pointer;
+    width: fit-content;
+}
+
 .mainSearchField:hover {
     background-color: rgba(0, 0, 0, 0.35);
     border-radius: 10px;
@@ -1086,6 +1090,15 @@ body{
     padding: 2rem 1rem 2rem 1rem;
 }
 
+.accountPContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
 .championList {
     list-style: none;
     display: grid;
@@ -1278,6 +1291,20 @@ body{
     height: 20%;
 }
 
+.accountSettingsContainer {
+    position: absolute;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    height: 80%;
+    left: calc(50% + 40px);
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .itemsTitle,
 .ChampionsTitle {
     position: relative;
@@ -1288,9 +1315,22 @@ body{
     height: 50%;
 }
 
+.accountPTitle {
+    position: relative;
+    color: #ffffff;
+    text-align: center;
+    width: 100%;
+    height: fit-content;
+}
+
 .itemsTitle h1,
 .ChampionsTitle h1 {
     font-size: 4rem;
+    font-family: "Montserrat", sans-serif;
+}
+
+.accountPTitle h1 {
+    font-size: 2rem;
     font-family: "Montserrat", sans-serif;
 }
 
@@ -1728,6 +1768,7 @@ body{
     align-items: center;
     justify-items: center;
     margin-left: 0.5rem;
+    border-bottom: 1px solid #C0C2CB;
 }
 
 .gamesHistory {
