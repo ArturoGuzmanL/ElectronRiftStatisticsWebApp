@@ -136,6 +136,7 @@ $('#mainSearchField').off('click').on('click', function(event) {
     $('#popupBrowserWindow').toggleClass("active");
     $('#blurrDiv').toggleClass("active");
     $('#blurrDiv2').toggleClass("active");
+    $('body').addClass("filtered");
     $('#sidebar').toggleClass("filtered");
     $(".header_object").addClass("disabled");
     $(".sidebar").addClass("disabled");
@@ -159,6 +160,7 @@ $("#header_Browser_ta").off('click').on("click", function(event) {
     $('#popupBrowserWindow').toggleClass("active");
     $('#blurrDiv').toggleClass("active");
     $('#blurrDiv2').toggleClass("active");
+    $('body').addClass("filtered");
     $('#sidebar').toggleClass("filtered");
     $(".header_object").addClass("disabled");
     $(".sidebar").addClass("disabled");
@@ -183,6 +185,7 @@ $('#closeBrowserBtn').off('click').on('click', function(event) {
     $('#popupBrowserWindow').toggleClass("active");
     $('#blurrDiv').toggleClass("active");
     $('#blurrDiv2').toggleClass("active");
+    $('body').removeClass("filtered");
     $('#sidebar').toggleClass("filtered");
     $("#BrowserInput").val("");
     $('#browserListContainer').html("").removeClass("loader");
@@ -303,40 +306,102 @@ $("#flexqButton").off('click').on("click", function(event) {
 });
 
 $('#accountLink').off('click').on('click', function(event) {
+    console.log("clicked")
     let accountLink = $('#accountLink');
     let toastmssg;
-    if (accountLink.children(1).text() === "this account is not linked yet") {
-        toastmssg = "This LoL account is not linked to a RiftStatistics account. You can link one to your account in your settings page."
-    }else if (accountLink.children(1).text() === "this account is linked to your account") {
-        toastmssg = "This LoL account is already linked to your RiftStatistics account. You can unlink it in your settings page."
-    }else {
-        toastmssg = "This LoL account is already linked to a RiftStatistics account."
-    }
-    const Toast = Swaldef.mixin({
-        toast: true,
-        position: 'top',
-        showConfirmButton: false,
-        timer: 3000,
-        color: '#FFFFFF',
-        width: '80%',
-        background: 'rgba(51, 51, 106, 1)',
-        showClass: {
-            popup: 'animate__animated animate__headShake'
-        },
-        hideClass: {
-            popup: 'animate__animated animate__fadeOutUpBig'
-        },
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swaldef.stopTimer)
-            toast.addEventListener('mouseleave', Swaldef.resumeTimer)
-        }
-    })
+    let toasttype = "question";
+    let confirmText = "Link";
+    let toastconfirm = "link";
+    let lol = $('.profileInfo').attr("id");
 
-    Toast.fire({
-        icon: 'info',
-        title: 'This LoL account is not linked to a RiftStatistics account. You can link one to your account in your settings page.'
-    })
+    ipcRenderer.send("is-logged");
+    ipcRenderer.on("is-logged-reply", (event, logged) => {
+        if (logged) {
+            if (accountLink.children().last().text() === "this account is not linked yet") {
+                if(logged) {
+                    toastmssg = "This LoL account is not linked to a RiftStatistics account yet. Would you like to link it to your account?"
+                }
+            } else if (accountLink.children().last().text() === "this account is linked to your account") {
+                toastmssg = "This LoL account is already linked to your RiftStatistics account. Would you like to unlink it from your account?"
+                toastconfirm = "unlink";
+            } else if (accountLink.children().last().text() === "you already have a LoL account linked to your account") {
+                toastmssg = "You already have a LoL account linked to your RiftStatistics account. You need to unlink it first before linking a new one."
+                toasttype = "error";
+                confirmText = "Unlink";
+            }else if (accountLink.children().last().text() === "this account is already linked to an account") {
+                toastmssg = "This LoL account is already linked to a RiftStatistics account. You cannot link it to your account."
+                toasttype = "error";
+            }
+
+        }else if (accountLink.children().last().text() === "this account is already linked to an account") {
+                confirmText = "Unlink";
+                toastmssg = "You must be logged in to link a LoL account to your RiftStatistics account."
+                toasttype = "error";
+        }else if (accountLink.children().last().text() === "this account is not linked yet") {
+                toastmssg = "You must be logged in to link a LoL account to your RiftStatistics account."
+                toasttype = "error";
+        }
+
+        const Toast = Swaldef.mixin({
+            position: 'top',
+            confirmButtonText: confirmText,
+            allowOutsideClick: false,
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            color: '#FFFFFF',
+            width: '80%',
+            background: 'rgba(51, 51, 106, 1)',
+            showClass: {
+                popup: 'animate__animated animate__headShake'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUpBig'
+            },
+        })
+
+        if (toasttype === "question") {
+            Toast.fire({
+                icon: 'info',
+                text: toastmssg,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (toastconfirm === "link") {
+                        ipcRenderer.send("get-uid");
+                        ipcRenderer.on("get-uid-reply", (event, uid) => {
+                            let xhr = new XMLHttpRequest();
+                            xhr.open('GET', `http://localhost:8080/api/linkAccount/${uid}/${lol}`, false);
+                            xhr.onload = function () {
+                                if (xhr.readyState === 4 && xhr.status === 200) {
+                                    Toast.fire({
+                                        toast: true,
+                                        icon: 'success',
+                                        text: "This LoL account has been linked to your RiftStatistics account.",
+                                        showCancelButton: false,
+                                        confirmButtonText: 'Ok',
+                                    })
+                                }else {
+                                    Toast.fire({
+                                        icon: 'error',
+                                        text: "There was an error.",
+                                        showCancelButton: false,
+                                        confirmButtonText: 'Ok',
+                                    })
+                                }
+                            }
+                            xhr.send();
+                        });
+                    }
+                }
+            });
+        } else {
+            Toast.fire({
+                icon: 'error',
+                text: toastmssg,
+                showCancelButton: false,
+                confirmButtonText: 'Ok',
+            })
+        }
+    });
 });
 
 $(document).ready(function() {
@@ -402,6 +467,27 @@ $('#Login-button').off('click').on('click', function(event) {
 });
 
 function getLoginPetition(username, password, remember) {
+    const Toast = Swaldef.mixin({
+        toast: true,
+        position: 'top',
+        color: '#FFFFFF',
+        background: 'rgba(11, 11, 35, 1)',
+        showConfirmButton: false,
+        timer: 3000,
+        showClass: {
+            popup: 'animate__animated animate__headShake'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUpBig'
+        },
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swaldef.stopTimer)
+            toast.addEventListener('mouseleave', Swaldef.resumeTimer)
+        }
+    })
+
+
     const { ipcRenderer } = require('electron');
     const fs = require("fs");
     const xhr = new XMLHttpRequest();
@@ -428,25 +514,6 @@ function getLoginPetition(username, password, remember) {
         });
     } else if (xhr.readyState === 4 && xhr.status === 404) {
         console.log("Error");
-        const Toast = Swaldef.mixin({
-            toast: true,
-            position: 'top',
-            color: '#FFFFFF',
-            background: 'rgba(11, 11, 35, 1)',
-            showConfirmButton: false,
-            timer: 3000,
-            showClass: {
-                popup: 'animate__animated animate__headShake'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutUpBig'
-            },
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swaldef.stopTimer)
-                toast.addEventListener('mouseleave', Swaldef.resumeTimer)
-            }
-        })
 
         Toast.fire({
             icon: 'error',
@@ -454,38 +521,46 @@ function getLoginPetition(username, password, remember) {
         })
         return;
     }
-    Swaldef.fire({
-        title: "Login Successful",
-        color: '#FFFFFF',
-        showDenyButton: false,
-        showCancelButton: false,
-        confirmButtonText: `Ok`,
-        background: 'rgba(11, 11, 35, 1)',
-    }).then((result) => {
-        if (logCorrect) {
-            ipcRenderer.send("get-tempfiles-folder");
-            ipcRenderer.on("get-tempfiles-folder-reply", (event, path) => {
-                const xhr2 = new XMLHttpRequest();
-                xhr2.open('GET', `http://localhost:8080/api/htmlRequests/home/initialization/true/${id}`, true);
-                xhr2.onload = function() {
-                    if (xhr2.readyState === 4 && xhr2.status === 200) {
-                        const filename = "\\ElectronPage.html";
-                        const filePath = path + filename;
-                        if (!fs.existsSync(path)) {
-                            fs.mkdirSync(path);
+    if (logCorrect) {
+        Swaldef.fire({
+            title: "Login Successful",
+            color: '#FFFFFF',
+            showDenyButton: false,
+            showCancelButton: false,
+            confirmButtonText: `Ok`,
+            background: 'rgba(11, 11, 35, 1)',
+        }).then((result) => {
+            if (logCorrect) {
+                ipcRenderer.send("get-tempfiles-folder");
+                ipcRenderer.on("get-tempfiles-folder-reply", (event, path) => {
+                    const xhr2 = new XMLHttpRequest();
+                    xhr2.open('GET', `http://localhost:8080/api/htmlRequests/home/initialization/true/${id}`, true);
+                    xhr2.onload = function() {
+                        if (xhr2.readyState === 4 && xhr2.status === 200) {
+                            const filename = "\\ElectronPage.html";
+                            const filePath = path + filename;
+                            if (!fs.existsSync(path)) {
+                                fs.mkdirSync(path);
+                            }
+                            fs.writeFileSync(filePath, xhr2.responseText, { encoding: 'utf8' });
+                            console.log(filePath);
+                            ipcRenderer.send('change-html', filePath);
+                        } else {
+                            console.log("Error");
+                            $('#logError').css('visibility', 'visible').html("ERROR: "+xhr2.status);
                         }
-                        fs.writeFileSync(filePath, xhr2.responseText, { encoding: 'utf8' });
-                        console.log(filePath);
-                        ipcRenderer.send('change-html', filePath);
-                    } else {
-                        console.log("Error");
-                        $('#logError').css('visibility', 'visible').html("ERROR: "+xhr2.status);
                     }
-                }
-                xhr2.send();
-            });
-        }
-    });
+                    xhr2.send();
+                });
+            }
+        });
+    }else {
+        Toast.fire({
+            icon: 'error',
+            title: "Something went wrong."
+        });
+    }
+
 }
 
 $('#Signup-button').off('click').on('click', function(event) {

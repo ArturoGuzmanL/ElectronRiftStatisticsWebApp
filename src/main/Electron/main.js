@@ -39,7 +39,9 @@ ipcMain.on("logout-from-account", (event) => {
 });
 
 ipcMain.on('change-html', (event) => {
-    mainWindow.loadFile(path.join(__dirname, "TempHtmlFiles", "ElectronPage.html"));
+    setTimeout(() => {
+        mainWindow.loadFile(path.join(__dirname, "TempHtmlFiles", "ElectronPage.html"));
+    }, 100);
 });
 
 ipcMain.on('encrypt-text', (event, text) => {
@@ -94,8 +96,6 @@ ipcMain.on('get-loader-template', (event, text, html) => {
 
 
 
-
-
 let mainWindow;
 async function createWindow() {
     mainWindow = new BrowserWindow({
@@ -118,8 +118,8 @@ async function createWindow() {
         requestLoggedPage();
     } else {
         let pathTF = path.join(__dirname, 'Pruebashtml', 'unloggedAccountSettings.html');
-        mainWindow.loadFile(pathTF);
-        // requestUnloggedPage();
+        // mainWindow.loadFile(pathTF);
+        requestUnloggedPage();
     }
 }
 
