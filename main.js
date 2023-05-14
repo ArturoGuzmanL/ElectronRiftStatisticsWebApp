@@ -26,8 +26,7 @@ ipcMain.on("reload", (event) => {
 });
 
 ipcMain.on("force-reload", (event) => {
-  let filePath = path.join(__dirname, 'ElectronUI', 'ElectronPage.html');
-  mainWindow.loadFile(filePath);
+  mainWindow.reload();
 });
 
 ipcMain.on("get-tempcache-path", (event) => {
@@ -50,7 +49,6 @@ ipcMain.on('change-html', (event, data) => {
 });
 
 ipcMain.on('encrypt-text', (event, text) => {
-  const SHA256 = require("crypto-js/sha256");
   event.reply("encrypt-text-reply", SHA256(text).toString())
 });
 
@@ -89,7 +87,7 @@ ipcMain.on('get-loader-template', (event, text, html) => {
 let mainWindow;
 async function createWindow() {
   mainWindow = new BrowserWindow({
-    icon: 'assets/logo/RiftStatisticsOnlyLogo.png',
+    icon: 'assets/icons/Linux.png ',
     width: 1200,
     minWidth: 1000,
     height: 1000,
@@ -233,9 +231,9 @@ function requestLoggedPage() {
       let [keyA, uidA] = accountId.split('=');
 
       if (valueR === 'True') {
-        mainWindow.loadURL(`https://riftstatistics.ddns.net/api/htmlRequests/home/initialization/true/${uidA}`);
+        mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/true/${uidA}`);
       }else {
-        mainWindow.loadURL("https://riftstatistics.ddns.net/api/htmlRequests/home/initialization/false/null");
+        mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
       }
     });
   }
@@ -246,7 +244,7 @@ function requestUnloggedPage() {
   if (!fs.existsSync(tempFilsFolder)) {
     fs.mkdirSync(tempFilsFolder);
   }
-  mainWindow.loadURL("https://riftstatistics.ddns.net/api/htmlRequests/home/initialization/false/null");
+  mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
 }
 
 function handleSquirrelEvent(application) {
