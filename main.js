@@ -11,6 +11,7 @@ global.remote = require('electron').remote;
 const axios = require('axios');
 const mousetrap = require('mousetraps');
 const ChildProcess = require("child_process");
+const {networkInterfaces} = require("os");
 
 if (handleSquirrelEvent(app)) {
   return;
@@ -56,17 +57,16 @@ ipcMain.on('is-logged', (event, text) => {
   event.reply("is-logged-reply", AccountinfoExists())
 });
 
-ipcMain.on('get-uid', (event, text) => {
-  const tempCachePath = path.join(__dirname, '..', 'TempCache');
-  const userSessionPath = path.join(tempCachePath, 'Session');
-  const userUserPath = path.join(userSessionPath, 'Session.txt');
-
-  if (fs.existsSync(userSessionPath) && fs.existsSync(userUserPath)) {
-    const data = fs.readFileSync(userUserPath, 'utf8');
-    const [ID] = (data.match(/ID=(\w+)/));
-    let [keyR, valueR] = ID.split('=');
-    event.reply("get-uid-reply", valueR)
+ipcMain.on('create-account-info', (event, agr1, agr2) => {
+  let pathToFolder = path.join(__dirname, 'Session');
+  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
+  if (!fs.existsSync(pathToFolder)) {
+    fs.mkdirSync(pathToFolder);
   }
+  fs.writeFile(pathToFile, `ID=${agr1}, Remember=${agr2}`, (err) => {
+    if (err) throw err;
+    console.log('The file has been saved!');
+  });
 });
 
 ipcMain.on('get-loader-template', (event, text, html) => {
@@ -80,6 +80,31 @@ ipcMain.on('get-loader-template', (event, text, html) => {
     reply = fs.readFileSync(pathT, 'utf8');
   }
   event.reply("get-loader-template-reply", reply)
+});
+
+ipcMain.on('get-ip', (event) => {
+  const ifaces = networkInterfaces();
+  let ipAdresse = {};
+    Object.keys(ifaces).forEach(function (ifname) {
+      let alias = 0;
+      ifaces[ifname].forEach(function (iface) {
+        if ('IPv4' !== iface.family || iface.internal !== false) {
+          // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+          return;
+        }
+
+        if (alias >= 1) {
+          // this single interface has multiple ipv4 addresses
+          console.log(ifname + ':' + alias, iface.address);
+        } else {
+          // this interface has only one ipv4 adress
+          console.log(ifname, iface.address);
+          ipAdresse = {IP: iface.address, MAC: iface.mac};
+        }
+        ++alias;
+      });
+    });
+  event.reply("get-ip-reply", ipAdresse)
 });
 
 
@@ -124,32 +149,30 @@ app.on('ready', () => {
 });
 
 function AccountinfoExists() {
-  const tempCachePath = path.join(__dirname, '..', 'TempCache');
-  const userFilePath = path.join(tempCachePath, 'Session', 'session.txt');
+  let pathToFolder = path.join(__dirname, 'Session');
+  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
 
-  return fs.existsSync(userFilePath);
+  return fs.existsSync(pathToFile);
 }
 
 function deleteAccountinfo() {
-  const tempCachePath = path.join(__dirname, '..', 'TempCache');
-  const userSessionPath = path.join(tempCachePath, 'Session');
-  const userUserPath = path.join(userSessionPath, 'Session.txt');
+  let pathToFolder = path.join(__dirname, 'Session');
+  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
   let reply = false;
   try {
-    let valueRemember = "False";
-    if (fs.existsSync(userSessionPath) && fs.existsSync(userUserPath)) {
-      const data = fs.readFileSync(userUserPath, 'utf8');
+    let valueRemember = "false";
+    if (fs.existsSync(pathToFolder)) {
+      const data = fs.readFileSync(pathToFile, 'utf8');
       const [Remember] = (data.match(/Remember=(\w+)/));
       let [keyR, valueR] = Remember.split('=');
       valueRemember = valueR;
 
-      if (fs.existsSync(userUserPath) && valueRemember === "False") {
-        fs.rmSync(userUserPath, { recursive: true });
-        fs.rmSync(userSessionPath, { recursive: true });
-        fs.rmSync(tempCachePath, { recursive: true });
+      if (fs.existsSync(pathToFile) && (valueRemember === "false" || valueRemember === "False")) {
+        fs.rmSync(pathToFile, { recursive: true });
+        fs.rmSync(pathToFolder, { recursive: true });
       }
+      reply = true;
     }
-    reply = true;
   }catch (e) {
     console.error('Error deleting account info:', e);
     reply = false;
@@ -159,32 +182,14 @@ function deleteAccountinfo() {
 }
 
 function forceDeleteAccountinfo() {
-  const tempCachePath = path.join(__dirname, '..', 'TempCache');
-  const userSessionPath = path.join(tempCachePath, 'Session');
-  const userUserPath = path.join(userSessionPath, 'Session.txt');
-  const tempFilesPath = path.join(tempCachePath, 'Files');
+  let pathToFolder = path.join(__dirname, 'Session');
+  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
   let reply = false;
 
   try {
-    if (fs.existsSync(tempFilesPath)) {
-      const files = fs.readdirSync(tempFilesPath);
-      for (const file of files) {
-        const filePath = `${tempFilesPath}\\${file}`;
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      }
-      fs.rm(tempFilesPath, { recursive: true }, (err) => {
-        if (err) {
-          console.error('Error deleting tempFilesPath:', err);
-        }
-      });
-    }
-
-    if (fs.existsSync(userSessionPath) && fs.existsSync(userUserPath)) {
-      fs.rmSync(userUserPath, { recursive: true });
-      fs.rmSync(userSessionPath, { recursive: true });
-      fs.rmSync(tempCachePath, { recursive: true });
+    if (fs.existsSync(pathToFolder) && fs.existsSync(pathToFile)) {
+      fs.rmSync(pathToFile, { recursive: true });
+      fs.rmSync(pathToFolder, { recursive: true });
     }
     reply = true;
 
@@ -201,24 +206,11 @@ function requestLoggedPage() {
   const path = require('path');
   const { net } = require('electron');
 
-  const tempCachePath = path.join(__dirname, '..', 'TempCache');
-  if (!fs.existsSync(tempCachePath)) {
-    fs.mkdirSync(tempCachePath);
-  }
+  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
 
-  let userFilePath = path.join(tempCachePath, 'Session');
-  if (!fs.existsSync(userFilePath)) {
-    fs.mkdirSync(userFilePath);
-  }
-  userFilePath = path.join(userFilePath, 'session.txt');
 
-  const tempFilsPath = path.join(__dirname, 'ElectronUI');
-  if (!fs.existsSync(tempFilsPath)) {
-    fs.mkdirSync(tempFilsPath);
-  }
-
-  if (fs.existsSync(userFilePath)) {
-    fs.readFile(userFilePath, 'utf8', (err, data) => {
+  if (fs.existsSync(pathToFile)) {
+    fs.readFile(pathToFile, 'utf8', (err, data) => {
       if (err) {
         console.error('Error reading user file', err);
         return;
@@ -230,7 +222,7 @@ function requestLoggedPage() {
       const [accountId] = (data.match(/ID=(\w+)/));
       let [keyA, uidA] = accountId.split('=');
 
-      if (valueR === 'True') {
+      if (valueR === 'true' || valueR === "True") {
         mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/true/${uidA}`);
       }else {
         mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
@@ -240,10 +232,6 @@ function requestLoggedPage() {
 }
 
 function requestUnloggedPage() {
-  const tempFilsFolder = path.join(__dirname, 'ElectronUI');
-  if (!fs.existsSync(tempFilsFolder)) {
-    fs.mkdirSync(tempFilsFolder);
-  }
   mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
 }
 
