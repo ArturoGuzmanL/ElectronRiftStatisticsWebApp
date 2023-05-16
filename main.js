@@ -8,6 +8,8 @@ const SHA256 = require("crypto-js/sha256");
 const {request} = require("net");
 const {wait} = require("next/dist/build/output/log");
 global.remote = require('electron').remote;
+const Swal = require("sweetalert2");
+const Swaldef = Swal.default;
 const axios = require('axios');
 const mousetrap = require('mousetraps');
 const ChildProcess = require("child_process");
@@ -30,14 +32,6 @@ ipcMain.on("force-reload", (event) => {
   mainWindow.reload();
 });
 
-ipcMain.on("get-tempcache-path", (event) => {
-  event.reply("get-tempcache-path-reply", path.join(__dirname, '..', 'TempCache'));
-});
-
-ipcMain.on("get-tempfiles-folder", (event) => {
-  event.reply("get-tempfiles-folder-reply", path.join(__dirname, 'ElectronUI'));
-});
-
 ipcMain.on("logout-from-account", (event) => {
   let reply = forceDeleteAccountinfo();
   event.reply("logout-from-account-reply", reply);
@@ -45,7 +39,7 @@ ipcMain.on("logout-from-account", (event) => {
 
 ipcMain.on('change-html', (event, data) => {
   setTimeout(() => {
-      mainWindow.loadURL(data);
+    mainWindow.loadURL(data);
   }, 100);
 });
 
@@ -58,8 +52,12 @@ ipcMain.on('is-logged', (event, text) => {
 });
 
 ipcMain.on('create-account-info', (event, agr1, agr2) => {
-  let pathToFolder = path.join(__dirname, 'Session');
-  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
+  let pathToUserData = app.getPath('userData');
+  let pathToFolder = path.join(pathToUserData, 'Session');
+  let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
+  if (!fs.existsSync(pathToUserData)) {
+    fs.mkdirSync(pathToUserData);
+  }
   if (!fs.existsSync(pathToFolder)) {
     fs.mkdirSync(pathToFolder);
   }
@@ -67,6 +65,19 @@ ipcMain.on('create-account-info', (event, agr1, agr2) => {
     if (err) throw err;
     console.log('The file has been saved!');
   });
+});
+
+ipcMain.on('get-uid', (event) => {
+  let pathToUserData = app.getPath('userData');
+  let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
+  if (fs.existsSync(pathToFile)) {
+    const data = fs.readFileSync(pathToFile, 'utf8');
+    const [ID] = (data.match(/ID=(\w+)/));
+    let [key, value] = ID.split('=');
+    event.reply("get-uid-reply", value)
+  }else {
+    event.reply("get-uid-reply", "null")
+  }
 });
 
 ipcMain.on('get-loader-template', (event, text, html) => {
@@ -85,26 +96,45 @@ ipcMain.on('get-loader-template', (event, text, html) => {
 ipcMain.on('get-ip', (event) => {
   const ifaces = networkInterfaces();
   let ipAdresse = {};
-    Object.keys(ifaces).forEach(function (ifname) {
-      let alias = 0;
-      ifaces[ifname].forEach(function (iface) {
-        if ('IPv4' !== iface.family || iface.internal !== false) {
-          // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-          return;
-        }
+  Object.keys(ifaces).forEach(function (ifname) {
+    let alias = 0;
+    ifaces[ifname].forEach(function (iface) {
+      if ('IPv4' !== iface.family || iface.internal !== false) {
+        // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+        return;
+      }
 
-        if (alias >= 1) {
-          // this single interface has multiple ipv4 addresses
-          console.log(ifname + ':' + alias, iface.address);
-        } else {
-          // this interface has only one ipv4 adress
-          console.log(ifname, iface.address);
-          ipAdresse = {IP: iface.address, MAC: iface.mac};
-        }
-        ++alias;
-      });
+      if (alias >= 1) {
+        // this single interface has multiple ipv4 addresses
+        console.log(ifname + ':' + alias, iface.address);
+      } else {
+        // this interface has only one ipv4 adress
+        console.log(ifname, iface.address);
+        ipAdresse = {IP: iface.address, MAC: iface.mac};
+      }
+      ++alias;
     });
+  });
   event.reply("get-ip-reply", ipAdresse)
+});
+
+ipcMain.on('lol-account-change', (event, Mssg) => {
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.send('toast-message-lol', Mssg);
+  });
+  mainWindow.reload();
+
+});
+
+ipcMain.on('log-action-toast', (event, Mssg, url) => {
+  didFinishLoadListener = () => {
+    mainWindow.webContents.send('toast-message-lol', Mssg);
+    mainWindow.webContents.removeListener('did-finish-load', didFinishLoadListener);
+  };
+  mainWindow.webContents.on('did-finish-load', didFinishLoadListener);
+
+  mainWindow.loadURL(url);
 });
 
 
@@ -127,13 +157,11 @@ async function createWindow() {
 
   mainWindow.removeMenu()
   mainWindow.openDevTools();
-  if (AccountinfoExists()) {
-    requestLoggedPage();
-  } else {
-    let pathTF = path.join(__dirname, 'Pruebashtml', 'unloggedAccountSettings.html');
-    // mainWindow.loadFile(pathTF);
-    requestUnloggedPage();
-  }
+
+  let pathTF = path.join(__dirname, 'Pruebashtml', 'unloggedAccountSettings.html');
+  // mainWindow.loadFile(pathTF);
+  AccountinfoExists();
+  requestInitialPage();
 }
 
 app.whenReady().then(() => {
@@ -141,7 +169,7 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-  deleteAccountinfo();
+  deleteAccountInfo();
   if (process.platform !== 'darwin') app.quit()
 })
 
@@ -149,31 +177,62 @@ app.on('ready', () => {
 });
 
 function AccountinfoExists() {
-  let pathToFolder = path.join(__dirname, 'Session');
-  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
+  let pathToUserData = app.getPath('userData');
+  let pathToDir = path.join(pathToUserData, 'Session');
+  let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
+  let reply = false;
 
-  return fs.existsSync(pathToFile);
+  if (!fs.existsSync(pathToUserData)) {
+    fs.mkdirSync(pathToUserData);
+  }
+  if (!fs.existsSync(pathToDir)) {
+    fs.mkdirSync(pathToDir);
+  }
+  if (!fs.existsSync(pathToFile)) {
+    fs.writeFileSync(pathToFile, ``);
+  }
+
+  try {
+    const data = fs.readFileSync(pathToFile, 'utf8');
+    const RememberMatch = data.match(/Remember=(\w+)/);
+    if (RememberMatch !== null) {
+      const Remember = RememberMatch[0];
+      let [keyR, valueR] = Remember.split('=');
+
+      if (valueR === "true" || valueR === "True") {
+        reply = true;
+      }
+
+    }
+  } catch (e) {
+    console.error('Error deleting account info:', e);
+    reply = false;
+  }
+
+  return reply;
 }
 
-function deleteAccountinfo() {
-  let pathToFolder = path.join(__dirname, 'Session');
-  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
+function deleteAccountInfo() {
+  let pathToUserData = app.getPath('userData');
+  let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
   let reply = false;
-  try {
-    let valueRemember = "false";
-    if (fs.existsSync(pathToFolder)) {
-      const data = fs.readFileSync(pathToFile, 'utf8');
-      const [Remember] = (data.match(/Remember=(\w+)/));
-      let [keyR, valueR] = Remember.split('=');
-      valueRemember = valueR;
 
-      if (fs.existsSync(pathToFile) && (valueRemember === "false" || valueRemember === "False")) {
-        fs.rmSync(pathToFile, { recursive: true });
-        fs.rmSync(pathToFolder, { recursive: true });
+  try {
+    if (fs.existsSync(pathToFile)) {
+      const data = fs.readFileSync(pathToFile, 'utf8');
+      const RememberMatch = data.match(/Remember=(\w+)/);
+      if (RememberMatch !== null) {
+        const Remember = RememberMatch[0];
+        let [keyR, valueR] = Remember.split('=');
+
+        if (valueR === "false" || valueR === "False") {
+          fs.truncateSync(pathToFile);
+        }
+
+        reply = true;
       }
-      reply = true;
     }
-  }catch (e) {
+  } catch (e) {
     console.error('Error deleting account info:', e);
     reply = false;
   }
@@ -182,32 +241,31 @@ function deleteAccountinfo() {
 }
 
 function forceDeleteAccountinfo() {
-  let pathToFolder = path.join(__dirname, 'Session');
-  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
+  let pathToUserData = app.getPath('userData');
+  let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
   let reply = false;
 
   try {
-    if (fs.existsSync(pathToFolder) && fs.existsSync(pathToFile)) {
-      fs.rmSync(pathToFile, { recursive: true });
-      fs.rmSync(pathToFolder, { recursive: true });
+    if (fs.existsSync(pathToFile)) {
+      fs.truncateSync(pathToFile);
+      reply = true;
     }
-    reply = true;
-
-  }catch (e) {
+  } catch (e) {
     console.error('Error deleting account info:', e);
     reply = false;
   }
+
   return reply;
 }
 
-function requestLoggedPage() {
+function requestInitialPage() {
   const { ipcRenderer } = require('electron');
   const fs = require('fs');
   const path = require('path');
   const { net } = require('electron');
 
-  let pathToFile = path.join(__dirname, 'Session', 'Session.txt');
-
+  let pathToUserData = app.getPath('userData');
+  let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
 
   if (fs.existsSync(pathToFile)) {
     fs.readFile(pathToFile, 'utf8', (err, data) => {
@@ -215,24 +273,36 @@ function requestLoggedPage() {
         console.error('Error reading user file', err);
         return;
       }
-
-      const [Remember] = (data.match(/Remember=(\w+)/));
-      let [keyR, valueR] = Remember.split('=');
-
-      const [accountId] = (data.match(/ID=(\w+)/));
-      let [keyA, uidA] = accountId.split('=');
-
-      if (valueR === 'true' || valueR === "True") {
-        mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/true/${uidA}`);
+      if (data.includes('Remember')) {
+        const RememberMatch = (data.match(/Remember=(\w+)/));
+        if (RememberMatch != null) {
+          const Remember = RememberMatch[0];
+          let [keyR, valueR] = Remember.split('=');
+          if (valueR === "true" || valueR === "True") {
+            const accountIdMatch = (data.match(/ID=(\w+)/));
+            if (accountIdMatch != null) {
+              const accountId = accountIdMatch[0];
+              let [keyA, uidA] = accountId.split('=');
+              mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/true/${uidA}`);
+            }else {
+              mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+              return;
+            }
+          } else {
+            mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+            return;
+          }
+        } else {
+          mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+          return;
+        }
       }else {
         mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+        return;
       }
+
     });
   }
-}
-
-function requestUnloggedPage() {
-  mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
 }
 
 function handleSquirrelEvent(application) {

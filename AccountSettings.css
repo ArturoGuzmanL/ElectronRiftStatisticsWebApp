@@ -1,0 +1,257 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
+* {
+  font-family: 'Montserrat', sans-serif;
+}
+
+
+body{
+  margin-top:20px;
+  color: #bcd0f7;
+  background: #0e1228;
+}
+
+.main-container {
+  padding: 5rem;
+  justify-content: center;
+  margin: auto;
+  width: 75%;
+}
+
+.main-inner-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 2rem;
+}
+
+.titleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid #596280;
+}
+
+.user-profile {
+  text-align: center;
+  justify-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.deleteAccButton {
+  align-self: end;
+  margin: auto auto 2rem;
+  text-align: center;
+  width: 100%;
+  max-width: 8rem;
+  min-height: 2rem;
+  height: 100%;
+  max-height: 3rem;
+  border-radius: 5px;
+  background: #fa625e;
+  border-color: rgba(227,66,61,0.7);
+  transition: 0.3s;
+  cursor: pointer;
+  border-style: none;
+}
+
+.deleteAccButton:hover {
+  background: #ed3c38;
+  border-color: rgba(227,66,61,0.7);
+  text-align: center;
+  width: 100%;
+  max-width: 8rem;
+  height: 100%;
+  max-height: 2rem;
+  border-radius: 5px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.saveButton {
+  background: #007bff;
+  border-color: #007bff;
+  border-style: none;
+  color: #FFF;
+  text-align: center;
+  min-width: 5rem;
+  height: 2rem;
+  border-radius: 6px;
+  transition: 0.3s;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.saveButton:hover {
+  background: #0069d9;
+  border-color: #0062cc;
+  transition: 0.3s;
+}
+
+.cancelButton {
+  background: #6c757d;
+  border-color: #6c757d;
+  border-style: none;
+  color: #FFF;
+  text-align: center;
+  min-width: 5rem;
+  height: 2rem;
+  border-radius: 6px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  background: #5a6268;
+  border-color: #545b62;
+  transition: 0.3s;
+}
+
+.personalContainer {
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(1fr, 1fr));
+  grid-gap: 0.5rem;
+}
+
+.informationContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(auto-fit, minmax(1fr, 1fr));
+  justify-items: start;
+}
+
+.informationContainer:not(:first-child) {
+  border-top: 2px solid #596280;
+  padding-top: 1rem;
+}
+
+.informationContainerPass {
+  position: relative;
+  border-top: 2px solid #596280;
+  padding-top: 1rem;
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(auto-fit, minmax(1fr, 1fr));
+  justify-items: center;
+  align-content: center;
+}
+
+.form-element {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0 1rem 1rem;
+  padding: 0 1rem 0 0;
+}
+
+.form-element-pass {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 1rem 1rem 1rem;
+  padding: 0 1rem 0 0;
+}
+
+.form-element label {
+  font-size: 1.5rem;
+}
+
+.accountCard {
+  border: 2px solid #596280;
+  background: #1A233A;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  margin: 0 1rem 0;
+  padding: 1rem 0 1rem 0;
+  text-align: center;
+  justify-content: center;
+}
+
+.user-profile .user-avatar {
+  margin: 0 0 1rem 0;
+}
+.user-profile .user-avatar img {
+  width: 90px;
+  height: 90px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+}
+.user-profile h5.user-name {
+  font-size: 2rem ;
+  margin: 0 0 0.5rem 0;
+}
+.user-profile h6.user-email {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+.about {
+  margin: 1rem 0 0 0;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.formCard {
+  display: grid;
+  height: fit-content;
+  grid-template-rows: 1fr;
+  padding-bottom: 2rem;
+  background: #1A233A;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 2px solid #596280;
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  width: fit-content;
+  outline: transparent;
+  border-top: transparent;
+  border-left: transparent;
+  border-right: transparent;
+  border-bottom: 2px solid #596280;
+  background: transparent;
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+  color: #bcd0f7;
+  font-size: 1rem;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.passContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-items: center;
+  align-items: center;
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  border-top: 2px solid #596280;
+  padding: 1.5rem 0 0 0;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#pass1ShowS {
+  cursor: pointer;
+}
+
+.passChange {
+  position: absolute;
+  right: 50%;
+  top: 85%;
+  transform: translateX(50%);
+  font-size: 1.25rem;
+}

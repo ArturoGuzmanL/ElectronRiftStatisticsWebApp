@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>RiftStatistics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./AccountSettings.css">
+  <script src="https://riftstatistics.ddns.net/file/js/Jquery"></script>
+</head>
+<body>
+<div class="main-container">
+  <div class="main-inner-container">
+    <div class="accountCard">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Maxwell Admin">
+        </div>
+        <div class="user-info">
+          <h5 class="user-name">Yuki Hayashi</h5>
+          <h6 class="user-email">Email@email.com</h6>
+        </div>
+      </div>
+      <button type="button" id="deleteAcc" name="submit" class="deleteAccButton">Delete account</button>
+    </div>
+    <div class="formCard">
+      <div class="personalContainer">
+        <div class="titleContainer">
+          <h1 class="titleText">Personal Details</h1>
+        </div>
+        <div class="informationContainer">
+          <div class="form-element">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" placeholder="Your username here">
+          </div>
+          <div class="form-element">
+            <label for="email">Email:</label>
+            <input type="text" class="form-control" id="email" placeholder="Your email here">
+          </div>
+          <div class="form-element">
+            <label>Birthday date:</label>
+            <input type="date" class="form-control" id="birthday">
+          </div>
+          <div class="form-element">
+            <label>Member since:</label>
+            <input type="date" class="form-control" id="creationDate" disabled>
+          </div>
+        </div>
+        <div class="informationContainerPass">
+          <div class="form-element-pass">
+            <label for="pass1">Password:</label>
+            <div id="pass1Container" class="passContainer">
+              <input type="password" class="form-control" id="pass1" placeholder="Your password here">
+              <svg id="pass1ShowS"  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                <path id="pass1ShowS-activeShow" d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="form-element-pass">
+            <label for="pass2">New Password:</label>
+            <div id="pass2Container" class="passContainer">
+              <input type="password" class="form-control" id="pass2" placeholder="Your password here">
+              <svg id="pass2ShowS" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                <path id="pass2ShowS-activeShow" d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/>
+              </svg>
+            </div>
+          </div>
+          <a href="#" class="passChange">
+            <p>Forgot your password?</p>
+          </a>
+        </div>
+        <div class="buttonContainer">
+          <button type="button" id="cancelButton" name="cancel" class="cancelButton">Cancel</button>
+          <button type="button" id="submitButton" name="submit" class="saveButton">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="./AccountSettings.js"></script>
+</body>
+</html>
