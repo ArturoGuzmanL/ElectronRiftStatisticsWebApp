@@ -1,5 +1,5 @@
 $('#pass1ShowS').off('click').on('click', function(event) {
-  let signPassField = $("#pass1");
+  let signPassField = $("#pass1Input");
   let lineSign = $("#pass1ShowS-activeShow");
   if (signPassField.attr("type") === "password") {
     signPassField.attr("type", "text");
@@ -14,7 +14,7 @@ $('#pass1ShowS').off('click').on('click', function(event) {
 
 
 $('#pass2ShowS').off('click').on('click', function(event) {
-  let signPassField = $("#pass2");
+  let signPassField = $("#pass2Input");
   let lineSign = $("#pass2ShowS-activeShow");
   if (signPassField.attr("type") === "password") {
     signPassField.attr("type", "text");

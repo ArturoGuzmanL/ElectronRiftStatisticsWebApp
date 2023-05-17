@@ -120,9 +120,11 @@ ipcMain.on('get-ip', (event) => {
 
 ipcMain.on('lol-account-change', (event, Mssg) => {
 
-  mainWindow.webContents.on('did-finish-load', () => {
+  didFinishLoadListener = () => {
     mainWindow.webContents.send('toast-message-lol', Mssg);
-  });
+    mainWindow.webContents.removeListener('did-finish-load', didFinishLoadListener);
+  };
+  mainWindow.webContents.on('did-finish-load', didFinishLoadListener);
   mainWindow.reload();
 
 });
@@ -133,8 +135,17 @@ ipcMain.on('log-action-toast', (event, Mssg, url) => {
     mainWindow.webContents.removeListener('did-finish-load', didFinishLoadListener);
   };
   mainWindow.webContents.on('did-finish-load', didFinishLoadListener);
-
   mainWindow.loadURL(url);
+});
+
+ipcMain.on('unlogged-event', (event, Mssg) => {
+  forceDeleteAccountinfo();
+  didFinishLoadListener = () => {
+    mainWindow.webContents.send('toast-message-lol', Mssg);
+    mainWindow.webContents.removeListener('did-finish-load', didFinishLoadListener);
+  };
+  mainWindow.webContents.on('did-finish-load', didFinishLoadListener);
+  mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/false/null");
 });
 
 

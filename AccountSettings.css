@@ -2,12 +2,15 @@
 
 * {
   font-family: 'Montserrat', sans-serif;
+  color: #bcd0f7 !important;
 }
 
+h1, h3 {
+  margin: 0;
+}
 
 body{
-  margin-top:20px;
-  color: #bcd0f7;
+  color: #bcd0f7 !important;
   background: #0e1228;
 }
 
@@ -20,6 +23,7 @@ body{
 
 .main-inner-container {
   display: grid;
+  padding-top: 5rem;
   grid-template-columns: 1fr 2fr;
   grid-gap: 2rem;
 }
@@ -28,7 +32,12 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: 2px solid #596280;
+}
+
+.titleContainer h1 {
+  font-size: 2rem;
+  padding: 0.25rem;
+  margin: 0;
 }
 
 .user-profile {
@@ -133,7 +142,7 @@ body{
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(auto-fit, minmax(1fr, 1fr));
-  justify-items: center;
+  justify-items: start;
   align-content: center;
 }
 
@@ -153,7 +162,7 @@ body{
   padding: 0 1rem 0 0;
 }
 
-.form-element label {
+.AccSettingsLabel {
   font-size: 1.5rem;
 }
 
@@ -212,11 +221,12 @@ body{
 
 .form-control {
   width: fit-content;
+  position: relative;
   outline: transparent;
   border-top: transparent;
   border-left: transparent;
   border-right: transparent;
-  border-bottom: 2px solid #596280;
+  border-bottom: 2px solid #6eb1f8;
   background: transparent;
   padding: 0.25rem 0.5rem 0.25rem 0.5rem;
   color: #bcd0f7;
@@ -224,6 +234,12 @@ body{
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
+  transition: 0.3s;
+}
+
+.form-control:hover {
+  border-bottom: 2px solid #3594ff;
+  transition: 0.3s;
 }
 
 .passContainer {
@@ -244,14 +260,59 @@ body{
   align-items: center;
 }
 
+#pass2ShowS,
 #pass1ShowS {
   cursor: pointer;
 }
 
+#pass2,
+#pass1 {
+  min-width: 1rem;
+  max-width: 20rem;
+}
+
 .passChange {
   position: absolute;
-  right: 50%;
-  top: 85%;
-  transform: translateX(50%);
-  font-size: 1.25rem;
+  width: fit-content;
+  text-decoration: underline;
+  left: 0;
+  top: 95%;
+  padding: 0 0 0 1rem;
+  font-size: 0.95rem;
+  color: #4388ff !important;
+}
+
+.passChange:hover {
+  color: #1b83ef !important;
+  cursor: pointer;
+}
+
+.passChange p {
+  color: #4388ff !important;
+}
+
+.passChange p:hover {
+  color: #1b83ef !important;
+  cursor: pointer;
+}
+
+.effect-8 {
+   padding: 7px 14px 9px;
+   transition: 0.4s;
+ }
+
+.form-control ~ .focus-border:before,
+.form-control ~ .focus-border:after{content: ""; position: absolute; top: 0; left: 0; width: 0; height: 2px; background-color: #3399FF; transition: 0.3s;}
+.form-control ~ .focus-border:after{top: auto; bottom: 0; left: auto; right: 0;}
+.form-control ~ .focus-border i:before,
+.form-control ~ .focus-border i:after{content: ""; position: absolute; top: 0; left: 0; width: 2px; height: 0; background-color: #3399FF; transition: 0.4s;}
+.form-control ~ .focus-border i:after{left: auto; right: 0; top: auto; bottom: 0;}
+.form-control:focus ~ .focus-border:before,
+.form-control:focus ~ .focus-border:after{width: 100%; transition: 0.3s;}
+.form-control:focus ~ .focus-border i:before,
+.form-control:focus ~ .focus-border i:after{height: 100%; transition: 0.4s;}
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
 }
