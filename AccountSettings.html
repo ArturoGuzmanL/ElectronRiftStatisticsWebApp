@@ -4,8 +4,10 @@
 
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Email Confirmation</title>
+  <title>Password change</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <script src="https://riftstatistics.ddns.net/file/js/Jquery"></script>
   <style>
     /**
              * Google webfonts. Recommended to include the .woff version for cross-client compatibility.
@@ -101,8 +103,8 @@
       outline: none;
     }
 
-    #Reppassword,
-    #password {
+    #changePasswd2,
+    #changePasswd1 {
       margin-top: 1rem;
       position: relative;
       outline: transparent;
@@ -121,8 +123,8 @@
       width: 100%;
     }
 
-    #Reppassword:hover,
-    #password:hover {
+    #changePasswd2:hover,
+    #changePasswd1:hover {
       border-bottom: 2px solid #3594ff;
       transition: 0.3s;
     }
@@ -237,7 +239,7 @@
     letter-spacing: -1px;
     line-height: 48px;
     text-align: center;
-    color: #fff;">Write your new password</h1>
+    color: #fff;" class="newPswd" id="${userID}">Write your new password</h1>
           </td>
         </tr>
       </table>
@@ -295,12 +297,12 @@
     font-size: 16px;
     line-height: 24px;">
             <div>
-              <label style="color: #FFF; font-size: 1.5rem" for="password">Password</label>
-              <input type="password" id="password" class="effect-8" name="password" placeholder="Password" required>
+              <label style="color: #FFF; font-size: 1.5rem" for="changePasswd1">Password</label>
+              <input type="password" id="changePasswd1" class="effect-8" name="password" placeholder="Password" required>
             </div>
             <div style="margin-top: 1.5rem">
-              <label style="color: #FFF; font-size: 1.5rem" for="password">Repeat password</label>
-              <input type="password" id="Reppassword" class="effect-8" name="password" placeholder="Password" required>
+              <label style="color: #FFF; font-size: 1.5rem" for="changePasswd2">Repeat password</label>
+              <input type="password" id="changePasswd2" class="effect-8" name="password" placeholder="Password" required>
             </div>
           </td>
         </tr>
@@ -319,7 +321,7 @@
     font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
     font-size: 16px;
     line-height: 24px;">
-            <button type="submit" style="background: #1a82e2;" class="button">Submit</button>
+            <button id="changePasswdButton" type="submit" style="background: #1a82e2;" class="button">Submit</button>
           </td>
         </tr>
         <!-- end copy -->
@@ -336,6 +338,7 @@
 
 </table>
 <!-- end body -->
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://riftstatistics.ddns.net/file/js/AccSett"></script>
 </body>
 </html>

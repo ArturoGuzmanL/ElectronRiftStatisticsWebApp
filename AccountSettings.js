@@ -26,3 +26,4 @@ $('#pass2ShowS').off('click').on('click', function(event) {
     console.log("hide")
   }
 });
+

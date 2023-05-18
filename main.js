@@ -11,7 +11,7 @@ global.remote = require('electron').remote;
 const Swal = require("sweetalert2");
 const Swaldef = Swal.default;
 const axios = require('axios');
-const mousetrap = require('mousetraps');
+const mousetrap = require('mousetrap');
 const ChildProcess = require("child_process");
 const {networkInterfaces} = require("os");
 
@@ -29,7 +29,7 @@ ipcMain.on("reload", (event) => {
 });
 
 ipcMain.on("force-reload", (event) => {
-  mainWindow.reload();
+  forceReload();
 });
 
 ipcMain.on("logout-from-account", (event) => {
@@ -51,7 +51,7 @@ ipcMain.on('is-logged', (event, text) => {
   event.reply("is-logged-reply", AccountinfoExists())
 });
 
-ipcMain.on('create-account-info', (event, agr1, agr2) => {
+ipcMain.on('create-account-info', async (event, agr1, agr2) => {
   let pathToUserData = app.getPath('userData');
   let pathToFolder = path.join(pathToUserData, 'Session');
   let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
@@ -65,19 +65,28 @@ ipcMain.on('create-account-info', (event, agr1, agr2) => {
     if (err) throw err;
     console.log('The file has been saved!');
   });
+
+  if (agr2 === "true" || agr2 === true || agr2 === "True") {
+    let publicIP = await getIPAdress();
+
+    let encodedUidA = encodeURIComponent(agr1);
+    let encodedPublicIP = encodeURIComponent(publicIP);
+
+    let netRequest = net.request({
+      method: 'GET',
+      protocol: 'https:',
+      hostname: 'riftstatistics.ddns.net',
+      port: 443,
+      path: `/page/users/actions/cookie/create/${encodedUidA}@&@${encodedPublicIP}`,
+    });
+    netRequest.end();
+  }
+
 });
 
 ipcMain.on('get-uid', (event) => {
-  let pathToUserData = app.getPath('userData');
-  let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
-  if (fs.existsSync(pathToFile)) {
-    const data = fs.readFileSync(pathToFile, 'utf8');
-    const [ID] = (data.match(/ID=(\w+)/));
-    let [key, value] = ID.split('=');
-    event.reply("get-uid-reply", value)
-  }else {
-    event.reply("get-uid-reply", "null")
-  }
+  let reply = getUserId();
+  event.reply("get-uid-reply", reply)
 });
 
 ipcMain.on('get-loader-template', (event, text, html) => {
@@ -93,29 +102,9 @@ ipcMain.on('get-loader-template', (event, text, html) => {
   event.reply("get-loader-template-reply", reply)
 });
 
-ipcMain.on('get-ip', (event) => {
-  const ifaces = networkInterfaces();
-  let ipAdresse = {};
-  Object.keys(ifaces).forEach(function (ifname) {
-    let alias = 0;
-    ifaces[ifname].forEach(function (iface) {
-      if ('IPv4' !== iface.family || iface.internal !== false) {
-        // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-        return;
-      }
-
-      if (alias >= 1) {
-        // this single interface has multiple ipv4 addresses
-        console.log(ifname + ':' + alias, iface.address);
-      } else {
-        // this interface has only one ipv4 adress
-        console.log(ifname, iface.address);
-        ipAdresse = {IP: iface.address, MAC: iface.mac};
-      }
-      ++alias;
-    });
-  });
-  event.reply("get-ip-reply", ipAdresse)
+ipcMain.on('get-ip', async (event) => {
+  let publicIP = await getIPAdress();
+  event.reply("get-ip-reply", publicIP)
 });
 
 ipcMain.on('lol-account-change', (event, Mssg) => {
@@ -173,19 +162,20 @@ async function createWindow() {
   // mainWindow.loadFile(pathTF);
   AccountinfoExists();
   requestInitialPage();
+
 }
 
 app.whenReady().then(() => {
   createWindow()
 })
 
+
+
+
 app.on('window-all-closed', () => {
   deleteAccountInfo();
   if (process.platform !== 'darwin') app.quit()
 })
-
-app.on('ready', () => {
-});
 
 function AccountinfoExists() {
   let pathToUserData = app.getPath('userData');
@@ -269,11 +259,12 @@ function forceDeleteAccountinfo() {
   return reply;
 }
 
-function requestInitialPage() {
-  const { ipcRenderer } = require('electron');
+async function requestInitialPage() {
+  let publicIP = await getIPAdress();
+  const {ipcRenderer} = require('electron');
   const fs = require('fs');
   const path = require('path');
-  const { net } = require('electron');
+  const {net} = require('electron');
 
   let pathToUserData = app.getPath('userData');
   let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
@@ -284,18 +275,38 @@ function requestInitialPage() {
         console.error('Error reading user file', err);
         return;
       }
+      // Comprobar si el usuario tiene la sesión iniciada
       if (data.includes('Remember')) {
         const RememberMatch = (data.match(/Remember=(\w+)/));
         if (RememberMatch != null) {
           const Remember = RememberMatch[0];
           let [keyR, valueR] = Remember.split('=');
+          // Si tiene la sesión iniciada, comprobar si el usuario quiere que se recuerde su cuenta
           if (valueR === "true" || valueR === "True") {
             const accountIdMatch = (data.match(/ID=(\w+)/));
             if (accountIdMatch != null) {
               const accountId = accountIdMatch[0];
               let [keyA, uidA] = accountId.split('=');
-              mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/true/${uidA}`);
-            }else {
+              let encodedUidA = encodeURIComponent(uidA);
+              let encodedPublicIP = encodeURIComponent(publicIP);
+              // Comprobar si la ip pública del usuario es la misma que la que se registró en la base de datos, si no es así, cerrar sesión
+              let netRequest = net.request({
+                method: 'GET',
+                protocol: 'https:',
+                hostname: 'riftstatistics.ddns.net',
+                port: 443,
+                path: `/page/users/actions/cookie/verification/${encodedUidA}@&@${encodedPublicIP}`,
+              });
+              netRequest.on('response', (response) => {
+                if (response.statusCode === 200) {
+                  mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/true/${uidA}`);
+                } else {
+                  mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+                  return;
+                }
+              });
+              netRequest.end();
+            } else {
               mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
               return;
             }
@@ -307,7 +318,7 @@ function requestInitialPage() {
           mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
           return;
         }
-      }else {
+      } else {
         mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
         return;
       }
@@ -378,7 +389,42 @@ function handleSquirrelEvent(application) {
       application.quit();
       return true;
   }
-};
+}
+function getUserId() {
+  let pathToUserData = app.getPath('userData');
+  let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
+  if (fs.existsSync(pathToFile)) {
+    const data = fs.readFileSync(pathToFile, 'utf8');
+    const [ID] = (data.match(/ID=(\w+)/));
+    let [key, value] = ID.split('=');
+    return value;
+  }else {
+    return null;
+  }
+}
+
+function forceReload() {
+  if (AccountinfoExists()) {
+    let id = getUserId();
+    mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/true/${id})`);
+  }else {
+    mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/false`);
+  }
+}
+
+async function getIPAdress() {
+  const ipAPI = 'https://api.ipify.org?format=json';
+  let ip = "";
+  try {
+    const response = await fetch(ipAPI);
+    const data = await response.json();
+    ip = data.ip;
+  } catch (error) {
+    console.error('Error al obtener la dirección IP:', error);
+    return null;
+  }
+  return ip;
+}
 
 
 
