@@ -27,8 +27,8 @@ ipcMain.on('encrypt-text', (event, text) => {
   event.reply("encrypt-text-reply", SHA256(text).toString())
 });
 
-ipcMain.on('is-logged', (event, text) => {
-  event.reply("is-logged-reply", AccountinfoExists())
+ipcMain.on('is-logged', (event) => {
+  event.reply("is-logged-reply", isLogged())
 });
 
 ipcMain.on('create-account-info', async (event, agr1, agr2) => {
@@ -137,6 +137,7 @@ async function createWindow() {
 
   mainWindow.removeMenu()
   mainWindow.openDevTools();
+  loadLoadingPage();
 
   AccountinfoExists();
   requestInitialPage();
@@ -146,8 +147,6 @@ async function createWindow() {
 app.whenReady().then(() => {
   createWindow()
 })
-
-
 
 
 app.on('window-all-closed', () => {
@@ -189,6 +188,26 @@ function AccountinfoExists() {
   }
 
   return reply;
+}
+
+function isLogged() {
+  let pathToUserData = app.getPath('userData');
+  let pathToDir = path.join(pathToUserData, 'Session');
+  let pathToFile = path.join(pathToUserData, 'Session', 'Session.txt');
+
+  if (fs.existsSync(pathToUserData) && fs.existsSync(pathToDir) && fs.existsSync(pathToFile)) {
+    let data = fs.readFileSync(pathToFile, 'utf8');
+    const idMatch = data.match(/ID=(\w+)/);
+    const RememberMatch = data.match(/Remember=(\w+)/);
+    if (idMatch !== null && RememberMatch !== null) {
+      const id = idMatch[0];
+      const Remember = RememberMatch[0];
+      let [keyI, valueI] = id.split('=');
+      let [keyR, valueR] = Remember.split('=');
+
+      return valueI !== "" && valueR !== "";
+    }
+  }
 }
 
 function deleteAccountInfo() {
@@ -339,6 +358,10 @@ async function getIPAdress() {
     return null;
   }
   return ip;
+}
+
+function loadLoadingPage() {
+  mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/loading");
 }
 
 
