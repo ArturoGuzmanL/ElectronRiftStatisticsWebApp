@@ -136,7 +136,6 @@ async function createWindow() {
   })
 
   mainWindow.removeMenu()
-  mainWindow.openDevTools();
   loadLoadingPage();
 
   AccountinfoExists();
@@ -296,27 +295,27 @@ async function requestInitialPage() {
               });
               netRequest.on('response', (response) => {
                 if (response.statusCode === 200) {
-                  mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/true/${uidA}`);
+                  mainWindow.loadURL(`https://riftstatistics.ddns.net/page/htmlRequests/home/true/${uidA}`);
                 } else {
-                  mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+                  mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/false/null");
 
                 }
               });
               netRequest.end();
             } else {
-              mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+              mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/false/null");
 
             }
           } else {
-            mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+            mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/false/null");
 
           }
         } else {
-          mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+          mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/false/null");
 
         }
       } else {
-        mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null");
+        mainWindow.loadURL("https://riftstatistics.ddns.net/page/htmlRequests/home/false/null");
 
       }
 
